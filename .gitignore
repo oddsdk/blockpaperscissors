@@ -1,0 +1,12 @@
+node_modules
+dist
+.direnv
+.DS_Store
+yarn-error.log
+
+# svelte
+.svelte-kit/
+build/
+
+# fission
+fission.yaml
