@@ -10,3 +10,6 @@ build/
 
 # fission
 fission.yaml
+
+# foundry
+cache/

@@ -4,7 +4,7 @@
   import '../global.css'
   import { appDescription, appName, appURL } from '$lib/app-info'
   import { TABLET_WIDTH } from '$lib/device'
-  import { initialise } from '$lib/session'
+  // import { initialise } from '$lib/session'
   import { deviceStore, sessionStore, themeStore } from '../stores'
   import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
   import Notifications from '$components/notifications/Notifications.svelte'
@@ -13,7 +13,7 @@
   import SidebarNav from '$components/nav/SidebarNav.svelte'
 
   onMount(async () => {
-    await initialise()
+    // await initialise()
     setDevice()
   })
 
