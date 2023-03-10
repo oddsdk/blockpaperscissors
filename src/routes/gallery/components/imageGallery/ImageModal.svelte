@@ -126,7 +126,7 @@
             </button>
           {/if}
           <img
-            class="block object-cover object-center border-2 border-base-content w-full h-full mb-4 rounded-[1rem]"
+            class="block object-cover object-center border border-base-content w-full h-full mb-4 rounded-[1rem]"
             alt={`Image: ${image.name}`}
             src={image.src}
           />
