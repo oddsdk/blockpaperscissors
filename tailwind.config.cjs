@@ -96,18 +96,16 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['UncutSans']
+        sans: ['ApfelGrotezk']
       },
       fontSize: {
-        mobileNav: ['24px', { lineHeight: '24px' }],
-        deviceCode: ['30px', { lineHeight: '36px' }],
-        xxs: ['12px', { lineHeight: '16px' }],
-        xs: ['13px', { lineHeight: '24px', letterSpacing: '0.1em' }],
-        sm: ['16px', { lineHeight: '24px' }],
-        base: ['20px', { lineHeight: '28px' }],
-        lg: ['24px', { lineHeight: '32px' }],
-        xl: ['38px', { lineHeight: '48px' }],
-        '2xl': ['50px', { lineHeight: '62px' }]
+        xxs: ['11px', { lineHeight: '11.88px' }],
+        xs: ['14px', { lineHeight: '15.12px' }],
+        sm: ['16px', { lineHeight: '17.28px' }],
+        base: ['18px', { lineHeight: '19px' }],
+        lg: ['36px', { lineHeight: '38.88px' }],
+        xl: ['47px', { lineHeight: '50.76px' }],
+        '2xl': ['64px', { lineHeight: '48px' }]
       },
       keyframes: {
         marquee: {

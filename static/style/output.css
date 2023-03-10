@@ -42,7 +42,7 @@ html {
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: UncutSans;
+  font-family: ApfelGrotezk;
   /* 4 */
 }
 
@@ -3484,35 +3484,18 @@ body[dir="rtl"] .checkbox:checked,
 }
 
 @font-face {
-  font-family: 'UncutSans';
-
-  src: url('/fonts/uncut-sans-regular-webfont.woff2') format('woff2'),
-        url('/fonts/uncut-sans-regular-webfont.woff') format('woff');
-
+  font-family: 'ApfelGrotezk';
+  src: url('/fonts/ApfelGrotezk-Regular.woff2') format('woff2'),
+        url('/fonts/ApfelGrotezk-Regular.woff') format('woff');
   font-weight: 400;
-
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'UncutSans';
-
-  src: url('/fonts/uncut-sans-medium-webfont.woff2') format('woff2'),
-         url('/fonts/uncut-sans-medium-webfont.woff') format('woff');
-
-  font-weight: 500;
-
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'UncutSans';
-
-  src: url('/fonts/uncut-sans-bold-webfont.woff2') format('woff2'),
-        url('/fonts/uncut-sans-bold-webfont.woff') format('woff');
-
-  font-weight: 700;
-
+  font-family: 'ApfelGrotezk';
+  src: url('/fonts/ApfelGrotezk-Fett.woff2') format('woff2'),
+        url('/fonts/ApfelGrotezk-Fett.woff') format('woff');
+  font-weight: 600;
   font-style: normal;
 }
 
@@ -3525,7 +3508,7 @@ h4,  h5,  h6 {
 }
 
 body,  input {
-  font-family: UncutSans;
+  font-family: ApfelGrotezk;
 }
 
 /* Button default styles */
