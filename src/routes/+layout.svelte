@@ -46,7 +46,7 @@
   {#if $sessionStore.loading}
     <FullScreenLoadingSpinner />
   {:else}
-    <div class="pt-[70px] px-10 pb-10">
+    <div class="pt-[70px] px-10 pb-10 max-w-lg mx-auto">
       <slot />
     </div>
   {/if}
