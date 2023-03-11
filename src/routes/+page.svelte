@@ -6,7 +6,7 @@
 
   let pronouns = ['you', 'everybody', 'we']
   let verbs = ['get', 'build', 'draw']
-  let adjectives = ['biggest', 'longest', 'most intricate']
+  let adjectives = ['greatest', 'longest', 'most intricate']
   let nouns = ['combo', 'streak', 'pattern']
   let colors = ['red', 'green', 'blue']
 
