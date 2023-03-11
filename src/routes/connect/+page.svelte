@@ -1,6 +1,13 @@
 <script lang="ts">
+  import { goto } from '$app/navigation'
+
   import { initialise } from '$lib/session'
   import Divider from '$components/common/Divider.svelte'
+
+  const init = async () => {
+    await initialise()
+    goto('/intro')
+  }
 </script>
 
 <Divider align="right" size="small" />
@@ -22,7 +29,7 @@
     Have a gas! (which is all you’ll pay)
   </p>
 </div>
-<!-- on:click={initialise} -->
-<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/intro">
+
+<button class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" on:click={init}>
   Connect Wallet
-</a>
+</button>
