@@ -4,16 +4,28 @@
   import '../global.css'
   import { appDescription, appName, appURL } from '$lib/app-info'
   import { TABLET_WIDTH } from '$lib/device'
-  // import { initialise } from '$lib/session'
-  import { deviceStore, sessionStore, themeStore } from '../stores'
+  import { initialise as initialiseNetworkStore, isConnected } from '$lib/network'
+  import { initialise as initialiseWalletAuth } from '$lib/session'
+  import { deviceStore, sessionStore, themeStore } from '$src/stores'
   import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
   import Notifications from '$components/notifications/Notifications.svelte'
-  import Footer from '$components/Footer.svelte'
-  import Header from '$components/Header.svelte'
-  import SidebarNav from '$components/nav/SidebarNav.svelte'
+  // import Footer from '$components/Footer.svelte'
+
+  let metaMaskLoading = false
+
+  // If MetaMask is already connected, automatically initialize WalletAuth
+  const checkMetaMaskConnection = async () => {
+    metaMaskLoading = true
+    const metamaskConnected = await isConnected()
+    if (metamaskConnected) {
+      await initialiseWalletAuth()
+    }
+    metaMaskLoading = false
+  }
 
   onMount(async () => {
-    // await initialise()
+    await checkMetaMaskConnection()
+    await initialiseNetworkStore()
     setDevice()
   })
 
@@ -43,7 +55,7 @@
 <div data-theme={$themeStore.selectedTheme} class="min-h-screen">
   <Notifications />
 
-  {#if $sessionStore.loading}
+  {#if metaMaskLoading || $sessionStore.loading}
     <FullScreenLoadingSpinner />
   {:else}
     <div class="pt-[70px] px-10 pb-10 max-w-lg mx-auto">

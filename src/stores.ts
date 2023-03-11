@@ -5,6 +5,7 @@ import type FileSystem from 'webnative/fs/index'
 import { loadTheme } from '$lib/theme'
 import type { AccountSettings } from '$lib/account-settings'
 import type { Device } from '$lib/device'
+import type { Network } from '$lib/network'
 import type { Notification } from '$lib/notifications'
 import type { Session } from '$lib/session'
 import type { Theme } from '$lib/theme'
@@ -14,6 +15,10 @@ export const themeStore: Writable<Theme> = writable(loadTheme())
 export const filesystemStore: Writable<FileSystem | null> = writable(null)
 
 export const deviceStore: Writable<Device> = writable({ isMobile: true })
+
+export const networkStore: Writable<Network> = writable({
+  blockNumber: null,
+})
 
 export const notificationStore: Writable<Notification[]> = writable([])
 

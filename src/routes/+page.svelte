@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { sessionStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
   import BlockIcon from '$components/icons/Block.svelte'
   import PaperIcon from '$components/icons/Paper.svelte'
@@ -40,7 +41,7 @@
   Can <span class="text-{colors[i]}-500">{pronouns[i]}</span> {verbs[i]} the {adjectives[i]} <span class="text-{colors[j]}-500">{nouns[i]}</span>?
 </h2>
 
-<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/connect">
+<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href={$sessionStore.address ? '/intro' : '/connect'}>
   Yes! Let's play
 </a>
 <a class="btn btn-outline btn-lg w-full border-[6px] text-lg uppercase rounded-none" href="/watch">

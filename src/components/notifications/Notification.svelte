@@ -14,25 +14,25 @@
     info: {
       component: InfoThinIcon,
       props: {
-        color: '#1e3a8a'
+        color: '#F5F8E6'
       }
     },
     error: {
       component: XThinIcon,
       props: {
-        color: $themeStore === 'light' ? '#ffd6d7' : '#fec3c3'
+        color: '#F5F8E6'
       }
     },
     success: {
       component: CheckThinIcon,
       props: {
-        color: '#14532D'
+        color: '#F5F8E6'
       }
     },
     warning: {
       component: WarningThinIcon,
       props: {
-        color: '#7c2d12'
+        color: '#F5F8E6'
       }
     }
   }
@@ -45,7 +45,7 @@
   aria-live="assertive"
   aria-atomic="true"
 >
-  <div class="alert alert-{notification.type} text-sm mb-3 peer-last:mb-0">
+  <div class="alert alert-{notification.type} rounded-none text-sm mb-3 peer-last:mb-0 text-white-500">
     <div>
       <svelte:component
         this={iconMap[notification.type].component}

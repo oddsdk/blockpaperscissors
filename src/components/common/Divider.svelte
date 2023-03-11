@@ -11,8 +11,8 @@
 
 {#if align === 'right'}
   <div class="flex justify-end">
-    <div class="h-[7px] {widths[size]} bg-black-500" />
+    <div class="h-[7px] {widths[size]} bg-base-content" />
   </div>
 {:else}
-  <div class="h-[7px] {widths[size]} bg-black-500" />
+  <div class="h-[7px] {widths[size]} bg-base-content" />
 {/if}

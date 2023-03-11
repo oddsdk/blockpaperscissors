@@ -13,7 +13,7 @@
 <Divider align="right" size="medium" />
 
 <h2 class="text-xl py-10 font-bold">
-    This is a game of mass coordination
+  This is a game of mass coordination
 </h2>
 
 <Divider />
@@ -30,6 +30,6 @@
   </p>
 </div>
 
-<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/style">
+<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/persona">
   Let's go!
 </a>

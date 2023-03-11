@@ -11,12 +11,13 @@ const config = {
   resolve: {
     alias: {
       $components: resolve('./src/components'),
+      $contracts: resolve('./src/contracts'),
       $routes: resolve('./src/routes'),
       $src: resolve('./src')
     }
   },
   server: {
-    port: 5177,
+    port: 5178,
     strictPort: false
   }
 }

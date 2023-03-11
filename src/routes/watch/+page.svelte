@@ -30,6 +30,6 @@
   </p>
 </div>
 
-<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/style">
+<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/persona">
   Let's go!
 </a>
