@@ -3,34 +3,18 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'UncutSans';
-  src: url('/fonts/uncut-sans-regular-webfont.woff2') format('woff2'),
-        url('/fonts/uncut-sans-regular-webfont.woff') format('woff');
+  font-family: 'ApfelGrotezk';
+  src: url('/fonts/ApfelGrotezk-Regular.woff2') format('woff2'),
+        url('/fonts/ApfelGrotezk-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-    font-family: 'UncutSans';
-    src: url('/fonts/uncut-sans-medium-webfont.woff2') format('woff2'),
-         url('/fonts/uncut-sans-medium-webfont.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'UncutSans';
-    src: url('/fonts/uncut-sans-medium-webfont.woff2') format('woff2'),
-         url('/fonts/uncut-sans-medium-webfont.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-  font-family: 'UncutSans';
-  src: url('/fonts/uncut-sans-bold-webfont.woff2') format('woff2'),
-        url('/fonts/uncut-sans-bold-webfont.woff') format('woff');
-  font-weight: 700;
+  font-family: 'ApfelGrotezk';
+  src: url('/fonts/ApfelGrotezk-Fett.woff2') format('woff2'),
+        url('/fonts/ApfelGrotezk-Fett.woff') format('woff');
+  font-weight: 600;
   font-style: normal;
 }
 
@@ -48,9 +32,6 @@ body, input {
 
 /* Button default styles */
 .btn {
-  @apply font-medium;
-  @apply border-2;
-  @apply min-h-0;
 }
 
 .btn-circle {
@@ -63,35 +44,27 @@ body, input {
 }
 
 .btn-outline {
-  @apply text-sm;
   @apply text-base-content;
   @apply border-base-content;
   @apply bg-base-100;
-  @apply shadow-orange;
   @apply h-10;
   @apply px-4;
 }
 
 .btn-primary {
-  @apply text-sm;
-  @apply text-neutral-900;
-  @apply border-neutral-900;
-  @apply shadow-orange;
-  @apply bg-gradient-to-r;
-  @apply from-orange-300;
-  @apply to-orange-600;
-  @apply h-10;
-  @apply px-4;
+  @apply bg-base-content;
+  @apply text-base-100;
+  @apply border;
 }
 
 .btn-primary:disabled {
   @apply opacity-50;
-  @apply text-neutral-900;
-  @apply border-neutral-900;
 }
 
-.btn-primary:hover, .btn-warning:hover {
-  @apply border-neutral-900;
+.btn-primary:hover {
+  @apply border-blue-500;
+  @apply bg-base-content;
+  @apply text-base-100;
 }
 
 .btn-link {
@@ -101,14 +74,13 @@ body, input {
 /* Input default styles */
 .input-bordered {
   @apply text-base-content;
-  @apply border-2;
   @apply border-base-content;
 }
 
 /* Modal default styles */
 .modal-box {
   @apply p-8;
-  @apply border-2;
+  @apply border;
   @apply border-base-content;
 }
 

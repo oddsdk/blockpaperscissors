@@ -9,16 +9,16 @@ module.exports = {
     themes: [
       {
         dark: {
-          primary: '#171717',
+          primary: '#F5F8E6',
           secondary: '#30aadd',
           accent: '#00ffc6',
-          neutral: '#171717',
-          info: '#93c5fd',
-          success: '#BBF7D0',
-          warning: '#fdba74',
-          error: '#DC2626',
-          'base-content': '#FAFAFA', // Base text content color
-          'base-100': '#171717', // Base background color
+          neutral: '#252621',
+          info: '#6767F4',
+          success: '#24A854',
+          warning: '#6767F4',
+          error: '#DF3064',
+          'base-content': '#F5F8E6', // Base text content color
+          'base-100': '#252621', // Base background color
           '--rounded-box': '16px',
           '--rounded-btn': '4px',
           '--rounded-badge': '2px',
@@ -27,16 +27,16 @@ module.exports = {
           '--navbar-padding': '16px'
         },
         light: {
-          primary: '#FAFAFA',
+          primary: '#F5F8E6',
           secondary: '#30aadd',
           accent: '#00ffc6',
-          neutral: '#171717',
-          info: '#bfdbfe',
-          success: '#BBF7D0',
-          warning: '#fed7aa',
-          error: '#DC2626',
-          'base-content': '#171717', // Base text content color
-          'base-100': '#FAFAFA', // Base background color
+          neutral: '#252621',
+          info: '#6767F4',
+          success: '#24A854',
+          warning: '#6767F4',
+          error: '#DF3064',
+          'base-content': '#252621', // Base text content color
+          'base-100': '#F5F8E6', // Base background color
           '--rounded-box': '16px',
           '--rounded-btn': '4px',
           '--rounded-badge': '2px',
@@ -60,54 +60,35 @@ module.exports = {
       aspectRatio: {
         '22/23': '22 / 23'
       },
-      boxShadow: {
-        orange: '0px 4px 0px rgba(243, 110, 101, 0.35)'
-      },
       colors: {
         blue: {
-          100: '#DBEAFE',
-          600: '#2563EB',
-          900: '#1E3A8A'
+          500: '#6767F4',
         },
         green: {
-          300: '#86EFAC',
-          500: '#22C55E',
-          700: '#15803D'
-        },
-        neutral: {
-          50: '#FAFAFA',
-          200: '#E5E5E5',
-          500: '#737373',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717'
-        },
-        orange: {
-          50: '#FFF7ED',
-          200: '#FDBA74',
-          300: '#F26D64',
-          500: '#F36E65',
-          600: '#EED082',
-          700: '#C2410C'
+          500: '#24A854',
         },
         red: {
-          400: '#F87171',
-          600: '#DC2626'
-        }
+          500: '#DF3064',
+        },
+        black: {
+          500: '#252621',
+        },
+        white: {
+          500: '#F5F8E6',
+        },
       },
       fontFamily: {
-        sans: ['UncutSans']
+        sans: ['ApfelGrotezk']
       },
       fontSize: {
-        mobileNav: ['24px', { lineHeight: '24px' }],
-        deviceCode: ['30px', { lineHeight: '36px' }],
-        xxs: ['12px', { lineHeight: '16px' }],
-        xs: ['13px', { lineHeight: '24px', letterSpacing: '0.1em' }],
-        sm: ['16px', { lineHeight: '24px' }],
-        base: ['20px', { lineHeight: '28px' }],
-        lg: ['24px', { lineHeight: '32px' }],
-        xl: ['38px', { lineHeight: '48px' }],
-        '2xl': ['50px', { lineHeight: '62px' }]
+        xxs: ['11px', { lineHeight: '11.88px' }],
+        xs: ['14px', { lineHeight: '15.12px' }],
+        sm: ['16px', { lineHeight: '17.28px' }],
+        base: ['18px', { lineHeight: '19px' }],
+        lg: ['23px', { lineHeight: '24.84px' }], 
+        xl: ['36px', { lineHeight: '38.88px' }],
+        '2xl': ['47px', { lineHeight: '50.76px' }],
+        '3xl': ['64px', { lineHeight: '48px' }]
       },
       keyframes: {
         marquee: {
