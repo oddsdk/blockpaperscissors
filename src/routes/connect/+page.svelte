@@ -5,8 +5,12 @@
   import Divider from '$components/common/Divider.svelte'
 
   const init = async () => {
-    await initialise()
-    goto('/intro')
+    try {
+      await initialise()
+      goto('/intro')
+    } catch (error) {
+      console.error(error)
+    }
   }
 </script>
 
