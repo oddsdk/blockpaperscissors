@@ -4,7 +4,6 @@ import type * as wn from 'webnative'
 import * as walletauth from 'webnative-walletauth'
 
 import { filesystemStore, sessionStore } from '../stores'
-import { initializeFilesystem } from '../routes/gallery/lib/gallery'
 import { addNotification } from '$lib/notifications'
 import { ACCOUNT_SETTINGS_DIR } from '$lib/account-settings'
 
@@ -47,9 +46,6 @@ export const initialise: () => Promise<void> = async () => {
 const handleProgram = async (program: wn.Program) => {
   // Update FS store
   filesystemStore.update(() => program.session?.fs)
-
-  // Create directories for the gallery
-  await initializeFilesystem(program.session?.fs)
 
   if (program.session) {
     // Create directory for Account Settings
