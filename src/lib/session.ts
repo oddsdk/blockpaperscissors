@@ -25,7 +25,7 @@ export const initialise: () => Promise<void> = async () => {
 
     // Get the initial WNFS appState
     const program = await walletauth.program({
-      namespace: { creator: "Fission", name: "Walletauth Template" },
+      namespace: { creator: "Fission", name: "SLWRKD" },
 
       onAccountChange: (p) => handleProgram(p),
       onDisconnect: () => disconnect(),

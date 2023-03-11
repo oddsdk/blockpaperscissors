@@ -1,19 +1,28 @@
 <script lang="ts">
+  import { initialise } from '$lib/session'
+  import Divider from '$components/common/Divider.svelte'
 </script>
-  
-<hr/>
-<h1 class="text-3xl">
-    CONNECT<br/>
-    YOUR<br/>
-    WALLET
+
+<Divider align="right" size="small" />
+
+<h1 class="text-3xl pt-8 pb-10">
+  CONNECT<br/>
+  YOUR<br/>
+  WALLET
 </h1>
-<hr/>
-<p class="text-xl">
+
+<Divider size="medium" />
+
+<div class="flex flex-col gap-10 py-10">
+  <p class="text-xl font-bold">
     As one of the first guests to our SLW RK’d, you get unlimited free plays.
-</p>
-<p class="text-xl">
+  </p>
+
+  <p class="text-xl font-bold">
     Have a gas! (which is all you’ll pay)
-</p>
-<a class="btn btn-primary btn-lg" href="/intro">
-    Connect Wallet
+  </p>
+</div>
+<!-- on:click={initialise} -->
+<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/intro">
+  Connect Wallet
 </a>

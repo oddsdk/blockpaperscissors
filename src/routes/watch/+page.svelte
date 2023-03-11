@@ -5,9 +5,9 @@
 <Divider size="small" />
 
 <h1 class="text-3xl pt-8 pb-10">
-  WELCOME<br/>
-  TO THE<br/>
-  NETWORK
+  WATCH<br/>
+  AND<br/>
+  LEARN
 </h1>
 
 <Divider align="right" size="medium" />
