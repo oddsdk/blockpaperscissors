@@ -105,8 +105,7 @@
 	const handleVoteClick = async (): Promise<void> => {
 		loading = true
 		try {
-			let paramInterface = new ethers.Interface(abi)
-			// paramInterface.encodeFunctionData('castVote', [selection, formFields.pageTitle])
+			const paramInterface = new ethers.Interface(abi)
 
 			await window.ethereum.request({
 				method: 'eth_sendTransaction',
