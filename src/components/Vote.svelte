@@ -1,8 +1,9 @@
 <script lang="ts">
-  import * as Beryx from '@zondax/beryx'
-  import { ethers } from 'ethers'
-	import { defaultEvmStores, contracts } from 'svelte-ethers-store'
+  // import * as Beryx from '@zondax/beryx'
   import { goto } from '$app/navigation'
+  import { ethers } from 'ethers'
+	// import { defaultEvmStores, contracts } from 'svelte-ethers-store'
+  import { fly } from 'svelte/transition'
 
 	import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
   import { CONTRACT_ADDRESS } from '$lib/network'
@@ -140,7 +141,7 @@
   <Divider size="medium" />
 
   <div class="flex flex-col gap-11 pt-[53px] pb-[55px]">
-    <button on:click={() => handleSelectionClick('block')} class="flex items-center space-x-[18px] text-xl uppercase">
+    <button in:fly={{ x: -10, duration: 250 }} on:click={() => handleSelectionClick('block')} class="flex items-center space-x-[18px] text-xl uppercase">
       <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'block' ? 'bg-base-content' : ''}"></span>
       <BlockIcon />
       {#if copyMap[persona].selections.block.description}
@@ -153,7 +154,7 @@
       {/if}
     </button>
 
-    <button on:click={() => handleSelectionClick('paper')} class="flex items-center space-x-[18px] text-xl uppercase">
+    <button in:fly={{ x: -10, delay: 20, duration: 250 }} on:click={() => handleSelectionClick('paper')} class="flex items-center space-x-[18px] text-xl uppercase">
       <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'paper' ? 'bg-base-content' : ''}"></span>
       <PaperIcon />
       {#if copyMap[persona].selections.paper.description}
@@ -166,7 +167,7 @@
       {/if}
     </button>
 
-    <button on:click={() => handleSelectionClick('scissors')} class="flex items-center space-x-[18px] text-xl uppercase">
+    <button in:fly={{ x: -10, delay: 40, duration: 250 }} on:click={() => handleSelectionClick('scissors')} class="flex items-center space-x-[18px] text-xl uppercase">
       <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'scissors' ? 'bg-base-content' : ''}"></span>
       <ScissorsIcon />
       {#if copyMap[persona].selections.scissors.description}
