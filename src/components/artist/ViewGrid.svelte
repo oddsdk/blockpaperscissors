@@ -27,6 +27,6 @@
 
 <div class="text-sm text-center mb-5">
   <p class="font-bold mb-2"><Countdown /> until the <span class="inline-block w-[18px] h-[18px] translate-y-1 bg-base-content"></span> pixel is updated</p>
-  <p>{$contractStore.uniqueVoters} artist{$contractStore.uniqueVoters > 1 ? 's' : ''}</p>
+  <p>{$contractStore?.previousWinner?.votesByPersona?.artist?.total} artist{$contractStore?.previousWinner?.votesByPersona?.artist?.total !== 1 ? 's' : ''}</p>
 </div>
 

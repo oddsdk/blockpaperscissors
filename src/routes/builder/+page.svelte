@@ -24,7 +24,7 @@
     <Divider />
     <div class="flex items-center justify-between text-xs">
       <p class="uppercase font-bold">Current Move</p>
-      <p>{$contractStore.uniqueVoters} builders</p>
+      <p>{$contractStore?.previousWinner?.votesByPersona?.builder?.total} builder{$contractStore?.previousWinner?.votesByPersona?.builder?.total !== 1 ? 's' : ''}</p>
     </div>
   </div>
 

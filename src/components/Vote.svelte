@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { dev } from '$app/environment'
   import { goto } from '$app/navigation'
   import { ethers } from 'ethers'
   import { fly } from 'svelte/transition'
@@ -122,20 +123,26 @@
 			})
 
       // Poll for the tx receipt
-      console.log(`Fetching txn receipt....`)
+      if (dev) {
+        console.log(`Fetching txn receipt....`)
+      }
       let receipt = null
       while (receipt === null) {
         try {
           receipt = await $contractStore.provider.getTransactionReceipt(txHash as string)
 
           if (receipt === null) {
-            console.log(`Checking for tx receipt...`)
+            if (dev) {
+              console.log('Checking for tx receipt...')
+            }
             continue
           }
 
-          console.log('Receipt fetched:', receipt)
+          if (dev) {
+            console.log('Receipt fetched:', receipt)
+          }
         } catch (e) {
-          console.log(`Receipt error:`, e)
+          console.error(e)
           break
         }
       }

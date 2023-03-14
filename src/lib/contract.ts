@@ -6,10 +6,26 @@ import { contractStore, networkStore } from '$src/stores'
 
 export type Contract = {
   bps: ContractType
-  previousWinner: BlockResult
+  previousWinner: PreviousWinner
   provider: Provider
   results: BlockResult[]
   uniqueVoters: number
+}
+
+type PersonaResults = {
+  [key: string]: {
+    block: string
+    majorityChoice: string
+    paper: string
+    percentageForMajority: number
+    percentageForWinner: number
+    scissors: string
+    total: number
+  }
+}
+
+type PreviousWinner = BlockResult & {
+  votesByPersona: PersonaResults
 }
 
 type Voter = {
@@ -30,14 +46,7 @@ export type BlockResult = {
   scissors: Vote
 }
 
-// export const CONTRACT_ADDRESS = '0x8B798DeEb9Fd3d9730AC39d6D01203E6aB8bC61e'
 export const CONTRACT_ADDRESS = '0x6fc2677244c191d32d5b5cb73298edfe54265633'
-
-export const VOTES_KEY_MAP = {
-  0: 'block',
-  1: 'paper',
-  2: 'scissors'
-}
 
 export const COLOR_MAP = {
   block: {
@@ -67,6 +76,14 @@ export const WINNING_MOVES_MAP = {
   paper: 'scissors',
   scissors: 'block',
 }
+
+export const VOTES_KEY_MAP = {
+  0: 'block',
+  1: 'paper',
+  2: 'scissors'
+}
+
+const VOTE_OPTIONS = ['block', 'paper', 'scissors']
 
 /**
  * Attach the BPS contract instance to the contractStore
@@ -176,11 +193,72 @@ export const tallyVoters = (results: BlockResult[]): number => {
 }
 
 /**
+ * Tracking persona stats for the previousWinner
+ *
+ * @param persona
+ * @returns
+ */
+const sortVotesByPersona = (persona: string, previousWinner) => {
+  const votesForOptions: { block: number; paper: number; scissors: number } =
+    VOTE_OPTIONS.reduce(
+      (acc, val) => ({
+        ...acc,
+        [val]: previousWinner[val]?.voters?.filter(
+          voter => voter?.persona === persona
+        ).length
+      }),
+      { block: 0, paper: 0, scissors: 0 }
+    )
+  const total =
+    votesForOptions.block + votesForOptions.paper + votesForOptions.scissors
+  const highestVote = Math.max(
+    votesForOptions.block,
+    votesForOptions.paper,
+    votesForOptions.scissors
+  )
+  const majorityChoice = Object.keys(votesForOptions).find(
+    key => votesForOptions[key] === highestVote
+  )
+
+  // 0/0 returns NaN, so we'll just set it to 0 if that's the case
+  const percentageForWinner =
+    votesForOptions[previousWinner?.result] === 0
+      ? 0
+      : (votesForOptions[previousWinner?.result] / total) * 100
+  const percentageForMajority =
+    votesForOptions[majorityChoice] === 0
+      ? 0
+      : (votesForOptions[majorityChoice] / total) * 100
+
+  return {
+    ...votesForOptions,
+    total,
+    percentageForWinner,
+    percentageForMajority,
+    majorityChoice
+  }
+}
+
+
+/**
  * Find the last winner(non-draw and non-stalemate)
  *
  * @param results
  */
-const getPreviousWinner = (results) => results.find(result => result.result !== 'draw' && result.result !== 'stalemate')
+const getPreviousWinner = (results): PreviousWinner => {
+  const previousWinner = results.find(
+    result => result.result !== 'draw' && result.result !== 'stalemate'
+  )
+
+  return {
+    ...previousWinner,
+    votesByPersona: {
+      artist: sortVotesByPersona('artist', previousWinner),
+      builder: sortVotesByPersona('builder', previousWinner),
+      speculator: sortVotesByPersona('speculator', previousWinner)
+    }
+  }
+}
 
 /**
  * Fetch the game state and update the contractStore
@@ -206,3 +284,4 @@ export const fetchGameState = async () => {
     console.error(error)
   }
 }
+
