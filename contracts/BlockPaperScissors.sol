@@ -25,6 +25,7 @@ contract BlockPaperScissors {
 
   struct VotesWithResultsInBlock {
     string result;
+    uint256 blockHeight;
     Votes blockVotes;
     Votes paperVotes;
     Votes scissorsVotes;
@@ -52,65 +53,62 @@ contract BlockPaperScissors {
   function castVote(
     string calldata choice,
     string calldata persona,
-    uint256 block_number
-  ) public {
+    uint256 blockHeight
+  ) public payable {
     if (latestBlock != block.number) {
       latestBlock = block.number;
     }
 
     require(validChoice(choice));
     require(validPersona(persona));
-    require(validVoter(choice, block_number));
+    require(validVoter(choice, blockHeight));
 
-    votesPerBlock[block_number][choice].votes += 1;
-    votesPerBlock[block_number][choice].voters.push(Vote(persona, msg.sender));
+    votesPerBlock[blockHeight][choice].votes += 1;
+    votesPerBlock[blockHeight][choice].voters.push(Vote(persona, msg.sender));
   }
 
   // Return the total votes a choice has received so far
   function totalVotesForChoice(
     string calldata choice,
-    uint256 block_number
-  ) public view returns (Votes memory) {
+    uint256 blockHeight
+  ) external view returns (Votes memory) {
     require(validChoice(choice));
 
-    return votesPerBlock[block_number][choice];
+    return votesPerBlock[blockHeight][choice];
   }
 
   // Return the total votes a choice has received so far
   function totalVotesForBlock(
-    uint256 block_number
+    uint256 blockHeight
   ) public view returns (VotesInBlock memory) {
     VotesInBlock memory votes;
 
-    votes.blockVotes = votesPerBlock[block_number][choiceList[0]];
-    votes.paperVotes = votesPerBlock[block_number][choiceList[1]];
-    votes.scissorsVotes = votesPerBlock[block_number][choiceList[2]];
+    votes.blockVotes = votesPerBlock[blockHeight][choiceList[0]];
+    votes.paperVotes = votesPerBlock[blockHeight][choiceList[1]];
+    votes.scissorsVotes = votesPerBlock[blockHeight][choiceList[2]];
 
     return votes;
   }
 
   // Return all the voting data and results for the last 256 blocks
-  function historyForLast256Blocks()
-    public
-    view
-    returns (VotesWithResultsInBlock[] memory)
-  {
+  function historyForRange(
+    uint256 range,
+    uint256 blockHeight
+  ) external view returns (VotesWithResultsInBlock[] memory) {
     VotesWithResultsInBlock[] memory allVotes = new VotesWithResultsInBlock[](
-      256
+      range + 1
     );
 
-    for (uint256 i = 0; i <= 256; i++) {
-      VotesInBlock memory votesForBlock = totalVotesForBlock(block.number - i);
+    for (uint256 i = 0; i <= range; i++) {
+      VotesInBlock memory votesForBlock = totalVotesForBlock(blockHeight - i);
       VotesWithResultsInBlock memory votesForBlockWithResults;
 
       votesForBlockWithResults.blockVotes = votesForBlock.blockVotes;
       votesForBlockWithResults.paperVotes = votesForBlock.paperVotes;
       votesForBlockWithResults.scissorsVotes = votesForBlock.scissorsVotes;
 
-      string memory result = calculateBlockResults(block.number - i);
-      string memory previousResult = calculateBlockResults(
-        block.number - i - 1
-      );
+      string memory result = calculateBlockResults(blockHeight - i);
+      string memory previousResult = calculateBlockResults(blockHeight - i - 1);
 
       // Check for a draw(same result as previousResult)
       if (compareStringsbyBytes(result, previousResult)) {
@@ -118,6 +116,8 @@ contract BlockPaperScissors {
       } else {
         votesForBlockWithResults.result = result;
       }
+
+      votesForBlockWithResults.blockHeight = blockHeight - i;
 
       allVotes[i] = votesForBlockWithResults;
     }
@@ -127,19 +127,21 @@ contract BlockPaperScissors {
 
   // Calculate the result for given block. Results are block, paper, scissors, draw, stalemate
   function calculateBlockResults(
-    uint256 block_number
-  ) internal view returns (string memory) {
+    uint256 blockHeight
+  ) public view returns (string memory) {
     string memory result;
-    // string memory previousResult = calculateBlockResults(block_number - 1);
-    uint256 blockVotes = votesPerBlock[block_number][choiceList[0]].votes;
-    uint256 paperVotes = votesPerBlock[block_number][choiceList[1]].votes;
-    uint256 scissorsVotes = votesPerBlock[block_number][choiceList[2]].votes;
+    // string memory previousResult = calculateBlockResults(blockHeight - 1);
+    uint256 blockVotes = votesPerBlock[blockHeight][choiceList[0]].votes;
+    uint256 paperVotes = votesPerBlock[blockHeight][choiceList[1]].votes;
+    uint256 scissorsVotes = votesPerBlock[blockHeight][choiceList[2]].votes;
 
     // Check for a winner or a stalemate(no clear majority)
     if (blockVotes > paperVotes && blockVotes > scissorsVotes) {
       result = choiceList[0]; // block
     } else if (paperVotes > blockVotes && paperVotes > scissorsVotes) {
       result = choiceList[1]; // paper
+    } else if (scissorsVotes > blockVotes && scissorsVotes > paperVotes) {
+      result = choiceList[2]; // scissors
     } else if (
       blockVotes == paperVotes ||
       blockVotes == scissorsVotes ||
@@ -147,12 +149,12 @@ contract BlockPaperScissors {
     ) {
       result = 'stalemate';
     } else {
-      result = choiceList[2]; // scissors
+      result = '';
     }
 
     // Check for a draw(same result as previousResult)
     // if (compareStringsbyBytes(result, previousResult)) {
-    //   result = 'draw';
+    //   result = "draw";
     // }
 
     return result;
@@ -161,14 +163,14 @@ contract BlockPaperScissors {
   // Ensure voter has not already voted for this block
   function validVoter(
     string calldata choice,
-    uint256 block_number
+    uint256 blockHeight
   ) public view returns (bool) {
     for (
       uint256 i = 0;
-      i < votesPerBlock[block_number][choice].voters.length;
+      i < votesPerBlock[blockHeight][choice].voters.length;
       i++
     ) {
-      if (votesPerBlock[block_number][choice].voters[i].sender == msg.sender) {
+      if (votesPerBlock[blockHeight][choice].voters[i].sender == msg.sender) {
         return false;
       }
     }

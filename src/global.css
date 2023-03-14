@@ -58,7 +58,11 @@ body, input {
 }
 
 .btn-primary:disabled {
-  @apply opacity-50;
+  @apply opacity-50 !text-base-100;
+}
+
+.btn[disabled] {
+  @apply text-base-100;
 }
 
 .btn-primary:hover {

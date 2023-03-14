@@ -2,6 +2,8 @@
   import { goto } from '$app/navigation'
   import { fly } from 'svelte/transition'
 
+  import { fetchGameState } from '$lib/contract'
+  import { contractStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
 
   let personaSelected = false
@@ -20,6 +22,10 @@
 
   const handleButtonClick = (): void => {
     goto(`/${persona}`)
+  }
+
+  if (!$contractStore?.results?.length) {
+    fetchGameState()
   }
 </script>
 

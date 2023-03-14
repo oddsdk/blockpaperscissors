@@ -4,6 +4,7 @@ import type * as wn from 'webnative'
 import * as walletauth from 'webnative-walletauth'
 
 import { filesystemStore, sessionStore } from '../stores'
+import { attachContractToStore } from '$lib/contract'
 import { addNotification } from '$lib/notifications'
 import { ACCOUNT_SETTINGS_DIR } from '$lib/account-settings'
 
@@ -32,6 +33,9 @@ export const initialise: () => Promise<void> = async () => {
 
     // Populate session and filesystem stores
     handleProgram(program)
+
+    // Attach BPS contract to networkStore
+    await attachContractToStore()
   } catch (error) {
     console.error(error)
     sessionStore.update(state => ({ ...state, error: true, loading: false }))

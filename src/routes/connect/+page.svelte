@@ -4,6 +4,7 @@
   import { initialise } from '$lib/session'
   import Divider from '$components/common/Divider.svelte'
 
+  // Connect to WalletAuth then redirect to the intro page
   const init = async () => {
     try {
       await initialise()

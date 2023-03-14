@@ -44,6 +44,6 @@
 <a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href={$sessionStore.address ? '/intro' : '/connect'}>
   Yes! Let's play
 </a>
-<a class="btn btn-outline btn-lg w-full border-[6px] text-lg uppercase rounded-none" href="/watch">
+<!-- <a class="btn btn-outline btn-lg w-full border-[6px] text-lg uppercase rounded-none" href="/watch">
   Let me watch first
-</a>
+</a> -->

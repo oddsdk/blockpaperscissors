@@ -4,6 +4,7 @@ import type FileSystem from 'webnative/fs/index'
 
 import { loadTheme } from '$lib/theme'
 import type { AccountSettings } from '$lib/account-settings'
+import type { Contract } from '$lib/contract'
 import type { Device } from '$lib/device'
 import type { Network } from '$lib/network'
 import type { Notification } from '$lib/notifications'
@@ -16,8 +17,16 @@ export const filesystemStore: Writable<FileSystem | null> = writable(null)
 
 export const deviceStore: Writable<Device> = writable({ isMobile: true })
 
+export const contractStore: Writable<Contract> = writable({
+  bps: null,
+  previousWinner: null,
+  provider: null,
+  results: null,
+  uniqueVoters: null,
+})
+
 export const networkStore: Writable<Network> = writable({
-  blockNumber: null,
+  blockHeight: null,
 })
 
 export const notificationStore: Writable<Notification[]> = writable([])

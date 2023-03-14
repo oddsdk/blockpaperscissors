@@ -1,8 +1,31 @@
+const plugin = require('tailwindcss/plugin')
+
 module.exports = {
   mode: 'jit',
   content: ['./src/**/*.{html,js,svelte,ts}'],
-  safelist: ['alert-success', 'alert-error', 'alert-info', 'alert-warning'],
-  plugins: [require('daisyui')],
+  safelist: [
+    'alert-success', 'alert-error', 'alert-info', 'alert-warning',
+    ...Array.from({ length: 100. }).fill('').map((_, i) => `w-[${i + 1}%]`),
+    ...Array.from({ length: 100. }).fill('').map((_, i) => `left-[${i + 1}%]`),
+    ...Array.from({ length: 100. }).fill('').map((_, i) => `right-[${i + 1}%]`),
+  ],
+  plugins: [
+    require('daisyui'),
+    plugin(({ matchUtilities, theme }) => {
+      matchUtilities(
+        {
+          'animation-delay': value => {
+            return {
+              'animation-delay': value
+            }
+          }
+        },
+        {
+          values: theme('transitionDelay')
+        }
+      )
+    })
+  ],
   darkMode: ['class', '[data-theme="dark"]'],
   daisyui: {
     styled: true,
@@ -55,6 +78,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
+        fadeinout: 'fadeinout 390ms ease-in-out infinite',
         marquee: 'marquee 20s linear infinite'
       },
       aspectRatio: {
@@ -62,20 +86,20 @@ module.exports = {
       },
       colors: {
         blue: {
-          500: '#6767F4',
+          500: '#6767F4'
         },
         green: {
-          500: '#24A854',
+          500: '#24A854'
         },
         red: {
-          500: '#DF3064',
+          500: '#DF3064'
         },
         black: {
-          500: '#252621',
+          500: '#252621'
         },
         white: {
-          500: '#F5F8E6',
-        },
+          500: '#F5F8E6'
+        }
       },
       fontFamily: {
         sans: ['ApfelGrotezk']
@@ -90,7 +114,17 @@ module.exports = {
         '2xl': ['47px', { lineHeight: '50.76px' }],
         '3xl': ['64px', { lineHeight: '48px' }]
       },
+      gridTemplateColumns: {
+        16: 'repeat(16, minmax(0, 1fr))'
+      },
       keyframes: {
+        fadeinout: {
+          '0%': { opacity: '1' },
+          '17%': { opacity: '1' },
+          '33%': { opacity: '0' },
+          '82%': { opacity: '0' },
+          '100%': { opacity: '1' }
+        },
         marquee: {
           '0%': { transform: 'translateX(102%)' },
           '100%': { transform: 'translateX(-100vw)' }

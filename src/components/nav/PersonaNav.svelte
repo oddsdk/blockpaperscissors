@@ -7,7 +7,7 @@
   ]
 </script>
 
-<div class="flex items-center justify-between">
+<div class="flex items-center justify-between mt-10">
   {#each links as link, i}
   <!-- in:fly={{ y: 20, delay: 0+(i*20), duration: 300 }} -->
     <a href={`/${link}`} class="flex items-center justify-center w-[68px] h-16 bg-base-content transition-colors ease-in-out hover:bg-blue-500 {$page.route.id === `/${link}` ? 'bg-blue-500' : ''}">

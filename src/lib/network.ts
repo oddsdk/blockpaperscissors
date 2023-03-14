@@ -1,16 +1,18 @@
 import { ethers } from 'ethers'
 import { get as getStore } from 'svelte/store'
 
+// import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { networkStore } from '$src/stores'
 
 export type Network = {
-  blockNumber: number
+  blockHeight: number
 }
 
-export const CONTRACT_ADDRESS = '0xd9145CCE52D386f254917e481eB44e9943F39138'
 // const RPC_URL = 'https://api.hyperspace.node.glif.io/rpc/v1'
-const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v0'
-const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER)
+const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
+// const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v0'
+// const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/'
+export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER)
 // const providerRPC = {
 //   // TODO: uncomment this once we have a mainnet RPC URL
 //   // mainnet: {
@@ -30,24 +32,26 @@ const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER)
 // })
 
 /**
- * Initialise the networkStore and have it listen for blockNumber change
+ * Initialise the networkStore and have it listen for blockHeight change
  */
 export const initialise = async (): Promise<void> => {
   const network = getStore(networkStore)
 
-  if (!network.blockNumber) {
+  if (!network.blockHeight) {
     // `block` events take a little while to start coming through, so we'll fetch the startingBlock first
     const startingBlock = await wsProvider.getBlockNumber()
     networkStore.update(state => ({
       ...state,
-      blockNumber: startingBlock,
+      blockHeight: startingBlock,
     }))
 
-    wsProvider.on('block', blockNumber => {
-      networkStore.update(state => ({
-        ...state,
-        ...(state?.blockNumber !== blockNumber ? { blockNumber } : {}),
-      }))
+    wsProvider.on('block', blockHeight => {
+      networkStore.update(state => {
+        return {
+          ...state,
+          ...(state?.blockHeight !== blockHeight ? { blockHeight } : {}),
+        }
+      })
     })
   }
 }
