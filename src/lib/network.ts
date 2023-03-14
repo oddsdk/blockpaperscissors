@@ -62,6 +62,6 @@ export const initialise = async (): Promise<void> => {
  * @returns boolean
  */
 export const isConnected = async (): Promise<boolean> => {
-  const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+  const accounts = await window?.ethereum?.request({ method: 'eth_accounts' })
   return !!(accounts as string[])?.length
 }
