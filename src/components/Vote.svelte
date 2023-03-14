@@ -109,7 +109,6 @@
       // const { height: blockHeight } = await res.json()
 
 			const paramInterface = new ethers.Interface(abi)
-      console.log('$networkStore.blockHeight', $networkStore.blockHeight)
 
 			const txHash = await window.ethereum.request({
 				method: 'eth_sendTransaction',

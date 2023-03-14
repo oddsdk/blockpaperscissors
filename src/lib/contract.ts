@@ -202,8 +202,6 @@ export const fetchGameState = async () => {
       results: results as BlockResult[],
       uniqueVoters,
     }))
-
-    console.log('results', results)
   } catch (error) {
     console.error(error)
   }
