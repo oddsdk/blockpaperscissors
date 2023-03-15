@@ -98,6 +98,12 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
  */
 export const attachContractToStore = async () => {
   const provider = new ethers.BrowserProvider(window.ethereum)
+
+  await window.ethereum.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: '0xc45' }] // chainId must be in hexadecimal numbers
+  })
+
   const signer = await provider.getSigner()
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
