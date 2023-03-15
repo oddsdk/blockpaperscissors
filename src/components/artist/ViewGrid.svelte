@@ -18,7 +18,11 @@
       blockHeightToTrack = state.results[0]?.blockHeight
       blocksToUpdate = [state.results[0]]
     } else if (state.results) {
-      const indexOfInitialBlock = state.results.findIndex((result) => result.blockHeight === blockHeightToTrack)
+      let indexOfInitialBlock = state.results.findIndex((result) => result.blockHeight === blockHeightToTrack)
+      if (indexOfInitialBlock >= 255) {
+        blockHeightToTrack = state.results[0].blockHeight
+        indexOfInitialBlock = state.results.findIndex((result) => result.blockHeight === blockHeightToTrack)
+      }
       for (let i = 0; i < indexOfInitialBlock; i++) {
         if (!blocksToUpdate.find((result) => result.blockHeight === state.results[i].blockHeight)) {
           blocksToUpdate = [
