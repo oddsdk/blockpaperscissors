@@ -12,12 +12,20 @@
 
   const unsubscribe = contractStore.subscribe((state) => {
     if (state.results && !results) {
-      results = state.results
+      results = [
+        ...state.results
+      ]
       blockHeightToTrack = state.results[0]?.blockHeight
+      blocksToUpdate = [state.results[0]]
     } else if (state.results) {
-      const indexOfInitialBlock = results.findIndex((result) => result.blockHeight === blockHeightToTrack)
+      const indexOfInitialBlock = state.results.findIndex((result) => result.blockHeight === blockHeightToTrack)
       for (let i = 0; i < indexOfInitialBlock; i++) {
-        blocksToUpdate.push(state.results[i])
+        if (!blocksToUpdate.find((result) => result.blockHeight === state.results[i].blockHeight)) {
+          blocksToUpdate = [
+            state.results[i],
+            ...blocksToUpdate,
+          ]
+        }
       }
     }
   })
