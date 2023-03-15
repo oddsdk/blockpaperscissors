@@ -76,7 +76,7 @@ export const COLOR_MAP = {
 const LOSING_MOVES_MAP = {
   block: 'scissors',
   paper: 'block',
-  scissors: 'block',
+  scissors: 'paper',
 }
 
 export const WINNING_MOVES_MAP = {
@@ -283,14 +283,14 @@ export const getNetworkStreak = (previousWinner, results): string => {
     ({ blockHeight }) => blockHeight === previousWinner.blockHeight
   )
   let streak = 1
+  let updatedPreviousMove = previousWinner
 
   // We know the previous winner's index, so we can count back from there
   for (let i = previousWinnerIndex + 1; i < results.length; i++) {
-    if (WINNING_MOVES_MAP[previousWinner.result] === results[i].result) {
+    if (LOSING_MOVES_MAP[updatedPreviousMove.result] === results[i].result) {
       streak += 1
-    } else if (
-      LOSING_MOVES_MAP[previousWinner.result] === results[i].result
-    ) {
+      updatedPreviousMove = results[i]
+    } else if (WINNING_MOVES_MAP[previousWinner.result] === results[i].result) {
       break
     }
   }
