@@ -56,8 +56,8 @@ export const COLOR_MAP = {
     text: 'text-red-500',
   },
   draw: {
-    bg: 'bg-transparent',
-    text: 'text-transparent',
+    bg: 'bg-base-100',
+    text: 'text-base-100',
   },
   paper: {
     bg: 'bg-green-500',
@@ -68,8 +68,8 @@ export const COLOR_MAP = {
     text: 'text-blue-500',
   },
   stalemate: {
-    bg: 'bg-transparent',
-    text: 'text-transparent',
+    bg: 'bg-base-100',
+    text: 'text-base-100',
   },
 }
 
