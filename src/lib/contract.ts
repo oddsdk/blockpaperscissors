@@ -225,11 +225,11 @@ const sortVotesByPersona = (persona: string, previousWinner) => {
       { block: 0, paper: 0, scissors: 0 }
     )
   const total =
-    votesForOptions.block + votesForOptions.paper + votesForOptions.scissors
+    votesForOptions?.block + votesForOptions?.paper + votesForOptions?.scissors
   const highestVote = Math.max(
-    votesForOptions.block,
-    votesForOptions.paper,
-    votesForOptions.scissors
+    votesForOptions?.block,
+    votesForOptions?.paper,
+    votesForOptions?.scissors
   )
   const majorityChoice = Object.keys(votesForOptions).find(
     key => votesForOptions[key] === highestVote
