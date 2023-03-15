@@ -19,13 +19,16 @@ export const deviceStore: Writable<Device> = writable({ isMobile: true })
 
 export const contractStore: Writable<Contract> = writable({
   bps: null,
+  networkStreak: null,
   previousWinner: null,
   provider: null,
   results: null,
   uniqueVoters: null,
+  userCombo: null,
 })
 
 export const networkStore: Writable<Network> = writable({
+  activeChainId: '0xc45',
   blockHeight: null,
 })
 

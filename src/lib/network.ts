@@ -6,6 +6,7 @@ import { networkStore } from '$src/stores'
 
 export type Network = {
   blockHeight: number
+  activeChainId: string
 }
 
 const APPROVED_NETWORKS = [

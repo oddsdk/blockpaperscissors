@@ -97,11 +97,12 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
  * Attach the BPS contract instance to the contractStore
  */
 export const attachContractToStore = async () => {
+  const network = getStore(networkStore)
   const provider = new ethers.BrowserProvider(window.ethereum)
 
   await window.ethereum.request({
     method: 'wallet_switchEthereumChain',
-    params: [{ chainId: '0xc45' }] // chainId must be in hexadecimal numbers
+    params: [{ chainId: network.activeChainId }],
   })
 
   const signer = await provider.getSigner()

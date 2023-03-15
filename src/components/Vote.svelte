@@ -108,6 +108,10 @@
       //   },
       // })
       // const { height: blockHeight } = await res.json()
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: $networkStore.activeChainId }],
+      })
 
 			const paramInterface = new ethers.Interface(abi)
 
