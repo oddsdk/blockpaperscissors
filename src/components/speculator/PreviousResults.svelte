@@ -24,7 +24,6 @@
     blockPercentage = (blockVotes/totalVotes)*100
     paperPercentage = (paperVotes/totalVotes)*100
     scissorsPercentage = (scissorsVotes/totalVotes)*100
-
     votesByPersona = $contractStore?.previousWinner?.votesByPersona
   }
 </script>

@@ -8,6 +8,11 @@ export type Network = {
   blockHeight: number
 }
 
+const APPROVED_NETWORKS = [
+  '314',  // FIL mainnet
+  '3141', // Hyperspace testnet
+]
+
 // const RPC_URL = 'https://api.hyperspace.node.glif.io/rpc/v1'
 const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
 // const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v0'

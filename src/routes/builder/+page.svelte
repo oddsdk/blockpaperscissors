@@ -43,14 +43,14 @@
   <div class="flex flex-col gap-2 mb-10">
     <Divider />
     <div class="flex items-center justify-between text-xs">
-      <p class="uppercase font-bold">Current Streak</p>
-      <p class="flex gap-2 items-center font-bold"><img class="w-[13px] h-auto" src={`${window.location.origin}/history.png`} alt="trophy" /> 23</p>
+      <p class="uppercase font-bold">Network Streak</p>
+      <!-- <p class="flex gap-2 items-center font-bold"><img class="w-[13px] h-auto" src={`${window.location.origin}/history.png`} alt="trophy" /> 23</p> -->
     </div>
   </div>
 
   <div class="flex flex-col items-center justify-center gap-2 text-center">
-    <p class="font-bold text-2xl">13 Wins</p>
-    <p>Everybody’s 10 wins away from a high score!</p>
+    <p class="font-bold text-2xl">{$contractStore?.networkStreak} Win{$contractStore?.networkStreak !== '1' ? 's' : ''}</p>
+    <!-- <p>Everybody’s 10 wins away from a high score!</p> -->
   </div>
 {/if}
 

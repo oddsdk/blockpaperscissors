@@ -2,14 +2,16 @@ import { Contract as ContractType, ethers, type Provider } from 'ethers'
 import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
-import { contractStore, networkStore } from '$src/stores'
+import { contractStore, networkStore, sessionStore } from '$src/stores'
 
 export type Contract = {
   bps: ContractType
+  networkStreak: string
   previousWinner: PreviousWinner
   provider: Provider
   results: BlockResult[]
   uniqueVoters: number
+  userCombo: string
 }
 
 type PersonaResults = {
@@ -69,6 +71,12 @@ export const COLOR_MAP = {
     bg: 'bg-transparent',
     text: 'text-transparent',
   },
+}
+
+const STREAK_BREAKERS = {
+  block: ['paper', 'scissors'],
+  paper: ['block', 'scissors'],
+  scissors: ['paper', 'block']
 }
 
 export const WINNING_MOVES_MAP = {
@@ -261,6 +269,95 @@ const getPreviousWinner = (results): PreviousWinner => {
 }
 
 /**
+ * Determine the networks's streak based on the last 256 plays given these parameters:
+ * - If the previous winning move wins: increment the streak.
+ * - If draw or stalemate: hold the streak
+ * - If the previous winning move loses: streak resets to 0.
+ */
+export const getNetworkStreak = (previousWinner, results): string => {
+  if (!previousWinner) {
+    return String(0)
+  }
+
+  const previousWinnerIndex = results.findIndex(
+    ({ blockHeight }) => blockHeight === previousWinner.blockHeight
+  )
+  let streak = 1
+
+  // We know the previous winner's index, so we can count back from there
+  for (let i = previousWinnerIndex + 1; i < results.length; i++) {
+    if (previousWinner.result === results[i].result) {
+      streak += 1
+    } else if (STREAK_BREAKERS[previousWinner.result].includes(results[i].result)) {
+      break
+    }
+  }
+
+  return streak >= 256 ? '256+' : String(streak)
+}
+
+/**
+ * Determine the user's combo based on the last 256 plays given these parameters:
+ * - If you voted with the clear majority, your combo is incremented.
+ * - If your vote participated in a draw or stalemate: your combo is held.
+ * - If you voted with the clear minority: your combo resets to zero. (Note: this will
+ *   also be the case if there was a draw, but you voted for the 3rd option that didn't
+ *   participate in the draw eg. Block & Paper drew, but you voted for Scissors).
+ */
+export const getUserCombo = (results): string => {
+  const session = getStore(sessionStore)
+  const userAddress = session?.address?.toLowerCase()
+  let combo = 0
+
+  outerloop:
+  for (let i = 0; i < results.length; i++) {
+    const votes = {
+      block: results[i].block.voters,
+      paper: results[i].paper.voters,
+      scissors: results[i].scissors.voters,
+    }
+    const userChoices = {
+      block: votes.block.find(voter => voter?.address?.toLowerCase() === userAddress),
+      paper: votes.paper.find(voter => voter?.address?.toLowerCase() === userAddress),
+      scissors: votes.scissors.find(voter => voter?.address?.toLowerCase() === userAddress),
+    }
+    // Only votes the user participated in will affect their combo
+    if (
+      userChoices.block ||
+      userChoices.paper ||
+      userChoices.scissors
+    ) {
+      if (results[i].result === 'draw') {
+        // If the user was in the minorty of a draw, it breaks the combo
+        if (
+          (votes.block === votes.paper && userChoices.scissors) ||
+          (votes.block === votes.scissors && userChoices.paper) ||
+          (votes.scissors === votes.paper && userChoices.scissors)
+        ) {
+          break
+        }
+
+        // If the user wasn't in the minority, continue
+        continue
+      } else if (VOTE_OPTIONS.includes(results[i].result)) {
+        for (let j = 0; j < VOTE_OPTIONS.length; j++) {
+          if (results[i].result === VOTE_OPTIONS[j] && userChoices[VOTE_OPTIONS[j]]) {
+            combo += 1
+          } else if (results[i].result === VOTE_OPTIONS[j] && !userChoices[VOTE_OPTIONS[j]]) {
+            break outerloop
+          }
+        }
+      }
+    } else {
+      // console.log('didnt vote')
+    }
+  }
+
+  return combo >= 256 ? '256+' : String(combo)
+}
+
+
+/**
  * Fetch the game state and update the contractStore
  */
 export const fetchGameState = async () => {
@@ -274,14 +371,20 @@ export const fetchGameState = async () => {
     const results = parsed.slice(0, -1)
     const uniqueVoters = tallyVoters(results as BlockResult[])
 
+    const previousWinner = getPreviousWinner(results)
+
+    const networkStreak = getNetworkStreak(previousWinner, results)
+    const userCombo = getUserCombo(results)
+
     contractStore.update(state => ({
       ...state,
-      previousWinner: getPreviousWinner(results),
+      networkStreak,
+      previousWinner,
       results: results as BlockResult[],
       uniqueVoters,
+      userCombo,
     }))
   } catch (error) {
     console.error(error)
   }
 }
-

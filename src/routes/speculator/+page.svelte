@@ -35,13 +35,13 @@
     <Divider />
     <div class="flex items-center justify-between text-xs uppercase font-bold">
       <p>Your combo</p>
-      <p>Personal Best: 23</p>
+      <!-- <p>Personal Best: 23</p> -->
     </div>
   </div>
 
   <div class="flex flex-col items-center justify-center gap-2 text-center">
-    <p class="font-bold text-2xl">13 Bets</p>
-    <p>Everybody’s 10 moves away from a personal best!</p>
+    <p class="font-bold text-2xl">{$contractStore?.userCombo} Bet{$contractStore?.userCombo !== '1' ? 's' : ''}</p>
+    <!-- <p>Everybody’s 10 moves away from a personal best!</p> -->
   </div>
 {/if}
 
