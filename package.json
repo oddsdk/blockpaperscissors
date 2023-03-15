@@ -32,9 +32,6 @@
   },
   "dependencies": {
     "@ensdomains/ensjs": "^3.0.0-alpha.50",
-    "ethers": "^6.1.0",
-    "svelte-ethers-store": "^2.5.12",
-    "webnative": "^0.36.3",
-    "webnative-walletauth": "^0.2.2"
+    "ethers": "^6.1.0"
   }
 }

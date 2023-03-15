@@ -5,7 +5,7 @@
   import { fly } from 'svelte/transition'
 
 	import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
-  import { CONTRACT_ADDRESS } from '$lib/contract'
+  import { CONTRACT_ADDRESS, fetchGameState } from '$lib/contract'
   import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import BlockIcon from '$components/icons/Block.svelte'
@@ -150,6 +150,9 @@
           break
         }
       }
+
+      // Force a refetch of the game state
+      await fetchGameState()
 
       goto(`/${persona}`)
 			addNotification('Good luck!', 'success')
