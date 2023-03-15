@@ -12,10 +12,10 @@
     fetchGameState()
   }
 
-  const previousMove = $contractStore?.previousWinner?.result
+  $: previousMove = $contractStore?.previousWinner?.result
 </script>
 
-{#if $contractStore?.results?.length}
+{#if $contractStore?.results?.length && previousMove}
   <div class="mb-8">
     <ProfileInfo />
   </div>
