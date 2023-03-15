@@ -3,6 +3,7 @@ import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore, sessionStore } from '$src/stores'
+import { switchChain } from '$lib/network'
 
 export type Contract = {
   bps: ContractType
@@ -97,13 +98,9 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
  * Attach the BPS contract instance to the contractStore
  */
 export const attachContractToStore = async () => {
-  const network = getStore(networkStore)
   const provider = new ethers.BrowserProvider(window.ethereum)
 
-  await window.ethereum.request({
-    method: 'wallet_switchEthereumChain',
-    params: [{ chainId: network.activeChainId }],
-  })
+  await switchChain()
 
   const signer = await provider.getSigner()
   const contract = new ethers.Contract(
