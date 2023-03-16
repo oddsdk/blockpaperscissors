@@ -210,7 +210,7 @@ export const tallyVoters = (results: BlockResult[]): number => {
  * @param persona
  * @returns
  */
-const sortVotesByPersona = (persona: string, previousWinner) => {
+const sortVotesByPersona = (persona: string, previousWinner = { block: {}, paper: {}, scissors: {}}) => {
   const votesForOptions: { block: number; paper: number; scissors: number } =
     VOTE_OPTIONS.reduce(
       (acc, val) => ({
