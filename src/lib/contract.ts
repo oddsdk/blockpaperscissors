@@ -327,6 +327,7 @@ export const getUserCombo = (results): string => {
       paper: votes.paper.find(voter => voter?.address?.toLowerCase() === userAddress),
       scissors: votes.scissors.find(voter => voter?.address?.toLowerCase() === userAddress),
     }
+
     // Only votes the user participated in will affect their combo
     if (
       userChoices.block ||
@@ -354,8 +355,6 @@ export const getUserCombo = (results): string => {
           }
         }
       }
-    } else {
-      // console.log('didnt vote')
     }
   }
 
