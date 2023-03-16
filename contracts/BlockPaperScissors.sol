@@ -2,11 +2,6 @@
 pragma solidity ^0.8.13;
 
 contract BlockPaperScissors {
-  // struct User {
-  //   uint256 combo;
-  //   // uint256 points;
-  // }
-
   struct Vote {
     string persona;
     address sender;
@@ -31,20 +26,8 @@ contract BlockPaperScissors {
     Votes scissorsVotes;
   }
 
-  // network streak
-  // combo for this account
-  // draw me the picture from perspective of block x
-  // give me a snapshot of the last 256 moves
-  // breakdown of results by persona
-  // total number of active participants in that block
-  // change colour of currently selected grid block and stay highlighted as it moves (for bitmap image and animation)
-
   // variables
   uint256 latestBlock;
-  // uint256 public networkPoints;
-  // uint256 public networkStreak;
-  // mapping(uint256 => string) public votingResults;
-  // mapping(address => User) public users;
   mapping(uint256 => mapping(string => Votes)) public votesPerBlock;
   string[3] public choiceList = ['block', 'paper', 'scissors'];
   string[3] public personaList = ['builder', 'speculator', 'artist'];
@@ -151,11 +134,6 @@ contract BlockPaperScissors {
     } else {
       result = '';
     }
-
-    // Check for a draw(same result as previousResult)
-    // if (compareStringsbyBytes(result, previousResult)) {
-    //   result = "draw";
-    // }
 
     return result;
   }
