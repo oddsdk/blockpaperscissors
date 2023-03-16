@@ -2,7 +2,6 @@ import { ethers } from 'ethers'
 import { get as getStore } from 'svelte/store'
 import { goto } from '$app/navigation'
 
-// import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { networkStore } from '$src/stores'
 import { addNotification } from '$lib/notifications'
 
@@ -20,28 +19,23 @@ export const APPROVED_CHAIN_IDS = {
   hyperspace: '0xc45',
 }
 
-// const RPC_URL = 'https://api.hyperspace.node.glif.io/rpc/v1'
 const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
-// const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v0'
-// const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/'
 export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER)
-// const providerRPC = {
-//   // TODO: uncomment this once we have a mainnet RPC URL
-//   // mainnet: {
-//   //   name: 'mainnet',
-//   //   rpc: RPC_URL,
-//   //   chainId: 314
-//   // },
-//   hyperspace: {
-//     name: 'hyperspace',
-//     rpc: RPC_URL,
-//     chainId: 3141,
-//   }
-// }
-// const provider = new ethers.JsonRpcProvider(providerRPC.hyperspace.rpc, {
-//   chainId: providerRPC.hyperspace.chainId,
-//   name: providerRPC.hyperspace.name
-// })
+
+export const APPROVED_CHAINS = [
+  // {
+  //   id: 314,
+  //   token: 'FIL',
+  //   label: 'Filecoin Mainnet',
+  //   rpcUrl: 'https://api.node.glif.io/rpc/v1'
+  // },
+  {
+    id: 3141,
+    token: 'tFIL',
+    label: 'Filecoin Hyperspace Testnet',
+    rpcUrl: 'https://api.hyperspace.node.glif.io/rpc/v1'
+  }
+]
 
 /**
  * Initialise the networkStore and have it listen for blockHeight change

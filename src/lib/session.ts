@@ -1,9 +1,10 @@
 import { get as getStore } from 'svelte/store'
 import { goto } from '$app/navigation'
 
-import { filesystemStore, sessionStore } from '../stores'
+import { sessionStore } from '../stores'
 import { attachContractToStore } from '$lib/contract'
 import { addNotification } from '$lib/notifications'
+import wallet from '$lib/wallet'
 
 export type Session = {
   address: string
@@ -21,12 +22,13 @@ export const initialise: () => Promise<void> = async () => {
   try {
     sessionStore.update(state => ({ ...state, loading: true }))
 
-    const accounts = await window?.ethereum?.request({ method: 'eth_requestAccounts' })
+    // const accounts = await window?.ethereum?.request({ method: 'eth_requestAccounts' })
+    const res = await wallet.connectWallet()
 
     // ✅ Authenticated
     sessionStore.update(state => ({
       ...state,
-      address: accounts[0],
+      address: res[0]?.accounts[0]?.address,
       authed: true,
       loading: false
     }))

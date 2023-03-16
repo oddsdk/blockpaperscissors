@@ -9,12 +9,6 @@ import type { Notification } from '$lib/notifications'
 import type { Session } from '$lib/session'
 import type { Theme } from '$lib/theme'
 
-export const themeStore: Writable<Theme> = writable(loadTheme())
-
-export const filesystemStore: Writable<FileSystem | null> = writable(null)
-
-export const deviceStore: Writable<Device> = writable({ isMobile: true })
-
 export const contractStore: Writable<Contract> = writable({
   bps: null,
   networkStreak: null,
@@ -24,6 +18,8 @@ export const contractStore: Writable<Contract> = writable({
   uniqueVoters: null,
   userCombo: null,
 })
+
+export const deviceStore: Writable<Device> = writable({ isMobile: true })
 
 export const networkStore: Writable<Network> = writable({
   activeChainId: '0xc45',
@@ -38,3 +34,5 @@ export const sessionStore: Writable<Session> = writable({
   loading: false,
   error: false,
 })
+
+export const themeStore: Writable<Theme> = writable(loadTheme())

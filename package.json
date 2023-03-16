@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -32,6 +32,12 @@
   },
   "dependencies": {
     "@ensdomains/ensjs": "^3.0.0-alpha.50",
+    "@web3-onboard/coinbase": "^2.2.0",
+    "@web3-onboard/core": "^2.15.5",
+    "@web3-onboard/injected-wallets": "^2.8.2",
+    "@web3-onboard/ledger": "^2.4.2",
+    "@web3-onboard/trezor": "^2.3.3",
+    "@web3-onboard/walletconnect": "^2.3.2",
     "ethers": "^6.1.0"
   }
 }
