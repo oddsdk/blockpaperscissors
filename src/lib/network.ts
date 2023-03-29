@@ -1,9 +1,11 @@
+import { dev } from '$app/environment'
+import { goto } from '$app/navigation'
 import { ethers } from 'ethers'
 import { get as getStore } from 'svelte/store'
-import { goto } from '$app/navigation'
 
-// import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
-import { networkStore } from '$src/stores'
+import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
+import { contractStore, networkStore } from '$src/stores'
+import { CONTRACT_ADDRESS } from '$lib/contract'
 import { addNotification } from '$lib/notifications'
 
 export type Network = {
@@ -25,47 +27,67 @@ const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
 // const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v0'
 // const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/'
 export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER)
-// const providerRPC = {
-//   // TODO: uncomment this once we have a mainnet RPC URL
-//   // mainnet: {
-//   //   name: 'mainnet',
-//   //   rpc: RPC_URL,
-//   //   chainId: 314
-//   // },
-//   hyperspace: {
-//     name: 'hyperspace',
-//     rpc: RPC_URL,
-//     chainId: 3141,
-//   }
-// }
-// const provider = new ethers.JsonRpcProvider(providerRPC.hyperspace.rpc, {
-//   chainId: providerRPC.hyperspace.chainId,
-//   name: providerRPC.hyperspace.name
-// })
 
 /**
  * Initialise the networkStore and have it listen for blockHeight change
  */
 export const initialise = async (): Promise<void> => {
-  const network = getStore(networkStore)
+  const contract = getStore(contractStore)
+  // const network = getStore(networkStore)
+  const paramInterface = new ethers.Interface(abi)
 
-  if (!network.blockHeight) {
-    // `block` events take a little while to start coming through, so we'll fetch the startingBlock first
-    const startingBlock = await wsProvider.getBlockNumber()
-    networkStore.update(state => ({
+  // Attach the paramIntface to the contractStore if it doesn't exist yet
+  if (!contract.paramInterface) {
+    contractStore.update(state => ({
       ...state,
-      blockHeight: startingBlock,
+      paramInterface,
     }))
-
-    wsProvider.on('block', blockHeight => {
-      networkStore.update(state => {
-        return {
-          ...state,
-          ...(state?.blockHeight !== blockHeight ? { blockHeight } : {}),
-        }
-      })
-    })
   }
+
+  // `block` events take a little while to start coming through, so we'll fetch the startingBlock first
+  const startingBlock = await wsProvider.getBlockNumber()
+  networkStore.update(state => ({
+    ...state,
+    blockHeight: startingBlock,
+  }))
+
+  wsProvider.on('block', blockHeight => {
+    networkStore.update(state => {
+      return {
+        ...state,
+        ...(state?.blockHeight !== blockHeight ? { blockHeight } : {}),
+      }
+    })
+  })
+
+  wsProvider.on('pending', async (tx) => {
+    const transaction = await wsProvider.getTransaction(tx)
+
+    if (!!transaction?.to && transaction.to.toLowerCase() === CONTRACT_ADDRESS) {
+      if (dev) {
+        console.log('MATCH')
+        const decodedData = paramInterface.parseTransaction({
+          data: transaction.data,
+          value: transaction.value
+        })
+        const choice = decodedData.args[0]
+        // console.log('decodedData', decodedData.args[0])
+        console.log('choice', choice)
+      }
+    }
+  })
+
+  // wsProvider.on('error', async () => {
+  //   console.log(`Unable to connect to ${WS_PROVIDER} retrying in 3s...`)
+  //   setTimeout(initialise, 3000)
+  // })
+  // wsProvider.on('close', async code => {
+  //   console.log(
+  //     `Connection lost with code ${code}! Attempting reconnect in 3s...`
+  //   )
+  //   wsProvider.websocket.close()
+  //   setTimeout(initialise, 3000)
+  // })
 }
 
 /**

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import { goto } from '$app/navigation'
-  import { ethers } from 'ethers'
   import { fly } from 'svelte/transition'
 
 	import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
@@ -113,15 +112,13 @@
         params: [{ chainId: $networkStore.activeChainId }],
       })
 
-			const paramInterface = new ethers.Interface(abi)
-
 			const txHash = await window.ethereum.request({
 				method: 'eth_sendTransaction',
 				params: [
 					{
 						to: CONTRACT_ADDRESS,
 						from: $sessionStore.address,
-						data: paramInterface.encodeFunctionData('castVote', [selection, persona, $networkStore.blockHeight]),
+						data: $contractStore.paramInterface.encodeFunctionData('castVote', [selection, persona, $networkStore.blockHeight]),
 					},
 				],
 			})

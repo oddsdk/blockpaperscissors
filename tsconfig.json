@@ -23,6 +23,7 @@
 		"baseUrl": ".",
 		"allowJs": true,
 		"checkJs": true,
+		"outDir": "./build",
 		"paths": {
 			"$components": ["src/components"],
 			"$components/*": ["src/components/*"],
@@ -37,5 +38,6 @@
 		},
 		"typeRoots": ["src/@types", "node_modules/@types"]
 	},
+	"exclude": ["./build/**/*"],
 	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"]
 }

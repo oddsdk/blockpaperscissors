@@ -1,4 +1,4 @@
-import { Contract as ContractType, ethers, type Provider } from 'ethers'
+import { Contract as ContractType, ethers, type Provider, type Interface } from 'ethers'
 import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
@@ -13,6 +13,7 @@ export type Contract = {
   results: BlockResult[]
   uniqueVoters: number
   userCombo: string
+  paramInterface: Interface
 }
 
 type PersonaResults = {
@@ -100,6 +101,7 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
 export const attachContractToStore = async () => {
   const provider = new ethers.BrowserProvider(window.ethereum)
 
+  // Switch to hyperspace if the user isn't already on it
   await switchChain()
 
   const signer = await provider.getSigner()
@@ -210,7 +212,15 @@ export const tallyVoters = (results: BlockResult[]): number => {
  * @param persona
  * @returns
  */
-const sortVotesByPersona = (persona: string, previousWinner = { block: {}, paper: {}, scissors: {}}) => {
+const sortVotesByPersona = (
+  persona: string,
+  previousWinner = {
+    block: { voters: [] },
+    paper: { voters: [] },
+    scissors: { voters: [] },
+    result: null
+  }
+) => {
   const votesForOptions: { block: number; paper: number; scissors: number } =
     VOTE_OPTIONS.reduce(
       (acc, val) => ({
@@ -221,6 +231,7 @@ const sortVotesByPersona = (persona: string, previousWinner = { block: {}, paper
       }),
       { block: 0, paper: 0, scissors: 0 }
     )
+
   const total =
     votesForOptions?.block + votesForOptions?.paper + votesForOptions?.scissors
   const highestVote = Math.max(
@@ -250,7 +261,6 @@ const sortVotesByPersona = (persona: string, previousWinner = { block: {}, paper
     majorityChoice
   }
 }
-
 
 /**
  * Find the last winner(non-draw and non-stalemate)

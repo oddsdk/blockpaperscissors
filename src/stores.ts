@@ -18,6 +18,7 @@ export const deviceStore: Writable<Device> = writable({ isMobile: true })
 export const contractStore: Writable<Contract> = writable({
   bps: null,
   networkStreak: null,
+  paramInterface: null,
   previousWinner: null,
   provider: null,
   results: null,
