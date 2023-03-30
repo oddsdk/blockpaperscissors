@@ -12,6 +12,9 @@ export const handler: Handler = async (event, context) => {
 
   console.log('client', client)
 
+  const fields = await client.listFields()
+
+  console.log('fields', fields)
   return {
     statusCode: 200,
     body: JSON.stringify({
