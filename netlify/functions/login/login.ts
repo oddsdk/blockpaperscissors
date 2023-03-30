@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions'
-import { PrivyClient } from '@privy-io/privy-node'
+import { PrivyClient } from '@privy-io/server-auth'
 
 export const handler: Handler = async (event, context) => {
   const { name = 'stranger' } = event.queryStringParameters
@@ -12,9 +12,9 @@ export const handler: Handler = async (event, context) => {
 
   console.log('client', client)
 
-  const fields = await client.listFields()
+  // const fields = await client.listFields()
 
-  console.log('fields', fields)
+  // console.log('fields', fields)
   return {
     statusCode: 200,
     body: JSON.stringify({

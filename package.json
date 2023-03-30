@@ -35,6 +35,7 @@
     "@netlify/functions": "^1.4.0",
     "@privy-io/privy-browser": "^0.0.3",
     "@privy-io/privy-node": "^0.0.2",
+    "@privy-io/server-auth": "^1.2.0",
     "@types/node": "^14.18.42",
     "ethers": "^6.1.0"
   }
