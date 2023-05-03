@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { sveltekit } from '@sveltejs/kit/vite';
+import { sveltekit } from '@sveltejs/kit/vite'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 
 /** @type {import('vite').UserConfig} */
@@ -29,6 +29,7 @@ const config = {
     alias: {
       $components: resolve('./src/components'),
       $contracts: resolve('./src/contracts'),
+      $root: resolve('./'),
       $routes: resolve('./src/routes'),
       $src: resolve('./src')
     }
@@ -39,4 +40,4 @@ const config = {
   }
 }
 
-export default config;
+export default config

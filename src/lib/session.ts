@@ -1,8 +1,7 @@
 import { get as getStore } from 'svelte/store'
 import { goto } from '$app/navigation'
 
-import { filesystemStore, sessionStore } from '../stores'
-import { attachContractToStore } from '$lib/contract'
+import { sessionStore } from '../stores'
 import { addNotification } from '$lib/notifications'
 
 export type Session = {
@@ -19,24 +18,13 @@ export const PUBLIC_ROUTES = ['', '/', '/connect/']
  */
 export const initialise: () => Promise<void> = async () => {
   try {
-    sessionStore.update(state => ({ ...state, loading: true }))
+    // sessionStore.update(state => ({ ...state, loading: true }))
 
-    const accounts = await window?.ethereum?.request({ method: 'eth_requestAccounts' })
-
-    // ✅ Authenticated
     sessionStore.update(state => ({
       ...state,
-      address: accounts[0],
-      authed: true,
+      authed: false,
       loading: false
     }))
-
-    addNotification(
-      'Wallet connected!',
-      'success'
-    )
-    // Attach BPS contract to networkStore
-    await attachContractToStore()
   } catch (error) {
     console.error(error)
     sessionStore.update(state => ({ ...state, error: true, loading: false }))
@@ -54,7 +42,7 @@ export const disconnect: () => Promise<void> = async () => {
     address: null,
     authed: false,
     loading: false,
-    error: false,
+    error: false
   }))
 
   goto('/')

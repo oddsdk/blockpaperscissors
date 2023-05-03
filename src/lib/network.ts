@@ -14,12 +14,12 @@ export type Network = {
 }
 
 export const APPROVED_NETWORKS = [
-  '314',  // FIL mainnet
-  '3141', // Hyperspace testnet
+  '314', // FIL mainnet
+  '3141' // Hyperspace testnet
 ]
 
 export const APPROVED_CHAIN_IDS = {
-  hyperspace: '0xc45',
+  hyperspace: '0xc45'
 }
 
 // const RPC_URL = 'https://api.hyperspace.node.glif.io/rpc/v1'
@@ -40,7 +40,7 @@ export const initialise = async (): Promise<void> => {
   if (!contract.paramInterface) {
     contractStore.update(state => ({
       ...state,
-      paramInterface,
+      paramInterface
     }))
   }
 
@@ -48,22 +48,25 @@ export const initialise = async (): Promise<void> => {
   const startingBlock = await wsProvider.getBlockNumber()
   networkStore.update(state => ({
     ...state,
-    blockHeight: startingBlock,
+    blockHeight: startingBlock
   }))
 
   wsProvider.on('block', blockHeight => {
     networkStore.update(state => {
       return {
         ...state,
-        ...(state?.blockHeight !== blockHeight ? { blockHeight } : {}),
+        ...(state?.blockHeight !== blockHeight ? { blockHeight } : {})
       }
     })
   })
 
-  wsProvider.on('pending', async (tx) => {
+  wsProvider.on('pending', async tx => {
     const transaction = await wsProvider.getTransaction(tx)
 
-    if (!!transaction?.to && transaction.to.toLowerCase() === CONTRACT_ADDRESS) {
+    if (
+      !!transaction?.to &&
+      transaction.to.toLowerCase() === CONTRACT_ADDRESS
+    ) {
       if (dev) {
         console.log('MATCH')
         const decodedData = paramInterface.parseTransaction({
@@ -105,12 +108,14 @@ export const isConnected = async (): Promise<boolean> => {
  */
 export const switchChain = async () => {
   try {
-    await window.ethereum.request({
+    const contract = getStore(contractStore)
+
+    await contract.provider?.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: APPROVED_CHAIN_IDS.hyperspace }]
     })
   } catch (error) {
     goto('/')
-    addNotification('Please switch to the Hyperspace testnet', 'error')
+    // addNotification('Please switch to the Hyperspace testnet', 'error')
   }
 }

@@ -12,7 +12,6 @@
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "@metamask/providers": "^10.2.1",
     "@sveltejs/adapter-static": "^1.0.0",
     "@sveltejs/kit": "^1.0.1",
     "autoprefixer": "^10.4.4",
@@ -33,10 +32,9 @@
   "dependencies": {
     "@ensdomains/ensjs": "^3.0.0-alpha.50",
     "@netlify/functions": "^1.4.0",
-    "@privy-io/privy-browser": "^0.0.3",
-    "@privy-io/privy-node": "^0.0.2",
-    "@privy-io/server-auth": "^1.2.0",
+    "@privy-io/react-auth": "^1.22.0",
     "@types/node": "^14.18.42",
-    "ethers": "^6.1.0"
+    "ethers": "^6.1.0",
+    "svelte-preprocess-react": "^0.15.0"
   }
 }

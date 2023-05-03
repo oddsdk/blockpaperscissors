@@ -1,16 +1,44 @@
 <script lang="ts">
+  import { usePrivy } from '@privy-io/react-auth';
   import { goto } from '$app/navigation'
+  import { hooks } from 'svelte-preprocess-react'
 
   import { initialise } from '$lib/session'
   import Divider from '$components/common/Divider.svelte'
 
+  const store = hooks(() => {
+    const { authenticated, login, ready, user } = usePrivy()
+    console.log('authenticated', authenticated)
+    console.log('ready', ready)
+    console.log('user', user)
+    return {
+      authenticated,
+      login,
+      ready,
+      user,
+    }
+  })
+
   // Connect to WalletAuth then redirect to the intro page
   const init = async () => {
     try {
-      await initialise()
-      goto('/intro')
+      const { login } = $store
+      login()
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  $: {
+    if ($store) {
+      const { authenticated } = $store
+      if (authenticated) {
+        const initStoreAndContinue = async () => {
+          initialise()
+          goto('/intro')
+        }
+        initStoreAndContinue()
+      }
     }
   }
 </script>

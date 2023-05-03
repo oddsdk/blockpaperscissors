@@ -1,9 +1,18 @@
-import { Contract as ContractType, ethers, type Provider, type Interface } from 'ethers'
+import {
+  Contract as ContractType,
+  ethers,
+  type Provider,
+  type Interface
+} from 'ethers'
 import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore, sessionStore } from '$src/stores'
-import { switchChain } from '$lib/network'
+import {
+  APPROVED_CHAIN_IDS,
+  APPROVED_NETWORKS,
+  switchChain
+} from '$lib/network'
 
 export type Contract = {
   bps: ContractType
@@ -55,36 +64,36 @@ export const CONTRACT_ADDRESS = '0x6fc2677244c191d32d5b5cb73298edfe54265633'
 export const COLOR_MAP = {
   block: {
     bg: 'bg-red-500',
-    text: 'text-red-500',
+    text: 'text-red-500'
   },
   draw: {
     bg: 'bg-base-100',
-    text: 'text-base-100',
+    text: 'text-base-100'
   },
   paper: {
     bg: 'bg-green-500',
-    text: 'text-green-500',
+    text: 'text-green-500'
   },
   scissors: {
     bg: 'bg-blue-500',
-    text: 'text-blue-500',
+    text: 'text-blue-500'
   },
   stalemate: {
     bg: 'bg-base-100',
-    text: 'text-base-100',
-  },
+    text: 'text-base-100'
+  }
 }
 
 const LOSING_MOVES_MAP = {
   block: 'scissors',
   paper: 'block',
-  scissors: 'paper',
+  scissors: 'paper'
 }
 
 export const WINNING_MOVES_MAP = {
   block: 'paper',
   paper: 'scissors',
-  scissors: 'block',
+  scissors: 'block'
 }
 
 export const VOTES_KEY_MAP = {
@@ -98,13 +107,9 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
 /**
  * Attach the BPS contract instance to the contractStore
  */
-export const attachContractToStore = async () => {
-  const provider = new ethers.BrowserProvider(window.ethereum)
-
-  // Switch to hyperspace if the user isn't already on it
-  await switchChain()
-
+export const attachContractToStore = async provider => {
   const signer = await provider.getSigner()
+
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
     JSON.stringify(abi),
@@ -114,8 +119,14 @@ export const attachContractToStore = async () => {
   contractStore.update(state => ({
     ...state,
     bps: contract,
-    provider,
+    provider
   }))
+
+  // Switch to hyperspace if the user isn't already on it
+  const chainId = provider?.provider?.walletProvider?.walletProvider?.chainId
+  if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
+    await switchChain()
+  }
 }
 
 /**
@@ -325,25 +336,26 @@ export const getUserCombo = (results): string => {
   const userAddress = session?.address?.toLowerCase()
   let combo = 0
 
-  outerloop:
-  for (let i = 0; i < results.length; i++) {
+  outerloop: for (let i = 0; i < results.length; i++) {
     const votes = {
       block: results[i].block.voters,
       paper: results[i].paper.voters,
-      scissors: results[i].scissors.voters,
+      scissors: results[i].scissors.voters
     }
     const userChoices = {
-      block: votes.block.find(voter => voter?.address?.toLowerCase() === userAddress),
-      paper: votes.paper.find(voter => voter?.address?.toLowerCase() === userAddress),
-      scissors: votes.scissors.find(voter => voter?.address?.toLowerCase() === userAddress),
+      block: votes.block.find(
+        voter => voter?.address?.toLowerCase() === userAddress
+      ),
+      paper: votes.paper.find(
+        voter => voter?.address?.toLowerCase() === userAddress
+      ),
+      scissors: votes.scissors.find(
+        voter => voter?.address?.toLowerCase() === userAddress
+      )
     }
 
     // Only votes the user participated in will affect their combo
-    if (
-      userChoices.block ||
-      userChoices.paper ||
-      userChoices.scissors
-    ) {
+    if (userChoices.block || userChoices.paper || userChoices.scissors) {
       if (results[i].result === 'draw') {
         // If the user was in the minorty of a draw, it breaks the combo
         if (
@@ -358,9 +370,15 @@ export const getUserCombo = (results): string => {
         continue
       } else if (VOTE_OPTIONS.includes(results[i].result)) {
         for (let j = 0; j < VOTE_OPTIONS.length; j++) {
-          if (results[i].result === VOTE_OPTIONS[j] && userChoices[VOTE_OPTIONS[j]]) {
+          if (
+            results[i].result === VOTE_OPTIONS[j] &&
+            userChoices[VOTE_OPTIONS[j]]
+          ) {
             combo += 1
-          } else if (results[i].result === VOTE_OPTIONS[j] && !userChoices[VOTE_OPTIONS[j]]) {
+          } else if (
+            results[i].result === VOTE_OPTIONS[j] &&
+            !userChoices[VOTE_OPTIONS[j]]
+          ) {
             break outerloop
           }
         }
@@ -371,7 +389,6 @@ export const getUserCombo = (results): string => {
   return combo >= 256 ? '256+' : String(combo)
 }
 
-
 /**
  * Fetch the game state and update the contractStore
  */
@@ -379,7 +396,7 @@ export const fetchGameState = async () => {
   try {
     const contracts = getStore(contractStore)
     const network = getStore(networkStore)
-
+    console.log('contracts', contracts)
     const res = await contracts?.bps?.historyForRange(256, network?.blockHeight)
     const parsed = parseHistoryForRange(res)
 
@@ -397,7 +414,7 @@ export const fetchGameState = async () => {
       previousWinner,
       results: results as BlockResult[],
       uniqueVoters,
-      userCombo,
+      userCombo
     }))
   } catch (error) {
     console.error(error)
