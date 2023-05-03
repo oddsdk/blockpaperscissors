@@ -77,6 +77,7 @@
 
   <react:PrivyProvider
     appId="clfjzbafx000hmp08r3l8mj7c"
+    createPrivyWalletOnLogin={true}
     config={{
       appearance: {
         accentColor: $themeStore.selectedTheme === 'light' ? '#252621' : '#F5F8E6',

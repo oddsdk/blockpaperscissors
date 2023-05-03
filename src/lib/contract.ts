@@ -11,11 +11,13 @@ import { contractStore, networkStore, sessionStore } from '$src/stores'
 import {
   APPROVED_CHAIN_IDS,
   APPROVED_NETWORKS,
-  switchChain
+  switchChain,
+  wsProvider
 } from '$lib/network'
 
 export type Contract = {
   bps: ContractType
+  bpsReader: ContractType
   networkStreak: string
   previousWinner: PreviousWinner
   provider: Provider
@@ -109,16 +111,22 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
  */
 export const attachContractToStore = async provider => {
   const signer = await provider.getSigner()
-
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
     JSON.stringify(abi),
     signer
   )
 
+  const contractReader = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    JSON.stringify(abi),
+    wsProvider
+  )
+
   contractStore.update(state => ({
     ...state,
     bps: contract,
+    bpsReader: contractReader,
     provider
   }))
 
@@ -394,10 +402,14 @@ export const getUserCombo = (results): string => {
  */
 export const fetchGameState = async () => {
   try {
+    // await switchChain()
     const contracts = getStore(contractStore)
     const network = getStore(networkStore)
-    console.log('contracts', contracts)
-    const res = await contracts?.bps?.historyForRange(256, network?.blockHeight)
+
+    const res = await contracts?.bpsReader?.historyForRange(
+      256,
+      network?.blockHeight
+    )
     const parsed = parseHistoryForRange(res)
 
     const results = parsed.slice(0, -1)

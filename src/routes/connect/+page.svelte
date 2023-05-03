@@ -30,11 +30,14 @@
   }
 
   $: {
+    console.log('$store', $store)
     if ($store) {
       const { authenticated } = $store
+      console.log('isAuthenticated')
       if (authenticated) {
         const initStoreAndContinue = async () => {
-          initialise()
+          await initialise()
+          console.log('test')
           goto('/intro')
         }
         initStoreAndContinue()

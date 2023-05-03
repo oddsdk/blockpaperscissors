@@ -6,6 +6,7 @@
 
 	import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
   import { CONTRACT_ADDRESS, fetchGameState } from '$lib/contract'
+  import { switchChain } from '$lib/network'
   import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import BlockIcon from '$components/icons/Block.svelte'
@@ -108,10 +109,11 @@
       //   },
       // })
       // const { height: blockHeight } = await res.json()
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: $networkStore.activeChainId }],
-      })
+      // await window.ethereum.request({
+      //   method: 'wallet_switchEthereumChain',
+      //   params: [{ chainId: $networkStore.activeChainId }],
+      // })
+      // await switchChain()
 
 			const paramInterface = new ethers.Interface(abi)
 

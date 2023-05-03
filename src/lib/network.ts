@@ -6,7 +6,7 @@ import { get as getStore } from 'svelte/store'
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore } from '$src/stores'
 import { CONTRACT_ADDRESS } from '$lib/contract'
-import { addNotification } from '$lib/notifications'
+// import { addNotification } from '$lib/notifications'
 
 export type Network = {
   blockHeight: number
@@ -22,11 +22,8 @@ export const APPROVED_CHAIN_IDS = {
   hyperspace: '0xc45'
 }
 
-// const RPC_URL = 'https://api.hyperspace.node.glif.io/rpc/v1'
-const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
-// const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v0'
-// const WS_PROVIDER = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/'
-export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER)
+const WS_PROVIDER_URL = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
+export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER_URL)
 
 /**
  * Initialise the networkStore and have it listen for blockHeight change
@@ -81,7 +78,7 @@ export const initialise = async (): Promise<void> => {
   })
 
   // wsProvider.on('error', async () => {
-  //   console.log(`Unable to connect to ${WS_PROVIDER} retrying in 3s...`)
+  //   console.log(`Unable to connect to ${WS_PROVIDER_URL} retrying in 3s...`)
   //   setTimeout(initialise, 3000)
   // })
   // wsProvider.on('close', async code => {
