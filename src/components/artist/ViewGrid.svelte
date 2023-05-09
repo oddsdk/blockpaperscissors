@@ -39,7 +39,7 @@
   onDestroy(unsubscribe)
 </script>
 
-<div class="relative w-full mt-8 mb-6 border-base-content border-[7px]">
+<div class="relative w-full mt-6 mb-6 border-base-content border-[7px]">
   <div class="relative z-10 grid grid-cols-16 w-full">
     {#if !results}
       {#each Array.from({ length: 256 }) as _}
@@ -66,6 +66,6 @@
 
 <div class="text-sm text-center mb-5">
   <p class="font-bold mb-2"><Countdown /> until the <span class="inline-block w-[18px] h-[18px] translate-y-1 bg-base-content"></span> pixel is updated</p>
-  <p>{$contractStore?.previousWinner?.votesByPersona?.artist?.total} artist{$contractStore?.previousWinner?.votesByPersona?.artist?.total !== 1 ? 's' : ''}</p>
+  <!-- <p>{$contractStore?.previousWinner?.votesByPersona?.artist?.total} artist{$contractStore?.previousWinner?.votesByPersona?.artist?.total !== 1 ? 's' : ''}</p> -->
 </div>
 

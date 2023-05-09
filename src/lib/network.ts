@@ -22,6 +22,22 @@ export const APPROVED_CHAIN_IDS = {
   hyperspace: '0xc45'
 }
 
+// Filecoin
+// Optimism
+// Arbitrum
+// Polygon
+// Polygon zkEVM
+// Ethereum (Goerli)
+
+const PROVIDER_MAP = {
+  ethereum: {
+    goerli: 'wss://goerli.infura.io/ws/v3/da7c854b0ff6422da9f8e130b68391fc'
+  },
+  filecoin: {
+    hyperspace: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
+  }
+}
+
 const WS_PROVIDER_URL = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
 export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER_URL)
 

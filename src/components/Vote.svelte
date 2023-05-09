@@ -1,6 +1,7 @@
 <script lang="ts">
   import { dev } from '$app/environment'
   import { goto } from '$app/navigation'
+  import { page } from '$app/stores'
   import { ethers } from 'ethers'
   import { fly } from 'svelte/transition'
 
@@ -18,79 +19,31 @@
   import ScissorsIcon from '$components/icons/Scissors.svelte'
   import ScissorsMediumIcon from '$components/icons/ScissorsMedium.svelte'
 
-  export let persona: string
-
   let loading = false
   let selection: string
   let voteSelected = false
 
-  let copyMap = {
-    artist: {
-      title: {
-        first: 'What',
-        second: 'Color',
-        third: 'Pixel?',
-      },
-      selections: {
-        block: {
-          label: 'Red',
-          description: 'aka Block',
-        },
-        paper: {
-          label: 'Green',
-          description: 'aka Paper',
-        },
-        scissors: {
-          label: 'Blue',
-          description: 'aka Scissors',
-        }
-      },
-      buttonLabel: 'Suggest a color',
+  const copyMap = {
+    title: {
+      first: 'Cast',
+      second: 'Your',
+      third: 'Vote',
     },
-    builder: {
-      title: {
-        first: 'Cast',
-        second: 'Your',
-        third: 'Vote',
+    selections: {
+      block: {
+        label: 'Block',
+        description: 'For a draw',
       },
-      selections: {
-        block: {
-          label: 'Block',
-          description: 'For a draw',
-        },
-        paper: {
-          label: 'Paper',
-          description: 'For a win',
-        },
-        scissors: {
-          label: 'Scissors',
-          description: 'For a loss',
-        }
+      paper: {
+        label: 'Paper',
+        description: 'For a win',
       },
-      buttonLabel: 'Submit your vote',
+      scissors: {
+        label: 'Scissors',
+        description: 'For a loss',
+      }
     },
-    speculator: {
-      title: {
-        first: 'Place',
-        second: 'Your',
-        third: 'Bet',
-      },
-      selections: {
-        block: {
-          label: 'Block',
-          description: 'Trending up',
-        },
-        paper: {
-          label: 'Paper',
-          description: 'Trending down',
-        },
-        scissors: {
-          label: 'Scissors',
-          description: 'Flat',
-        }
-      },
-      buttonLabel: 'Place the bet',
-    },
+    buttonLabel: 'Submit your vote',
   }
 
   const handleSelectionClick = (s: string): void => {
@@ -123,40 +76,40 @@
 					{
 						to: CONTRACT_ADDRESS,
 						from: $sessionStore.address,
-						data: paramInterface.encodeFunctionData('castVote', [selection, persona, $networkStore.blockHeight]),
+						data: paramInterface.encodeFunctionData('castVote', [selection, 'builder', $networkStore.blockHeight]),
 					},
 				],
 			})
 
       // Poll for the tx receipt
-      if (dev) {
-        console.log(`Fetching txn receipt....`)
-      }
-      let receipt = null
-      while (receipt === null) {
-        try {
-          receipt = await $contractStore.provider.getTransactionReceipt(txHash as string)
+      // if (dev) {
+      //   console.log(`Fetching txn receipt....`)
+      // }
+      // let receipt = null
+      // while (receipt === null) {
+      //   try {
+      //     receipt = await $contractStore.provider.getTransactionReceipt(txHash as string)
 
-          if (receipt === null) {
-            if (dev) {
-              console.log('Checking for tx receipt...')
-            }
-            continue
-          }
+      //     if (receipt === null) {
+      //       if (dev) {
+      //         console.log('Checking for tx receipt...')
+      //       }
+      //       continue
+      //     }
 
-          if (dev) {
-            console.log('Receipt fetched:', receipt)
-          }
-        } catch (e) {
-          console.error(e)
-          break
-        }
-      }
+      //     if (dev) {
+      //       console.log('Receipt fetched:', receipt)
+      //     }
+      //   } catch (e) {
+      //     console.error(e)
+      //     break
+      //   }
+      // }
 
       // Force a refetch of the game state
       await fetchGameState()
 
-      goto(`/${persona}`)
+      goto(`/${$page.params.team}/play`)
 			addNotification('Good luck!', 'success')
 		} catch (error) {
 			addNotification('Vote failed', 'error')
@@ -170,13 +123,13 @@
   {#if loading}
     <button disabled class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</button>
   {:else}
-    <a href="/{persona}" class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</a>
+    <a href="/{$page.params.team}/play" class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</a>
   {/if}
 
   <h1 class="text-3xl pt-8 pb-10">
-    {copyMap[persona].title.first}<br/>
-    {copyMap[persona].title.second}<br/>
-    {copyMap[persona].title.third}
+    {copyMap.title.first}<br/>
+    {copyMap.title.second}<br/>
+    {copyMap.title.third}
   </h1>
 
   <Divider size="medium" />
@@ -195,45 +148,45 @@
       <button in:fly={{ x: -10, duration: 250 }} on:click={() => handleSelectionClick('block')} class="flex items-center space-x-[18px] text-xl uppercase">
         <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'block' ? 'bg-base-content' : ''}"></span>
         <BlockIcon />
-        {#if copyMap[persona].selections.block.description}
+        {#if copyMap.selections.block.description}
           <div class="flex flex-col items-start justify-center">
-            <span class="text-red-500 font-bold">{copyMap[persona].selections.block.label}</span>
-            <span class="text-lg font-bold">{copyMap[persona].selections.block.description}</span>
+            <span class="text-red-500 font-bold">{copyMap.selections.block.label}</span>
+            <span class="text-lg font-bold">{copyMap.selections.block.description}</span>
           </div>
         {:else}
-          <span class="text-red-500 font-bold">{copyMap[persona].selections.block.label}</span>
+          <span class="text-red-500 font-bold">{copyMap.selections.block.label}</span>
         {/if}
       </button>
 
       <button in:fly={{ x: -10, delay: 20, duration: 250 }} on:click={() => handleSelectionClick('paper')} class="flex items-center space-x-[18px] text-xl uppercase">
         <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'paper' ? 'bg-base-content' : ''}"></span>
         <PaperIcon />
-        {#if copyMap[persona].selections.paper.description}
+        {#if copyMap.selections.paper.description}
           <div class="flex flex-col items-start justify-center">
-            <span class="text-green-500 font-bold">{copyMap[persona].selections.paper.label}</span>
-            <span class="text-lg font-bold">{copyMap[persona].selections.paper.description}</span>
+            <span class="text-green-500 font-bold">{copyMap.selections.paper.label}</span>
+            <span class="text-lg font-bold">{copyMap.selections.paper.description}</span>
           </div>
         {:else}
-          <span class="text-green-500 font-bold">{copyMap[persona].selections.paper.label}</span>
+          <span class="text-green-500 font-bold">{copyMap.selections.paper.label}</span>
         {/if}
       </button>
 
       <button in:fly={{ x: -10, delay: 40, duration: 250 }} on:click={() => handleSelectionClick('scissors')} class="flex items-center space-x-[18px] text-xl uppercase">
         <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'scissors' ? 'bg-base-content' : ''}"></span>
         <ScissorsIcon />
-        {#if copyMap[persona].selections.scissors.description}
+        {#if copyMap.selections.scissors.description}
           <div class="flex flex-col items-start justify-center">
-            <span class="text-blue-500 font-bold">{copyMap[persona].selections.scissors.label}</span>
-            <span class="text-lg font-bold">{copyMap[persona].selections.scissors.description}</span>
+            <span class="text-blue-500 font-bold">{copyMap.selections.scissors.label}</span>
+            <span class="text-lg font-bold">{copyMap.selections.scissors.description}</span>
           </div>
         {:else}
-          <span class="text-blue-500 font-bold">{copyMap[persona].selections.scissors.label}</span>
+          <span class="text-blue-500 font-bold">{copyMap.selections.scissors.label}</span>
         {/if}
       </button>
     {/if}
   </div>
 
   <button disabled={!voteSelected || loading} on:click={handleVoteClick} class="btn btn-primary btn-lg w-full mb-4 justify-between text-lg uppercase rounded-none">
-    <span>{copyMap[persona].buttonLabel}</span> <Countdown />
+    <span>{copyMap.buttonLabel}</span> <Countdown />
   </button>
 </div>

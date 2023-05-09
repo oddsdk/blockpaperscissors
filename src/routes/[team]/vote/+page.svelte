@@ -2,4 +2,4 @@
   import Vote from '$components/Vote.svelte'
 </script>
 
-<Vote persona="builder" />
+<Vote />

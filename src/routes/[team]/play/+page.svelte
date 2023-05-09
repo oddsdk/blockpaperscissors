@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { page } from '$app/stores'
+
   import { fetchGameState } from '$lib/contract'
   import { contractStore } from '$src/stores'
   import { COLOR_MAP, WINNING_MOVES_MAP } from '$lib/contract'
   import Countdown from '$components/common/Countdown.svelte'
   import Divider from '$components/common/Divider.svelte'
-  import PersonaNav from '$components/nav/PersonaNav.svelte'
+  import Nav from '$components/nav/Nav.svelte'
   import ProfileInfo from '$components/account/ProfileInfo.svelte'
 
 
@@ -36,7 +38,7 @@
 
   <p class="text-lg text-center max-w-[220px] mb-10 mx-auto">Vote <span class="uppercase font-bold {COLOR_MAP[WINNING_MOVES_MAP[previousMove]]?.text}">{WINNING_MOVES_MAP[previousMove]}</span> to keep the streak alive</p>
 
-  <a href="/builder/vote" class="btn btn-primary btn-lg w-full mb-6 justify-between text-lg uppercase rounded-none">
+  <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full mb-6 justify-between text-lg uppercase rounded-none">
     Cast your vote <Countdown />
   </a>
 
@@ -54,4 +56,4 @@
   </div>
 {/if}
 
-<PersonaNav />
+<Nav />

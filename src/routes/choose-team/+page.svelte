@@ -1,0 +1,68 @@
+<script lang="ts">
+  import { goto } from '$app/navigation'
+  import { fly } from 'svelte/transition'
+
+  import { fetchGameState } from '$lib/contract'
+  import { contractStore } from '$src/stores'
+  import Divider from '$components/common/Divider.svelte'
+
+  let teamSelected = false
+  let team: string
+
+  const teams = {
+    filecoin: 'Filecoin',
+    ethereum: 'Ethereum',
+    polygon: 'Polygon',
+    'polygon-zkevm': 'Polygon zkEVM',
+    arbitrum: 'Arbitrum',
+    optimism: 'Optimism',
+  }
+
+  const handlePersonaClick = (t: string): void => {
+    teamSelected = true
+    team = t
+  }
+
+  const handleButtonClick = (): void => {
+    goto(`/${team}/play`)
+  }
+
+  if (!$contractStore?.results?.length) {
+    fetchGameState()
+  }
+</script>
+
+<Divider align="right" size="small" />
+
+<h1 class="text-3xl pt-8 pb-10">
+  CHOOSE<br/>
+  YOUR<br/>
+  TEAM
+</h1>
+
+<Divider size="medium" />
+
+<h2 class="text-lg pt-6 pb-4 font-bold">
+  You&apos;ll compete against the other blockchains for the longest streak.
+</h2>
+
+<div class="flex flex-col gap-8 py-8">
+  {#each Object.keys(teams) as key, i}
+    <button in:fly={{ x: -10, delay: 0+(i*20), duration: 250 }} on:click={() => handlePersonaClick(key)} disabled={i !== 0} class="flex flex-col gap-3 {i !== 0 ? 'text-beige-500' : '' }">
+      <div class="relative w-full flex items-center gap-3 text-xl">
+        <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {team === key ? 'bg-base-content' : ''} {i !== 0 ? 'border-beige-500' : '' }"></span>
+        <span class="font-bold">{teams[key]}</span>
+        {#if i !== 0}
+          <span class="absolute top-0 right-0 font-bold text-red-500 text-xs text-right">
+            coming<br />
+            soon!
+          </span>
+        {/if}
+      </div>
+    </button>
+  {/each}
+</div>
+
+<button disabled={!teamSelected} on:click={handleButtonClick} class="btn btn-primary btn-lg w-full mb-4 text-lg !text-yellow-500 uppercase rounded-none">
+  Yes! Let&apos;s Play
+</button>
