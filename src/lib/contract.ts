@@ -98,6 +98,12 @@ export const WINNING_MOVES_MAP = {
   scissors: 'block'
 }
 
+export const votingInstructionsMap = (previousWinner) => ({
+  block: previousWinner === 'block' ? 'For a draw' : previousWinner === 'scissors' ? 'For a win' : 'For a loss',
+  paper: previousWinner === 'paper' ? 'For a draw' : previousWinner === 'scissors' ? 'For a loss' : 'For a win',
+  scissors: previousWinner === 'scissors' ? 'For a draw' : previousWinner === 'paper' ? 'For a win' : 'For a loss',
+})
+
 export const VOTES_KEY_MAP = {
   0: 'block',
   1: 'paper',

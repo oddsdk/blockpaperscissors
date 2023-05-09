@@ -6,9 +6,6 @@
   import { contractStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
 
-  let teamSelected = false
-  let team: string
-
   const teams = {
     filecoin: 'Filecoin',
     ethereum: 'Ethereum',
@@ -17,6 +14,9 @@
     arbitrum: 'Arbitrum',
     optimism: 'Optimism',
   }
+
+  let teamSelected = true
+  let team: string = 'filecoin'
 
   const handlePersonaClick = (t: string): void => {
     teamSelected = true

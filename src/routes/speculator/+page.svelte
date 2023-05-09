@@ -3,7 +3,7 @@
   import { contractStore } from '$src/stores'
   import Countdown from '$components/common/Countdown.svelte'
   import Divider from '$components/common/Divider.svelte'
-  import PersonaNav from '$components/nav/PersonaNav.svelte'
+  import PersonaNav from '$components/nav/Nav.svelte'
   import PreviousResults from '$components/speculator/PreviousResults.svelte'
   import ProfileInfo from '$components/account/ProfileInfo.svelte'
 

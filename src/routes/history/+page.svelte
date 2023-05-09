@@ -1,6 +1,6 @@
 <script lang="ts">
   import Divider from '$components/common/Divider.svelte'
-  import PersonaNav from '$components/nav/PersonaNav.svelte'
+  import PersonaNav from '$components/nav/Nav.svelte'
   import ProfileInfo from '$components/account/ProfileInfo.svelte'
 </script>
 

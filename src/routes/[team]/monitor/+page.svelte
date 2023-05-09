@@ -5,9 +5,8 @@
   import { contractStore } from '$src/stores'
   import Countdown from '$components/common/Countdown.svelte'
   import Divider from '$components/common/Divider.svelte'
-  import PersonaNav from '$components/nav/Nav.svelte'
   import ProfileInfo from '$components/account/ProfileInfo.svelte'
-  import ViewGrid from '$components/artist/ViewGrid.svelte'
+  import ViewGrid from '$components/monitor/ViewGrid.svelte'
 
   if (!$contractStore?.previousWinner) {
     fetchGameState()
@@ -37,5 +36,3 @@
 <button disabled={true} class="btn btn-outline btn-lg w-full border-[6px] text-lg uppercase rounded-none">
   Free draw mode
 </button> -->
-
-<PersonaNav />

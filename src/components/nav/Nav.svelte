@@ -6,9 +6,9 @@
   ]
 </script>
 
-<div class="flex items-center justify-between divide-x divide-base-100 mt-10">
+<div class="fixed bottom-0 right-0 left-0 flex items-center justify-between divide-x divide-base-100">
   {#each links as link, i}
-    <a href={`/${link.url}`} class="flex items-center justify-center w-[68px] h-16 bg-base-content transition-colors ease-in-out hover:bg-blue-500 {$page.route.id.includes(link.label) ? 'bg-base-100' : ''}">
+    <a href={`/${link.url}`} class="flex items-center justify-center grow h-16 bg-base-content transition-colors ease-in-out hover:bg-base-100 {$page.route.id.includes(link.label) ? 'bg-base-100' : ''}">
       <img class="w-[27px] h-auto" src={`${window.location.origin}/${link.label}.svg`} alt={link.label} />
     </a>
   {/each}

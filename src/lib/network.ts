@@ -76,6 +76,10 @@ export const initialise = async (): Promise<void> => {
   wsProvider.on('pending', async tx => {
     const transaction = await wsProvider.getTransaction(tx)
 
+    // // ADD A CHECK HERE TO SEE IF TX IS TO CONTRACT ADDRESS !!!!!
+    // console.log('tx', tx)
+    // console.log('transaction', transaction)
+
     if (
       !!transaction?.to &&
       transaction.to.toLowerCase() === CONTRACT_ADDRESS
@@ -87,7 +91,7 @@ export const initialise = async (): Promise<void> => {
           value: transaction.value
         })
         const choice = decodedData.args[0]
-        // console.log('decodedData', decodedData.args[0])
+        console.log('decodedData', decodedData)
         console.log('choice', choice)
       }
     }
