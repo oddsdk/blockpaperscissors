@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { page } from '$app/stores'
-
   import Divider from '$components/common/Divider.svelte'
 
   const contentMap = [
