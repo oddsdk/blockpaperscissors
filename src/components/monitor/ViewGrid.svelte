@@ -10,6 +10,12 @@
   $: blockHeightToTrack = null
   $: blocksToUpdate = []
 
+  const colors = [
+    'bg-red-500',
+    'bg-green-500',
+    'bg-blue-500',
+  ]
+
   const unsubscribe = contractStore.subscribe((state) => {
     if (state.results && !results) {
       results = [
@@ -42,7 +48,8 @@
 <div class="relative w-full mt-6 mb-6 border-base-content border-[7px]">
   <div class="relative z-10 grid grid-cols-16 w-full">
     {#if !results}
-      {#each Array.from({ length: 256 }) as _}
+      {#each Array.from({ length: 256 }) as _, i}
+        <!-- {@const count = i % 2} -->
         <div class="inline-block w-full pb-[100%] border-transparent hover:border-base-content bg-transparent"></div>
       {/each}
     {:else}

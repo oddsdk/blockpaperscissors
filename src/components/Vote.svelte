@@ -20,8 +20,8 @@
   import ScissorsMediumIcon from '$components/icons/ScissorsMedium.svelte'
 
   let loading = false
-  let selection: string
-  let voteSelected = false
+  let selection: string = 'block'
+  let voteSelected = true
 
   console.log('$previousMove', $contractStore?.previousWinner?.result)
   let votingInstructions = votingInstructionsMap($contractStore?.previousWinner?.result)
@@ -119,7 +119,7 @@
   {#if loading}
     <button disabled class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</button>
   {:else}
-    <a href="/{$page.params.team}/play" class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</a>
+    <a href="/{$page.params.team}/play" class="absolute right-0 -top-2 btn btn-primary !text-yellow-500 btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</a>
   {/if}
 
   <h1 class="text-3xl pt-8 pb-10 uppercase">
@@ -138,7 +138,6 @@
           <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-fadeinout animation-delay-[150ms] opacity-0"><PaperMediumIcon /></div>
           <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-fadeinout animation-delay-[300ms] opacity-0"><ScissorsMediumIcon /></div>
         </div>
-        <p class="mt-auto text-2xl font-bold">Submitting...</p>
       </div>
     {:else}
       <button in:fly={{ x: -10, duration: 250 }} on:click={() => handleSelectionClick('block')} class="flex items-center space-x-[18px] text-xl uppercase">
@@ -182,7 +181,11 @@
     {/if}
   </div>
 
-  <button disabled={!voteSelected || loading} on:click={handleVoteClick} class="btn btn-primary btn-lg w-full mb-4 justify-between text-lg uppercase rounded-none">
-    <span>{copyMap.buttonLabel}</span> <Countdown />
+  <button disabled={!voteSelected || loading} on:click={handleVoteClick} class="btn btn-primary btn-lg w-full mb-4 !text-yellow-500 justify-between text-lg uppercase rounded-none">
+    {#if loading}
+      <span>SUBMITTING...</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="submitting" />
+    {:else}
+      <span>{copyMap.buttonLabel}</span> <Countdown />
+    {/if}
   </button>
 </div>

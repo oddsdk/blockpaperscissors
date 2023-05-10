@@ -69,12 +69,12 @@
   <FullScreenLoadingSpinner />
 {:else}
   <slot />
-  <button on:click={async () => {
+  <!-- <button on:click={async () => {
     await $store.logout()
     window.location.href = window.location.origin
     addNotification(
       'Logout successful!',
       'success'
     )
-  }} class="btn btn-primary opacity-0 hover:opacity-100">LOGOUT</button>
+  }} class="btn btn-primary opacity-0 hover:opacity-100">LOGOUT</button> -->
 {/if}

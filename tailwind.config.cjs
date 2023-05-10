@@ -95,6 +95,7 @@ module.exports = {
       },
       colors: {
         beige: {
+          400: '#E0DABD',
           500: '#ABA692'
         },
         black: {
