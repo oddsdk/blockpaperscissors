@@ -20,10 +20,10 @@
   const store = hooks(() => {
     const { authenticated, getEthersProvider, login, logout, ready, user } = usePrivy()
     const provider = getEthersProvider()
-    console.log('authenticated', authenticated)
-    console.log('provider', provider)
-    console.log('chainId', provider?.provider?.walletProvider?.walletProvider?.chainId)
-    console.log('ready', ready)
+    // console.log('authenticated', authenticated)
+    // console.log('provider', provider)
+    // console.log('chainId', provider?.provider?.walletProvider?.walletProvider?.chainId)
+    // console.log('ready', ready)
     console.log('user', user)
 
     return {

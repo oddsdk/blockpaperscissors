@@ -93,8 +93,12 @@ contract BlockPaperScissors {
       string memory result = calculateBlockResults(blockHeight - i);
       string memory previousResult = calculateBlockResults(blockHeight - i - 1);
 
-      // Check for a draw(same result as previousResult)
-      if (compareStringsbyBytes(result, previousResult)) {
+      // Check for a draw(same result as previousResult if not stalemate)
+      if (
+        compareStringsbyBytes(result, previousResult) &&
+        !compareStringsbyBytes(result, 'stalemate') &&
+        !compareStringsbyBytes(previousResult, 'stalemate')
+      ) {
         votesForBlockWithResults.result = 'draw';
       } else {
         votesForBlockWithResults.result = result;
@@ -125,6 +129,8 @@ contract BlockPaperScissors {
       result = choiceList[1]; // paper
     } else if (scissorsVotes > blockVotes && scissorsVotes > paperVotes) {
       result = choiceList[2]; // scissors
+    } else if (scissorsVotes == blockVotes && scissorsVotes == paperVotes) {
+      result = 'stalemate';
     } else if (
       blockVotes == paperVotes ||
       blockVotes == scissorsVotes ||

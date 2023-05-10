@@ -97,3 +97,10 @@ body, input {
 .label-text-alt {
   @apply text-sm;
 }
+
+/* Play */
+.faded-overlay {
+  @apply w-full opacity-40 mix-blend-hard-light;
+  height: 188px;
+  background: linear-gradient(180deg, #F8F6E6 0%, rgba(248, 246, 230, 0) 100%);
+}

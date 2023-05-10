@@ -19,12 +19,12 @@ export type Contract = {
   bps: ContractType
   bpsReader: ContractType
   networkStreak: string
+  paramInterface: Interface
   previousWinner: PreviousWinner
   provider: Provider
   results: BlockResult[]
   uniqueVoters: number
   userCombo: string
-  paramInterface: Interface
 }
 
 type PersonaResults = {
@@ -61,7 +61,8 @@ export type BlockResult = {
   scissors: Vote
 }
 
-export const CONTRACT_ADDRESS = '0x6fc2677244c191d32d5b5cb73298edfe54265633'
+// export const CONTRACT_ADDRESS = '0x6fc2677244c191d32d5b5cb73298edfe54265633'
+export const CONTRACT_ADDRESS = '0x76a62787d3ba8A1bb132FAC2905e8E8f9cF912c5'
 
 export const COLOR_MAP = {
   block: {
@@ -103,6 +104,26 @@ export const votingInstructionsMap = (previousWinner) => ({
   paper: previousWinner === 'paper' ? 'For a draw' : previousWinner === 'scissors' ? 'For a loss' : 'For a win',
   scissors: previousWinner === 'scissors' ? 'For a draw' : previousWinner === 'paper' ? 'For a win' : 'For a loss',
 })
+
+export const moveHistoryMap = (currentMove, previousMoves) => {
+  const previousMove = previousMoves.find(
+    move => move.result !== 'draw' && move.result !== 'stalemate'
+  )
+
+  let result
+  if (WINNING_MOVES_MAP[previousMove?.result] === currentMove) {
+    result = 'win'
+  } else if (LOSING_MOVES_MAP[previousMove?.result] === currentMove) {
+    result = 'loss'
+  } else if (previousMove?.result === currentMove) {
+    result = 'draw'
+  }
+
+  return {
+    result,
+    move: previousMove?.result
+  }
+}
 
 export const VOTES_KEY_MAP = {
   0: 'block',
@@ -413,7 +434,7 @@ export const fetchGameState = async () => {
     const network = getStore(networkStore)
 
     const res = await contracts?.bpsReader?.historyForRange(
-      256,
+      400,
       network?.blockHeight
     )
     const parsed = parseHistoryForRange(res)

@@ -73,6 +73,7 @@
 						to: CONTRACT_ADDRESS,
 						from: $sessionStore.address,
 						data: paramInterface.encodeFunctionData('castVote', [selection, 'builder', $networkStore.blockHeight]),
+            // chainId: 1,
 					},
 				],
 			})
@@ -106,7 +107,7 @@
       await fetchGameState()
 
       goto(`/${$page.params.team}/play`)
-			addNotification('Good luck!', 'success')
+			// addNotification('Good luck!', 'success')
 		} catch (error) {
 			addNotification('Vote failed', 'error')
 			console.error(error)
