@@ -2,14 +2,9 @@
 pragma solidity ^0.8.13;
 
 contract BlockPaperScissors {
-  struct Vote {
-    string persona;
-    address sender;
-  }
-
   struct Votes {
     uint256 votes;
-    Vote[] voters;
+    address[] voters;
   }
 
   struct VotesInBlock {
@@ -26,16 +21,26 @@ contract BlockPaperScissors {
     Votes scissorsVotes;
   }
 
+  struct AccountState {
+    bool accountExists;
+    uint256 blockHeightOfLastMove;
+    string lastMove;
+    uint256 movesMade;
+  }
+
+  // event LogVote(address voter, string choice);
+
   // variables
   uint256 latestBlock;
   mapping(uint256 => mapping(string => Votes)) public votesPerBlock;
+  address[] allAddresses;
+  mapping(address => AccountState) public accountStates;
   string[3] public choiceList = ['block', 'paper', 'scissors'];
-  string[3] public personaList = ['builder', 'speculator', 'artist'];
 
-  // Increment the `votes` count for the specific `choice` and record the `msg.sender` and their `persona` as having voted
+  // Increment the `votes` count for the specific `choice` and record the `msg.sender` as having voted
+  // also, update the AccountState of the `msg.sender`
   function castVote(
     string calldata choice,
-    string calldata persona,
     uint256 blockHeight
   ) public payable {
     if (latestBlock != block.number) {
@@ -43,11 +48,22 @@ contract BlockPaperScissors {
     }
 
     require(validChoice(choice));
-    require(validPersona(persona));
     require(validVoter(choice, blockHeight));
 
+    // Record vote in votesPerBlock
     votesPerBlock[blockHeight][choice].votes += 1;
-    votesPerBlock[blockHeight][choice].voters.push(Vote(persona, msg.sender));
+    votesPerBlock[blockHeight][choice].voters.push(msg.sender);
+
+    // Push `msg.sender` to allAddresses if they haven't voted before
+    if (!accountStates[msg.sender].accountExists) {
+      allAddresses.push(msg.sender);
+    }
+
+    // Update AccountState
+    accountStates[msg.sender].accountExists = true;
+    accountStates[msg.sender].blockHeightOfLastMove = blockHeight;
+    accountStates[msg.sender].lastMove = choice;
+    accountStates[msg.sender].movesMade += 1;
   }
 
   // Return the total votes a choice has received so far
@@ -144,6 +160,37 @@ contract BlockPaperScissors {
     return result;
   }
 
+  // Return the state of a voters account
+  function allAccountStates() public view returns (AccountState[] memory) {
+    AccountState[] memory allAccounts;
+
+    for (uint i; i < allAddresses.length; i++) {
+      AccountState memory account;
+
+      account.accountExists = true;
+      account.blockHeightOfLastMove = accountStates[allAddresses[i]]
+        .blockHeightOfLastMove;
+      account.lastMove = accountStates[allAddresses[i]].lastMove;
+      account.movesMade = accountStates[allAddresses[i]].movesMade;
+
+      allAccounts[i] = account;
+    }
+
+    return allAccounts;
+  }
+
+  // Return the state of a voters account
+  function singleAccountState() public view returns (AccountState memory) {
+    AccountState memory account;
+
+    account.blockHeightOfLastMove = accountStates[msg.sender]
+      .blockHeightOfLastMove;
+    account.lastMove = accountStates[msg.sender].lastMove;
+    account.movesMade = accountStates[msg.sender].movesMade;
+
+    return account;
+  }
+
   // Ensure voter has not already voted for this block
   function validVoter(
     string calldata choice,
@@ -154,7 +201,7 @@ contract BlockPaperScissors {
       i < votesPerBlock[blockHeight][choice].voters.length;
       i++
     ) {
-      if (votesPerBlock[blockHeight][choice].voters[i].sender == msg.sender) {
+      if (votesPerBlock[blockHeight][choice].voters[i] == msg.sender) {
         return false;
       }
     }
@@ -166,17 +213,6 @@ contract BlockPaperScissors {
   function validChoice(string calldata choice) public view returns (bool) {
     for (uint256 i = 0; i < choiceList.length; i++) {
       if (compareStringsbyBytes(choiceList[i], choice)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  // Ensure the persona passed in exists in the personaList
-  function validPersona(string calldata persona) public view returns (bool) {
-    for (uint256 i = 0; i < personaList.length; i++) {
-      if (compareStringsbyBytes(personaList[i], persona)) {
         return true;
       }
     }

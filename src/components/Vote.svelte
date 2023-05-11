@@ -72,7 +72,7 @@
 					{
 						to: CONTRACT_ADDRESS,
 						from: $sessionStore.address,
-						data: paramInterface.encodeFunctionData('castVote', [selection, 'builder', $networkStore.blockHeight]),
+						data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
             // chainId: 1,
 					},
 				],

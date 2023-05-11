@@ -8,14 +8,9 @@ contract TestBlockPaperScissors is Test {
   address public owner;
   address bob = address(0x12345);
 
-  struct Vote {
-    string persona;
-    address sender;
-  }
-
   struct Votes {
     uint256 votes;
-    Vote[] voters;
+    address[] voters;
   }
 
   struct VotesInBlock {
@@ -35,7 +30,7 @@ contract TestBlockPaperScissors is Test {
 
   function testCastVoteAndGetters() public {
     vm.prank(address(bob));
-    BPS.castVote{value: 30000000 gwei}('block', 'artist', 258);
+    BPS.castVote{value: 30000000 gwei}('block', 258);
 
     assertEq(BPS.totalVotesForBlock(258).blockVotes.voters.length, 1);
     assertEq(BPS.totalVotesForChoice('block', 258).voters.length, 1);

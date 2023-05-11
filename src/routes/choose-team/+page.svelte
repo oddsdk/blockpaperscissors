@@ -18,7 +18,7 @@
   let teamSelected = true
   let team: string = 'filecoin'
 
-  const handlePersonaClick = (t: string): void => {
+  const handleTeamClick = (t: string): void => {
     teamSelected = true
     team = t
   }
@@ -42,13 +42,13 @@
 
 <Divider size="medium" />
 
-<h2 class="text-lg pt-6 pb-4 font-bold">
+<h2 class="text-lg pt-6 mb-4 font-bold">
   You&apos;ll compete against the other blockchains for the longest streak.
 </h2>
 
-<div class="flex flex-col gap-8 py-8">
+<div class="flex flex-col gap-2 mb-8">
   {#each Object.keys(teams) as key, i}
-    <button in:fly={{ x: -10, delay: 0+(i*20), duration: 250 }} on:click={() => handlePersonaClick(key)} disabled={i !== 0} class="flex flex-col gap-3 {i !== 0 ? 'text-beige-500' : '' }">
+    <button in:fly={{ x: -10, delay: 0+(i*20), duration: 250 }} on:click={() => handleTeamClick(key)} disabled={i !== 0} class="flex flex-col gap-3 {i !== 0 ? 'text-beige-500' : '' }">
       <div class="relative w-full flex items-center gap-3 text-xl">
         <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {team === key ? 'bg-base-content' : ''} {i !== 0 ? 'border-beige-500' : '' }"></span>
         <span class="font-bold">{teams[key]}</span>

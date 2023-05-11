@@ -30,6 +30,6 @@
   </p>
 </div>
 
-<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/persona">
+<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/choose-team">
   Let's go!
 </a>

@@ -20,32 +20,15 @@ export type Contract = {
   bpsReader: ContractType
   networkStreak: string
   paramInterface: Interface
-  previousWinner: PreviousWinner
+  previousWinner: BlockResult
   provider: Provider
   results: BlockResult[]
   uniqueVoters: number
   userCombo: string
 }
 
-type PersonaResults = {
-  [key: string]: {
-    block: string
-    majorityChoice: string
-    paper: string
-    percentageForMajority: number
-    percentageForWinner: number
-    scissors: string
-    total: number
-  }
-}
-
-type PreviousWinner = BlockResult & {
-  votesByPersona: PersonaResults
-}
-
 type Voter = {
-  address: string
-  persona: string
+  address: string;
 }
 
 type Vote = {
@@ -61,8 +44,8 @@ export type BlockResult = {
   scissors: Vote
 }
 
-// export const CONTRACT_ADDRESS = '0x6fc2677244c191d32d5b5cb73298edfe54265633'
-export const CONTRACT_ADDRESS = '0x76a62787d3ba8A1bb132FAC2905e8E8f9cF912c5'
+// export const CONTRACT_ADDRESS = '0x76a62787d3ba8A1bb132FAC2905e8E8f9cF912c5'
+export const CONTRACT_ADDRESS = '0x7333FCa97768AA4EfF3047c81d91e2fFb9A465e8'
 
 export const COLOR_MAP = {
   block: {
@@ -178,8 +161,7 @@ export const parseTotalVotesForBlock = res => {
       (a, k) => [
         ...a,
         {
-          address: votersObj[k][1],
-          persona: votersObj[k][0]
+          address: votersObj[k],
         }
       ],
       []
@@ -253,79 +235,16 @@ export const tallyVoters = (results: BlockResult[]): number => {
 }
 
 /**
- * Tracking persona stats for the previousWinner
- *
- * @param persona
- * @returns
- */
-const sortVotesByPersona = (
-  persona: string,
-  previousWinner = {
-    block: { voters: [] },
-    paper: { voters: [] },
-    scissors: { voters: [] },
-    result: null
-  }
-) => {
-  const votesForOptions: { block: number; paper: number; scissors: number } =
-    VOTE_OPTIONS.reduce(
-      (acc, val) => ({
-        ...acc,
-        [val]: previousWinner[val]?.voters?.filter(
-          voter => voter?.persona === persona
-        ).length
-      }),
-      { block: 0, paper: 0, scissors: 0 }
-    )
-
-  const total =
-    votesForOptions?.block + votesForOptions?.paper + votesForOptions?.scissors
-  const highestVote = Math.max(
-    votesForOptions?.block,
-    votesForOptions?.paper,
-    votesForOptions?.scissors
-  )
-  const majorityChoice = Object.keys(votesForOptions).find(
-    key => votesForOptions[key] === highestVote
-  )
-
-  // 0/0 returns NaN, so we'll just set it to 0 if that's the case
-  const percentageForWinner =
-    votesForOptions[previousWinner?.result] === 0
-      ? 0
-      : (votesForOptions[previousWinner?.result] / total) * 100
-  const percentageForMajority =
-    votesForOptions[majorityChoice] === 0
-      ? 0
-      : (votesForOptions[majorityChoice] / total) * 100
-
-  return {
-    ...votesForOptions,
-    total,
-    percentageForWinner,
-    percentageForMajority,
-    majorityChoice
-  }
-}
-
-/**
  * Find the last winner(non-draw and non-stalemate)
  *
  * @param results
  */
-const getPreviousWinner = (results): PreviousWinner => {
+const getPreviousWinner = (results): BlockResult => {
   const previousWinner = results.find(
     result => result.result !== 'draw' && result.result !== 'stalemate'
   )
 
-  return {
-    ...previousWinner,
-    votesByPersona: {
-      artist: sortVotesByPersona('artist', previousWinner),
-      builder: sortVotesByPersona('builder', previousWinner),
-      speculator: sortVotesByPersona('speculator', previousWinner)
-    }
-  }
+  return previousWinner
 }
 
 /**

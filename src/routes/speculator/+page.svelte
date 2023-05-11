@@ -3,7 +3,7 @@
   import { contractStore } from '$src/stores'
   import Countdown from '$components/common/Countdown.svelte'
   import Divider from '$components/common/Divider.svelte'
-  import PersonaNav from '$components/nav/Nav.svelte'
+  import Nav from '$components/nav/Nav.svelte'
   import PreviousResults from '$components/speculator/PreviousResults.svelte'
   import ProfileInfo from '$components/account/ProfileInfo.svelte'
 
@@ -21,7 +21,6 @@
     <Divider />
     <div class="flex items-center justify-between text-xs">
       <p class="uppercase font-bold">Previous Move</p>
-      <p>{$contractStore?.previousWinner?.votesByPersona?.speculator?.total} speculator{$contractStore?.previousWinner?.votesByPersona?.speculator?.total !== 1 ? 's' : ''}</p>
     </div>
   </div>
 
@@ -45,4 +44,4 @@
   </div>
 {/if}
 
-<PersonaNav />
+<Nav />
