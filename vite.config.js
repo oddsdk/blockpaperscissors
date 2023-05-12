@@ -4,6 +4,7 @@ import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfil
 
 /** @type {import('vite').UserConfig} */
 const config = {
+  global: {},
   build: {
     sourcemap: true,
     target: 'es2020'
