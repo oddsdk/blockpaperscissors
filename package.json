@@ -32,7 +32,7 @@
   "dependencies": {
     "@ensdomains/ensjs": "^3.0.0-alpha.50",
     "@netlify/functions": "^1.4.0",
-    "@privy-io/react-auth": "^1.22.0",
+    "@privy-io/react-auth": "^1.23.1",
     "@types/node": "^14.18.42",
     "ethers": "^6.1.0",
     "svelte-preprocess-react": "^0.15.0"

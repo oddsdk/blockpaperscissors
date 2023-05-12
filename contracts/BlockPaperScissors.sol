@@ -23,18 +23,19 @@ contract BlockPaperScissors {
 
   struct AccountState {
     bool accountExists;
+    address accountAddress;
     uint256 blockHeightOfLastMove;
     string lastMove;
     uint256 movesMade;
   }
 
-  // event LogVote(address voter, string choice);
+  event LogAccount(address voter, string choice, bool accountExists);
 
   // variables
   uint256 latestBlock;
   mapping(uint256 => mapping(string => Votes)) public votesPerBlock;
-  address[] allAddresses;
   mapping(address => AccountState) public accountStates;
+  address[] allAddresses;
   string[3] public choiceList = ['block', 'paper', 'scissors'];
 
   // Increment the `votes` count for the specific `choice` and record the `msg.sender` as having voted
@@ -59,11 +60,15 @@ contract BlockPaperScissors {
       allAddresses.push(msg.sender);
     }
 
+    AccountState memory accountInstance = accountStates[msg.sender];
+
     // Update AccountState
-    accountStates[msg.sender].accountExists = true;
-    accountStates[msg.sender].blockHeightOfLastMove = blockHeight;
-    accountStates[msg.sender].lastMove = choice;
-    accountStates[msg.sender].movesMade += 1;
+    accountInstance.accountAddress = msg.sender;
+    accountInstance.accountExists = true;
+    accountInstance.blockHeightOfLastMove = blockHeight;
+    accountInstance.lastMove = choice;
+    accountInstance.movesMade += 1;
+    accountStates[msg.sender] = accountInstance;
   }
 
   // Return the total votes a choice has received so far
@@ -160,35 +165,63 @@ contract BlockPaperScissors {
     return result;
   }
 
-  // Return the state of a voters account
+  // Return the state of all voters' accounts
   function allAccountStates() public view returns (AccountState[] memory) {
-    AccountState[] memory allAccounts;
+    AccountState[] memory allAccounts = new AccountState[](allAddresses.length);
 
     for (uint i; i < allAddresses.length; i++) {
-      AccountState memory account;
+      AccountState memory accountInstance = accountStates[allAddresses[i]];
 
-      account.accountExists = true;
-      account.blockHeightOfLastMove = accountStates[allAddresses[i]]
+      accountInstance.accountAddress = accountStates[allAddresses[i]]
+        .accountAddress;
+      accountInstance.accountExists = accountStates[allAddresses[i]]
+        .accountExists;
+      accountInstance.blockHeightOfLastMove = accountStates[allAddresses[i]]
         .blockHeightOfLastMove;
-      account.lastMove = accountStates[allAddresses[i]].lastMove;
-      account.movesMade = accountStates[allAddresses[i]].movesMade;
+      accountInstance.lastMove = accountStates[allAddresses[i]].lastMove;
+      accountInstance.movesMade = accountStates[allAddresses[i]].movesMade;
 
-      allAccounts[i] = account;
+      allAccounts[i] = accountInstance;
     }
 
     return allAccounts;
   }
 
-  // Return the state of a voters account
-  function singleAccountState() public view returns (AccountState memory) {
-    AccountState memory account;
+  // Return the state of a voter's account
+  function singleAccountState(
+    address account
+  ) public view returns (AccountState memory) {
+    // AccountState memory account;
+    AccountState memory accountInstance = accountStates[account];
 
-    account.blockHeightOfLastMove = accountStates[msg.sender]
+    accountInstance.accountAddress = accountStates[msg.sender].accountAddress;
+    accountInstance.accountExists = accountStates[msg.sender].accountExists;
+    accountInstance.blockHeightOfLastMove = accountStates[msg.sender]
       .blockHeightOfLastMove;
-    account.lastMove = accountStates[msg.sender].lastMove;
-    account.movesMade = accountStates[msg.sender].movesMade;
+    accountInstance.lastMove = accountStates[msg.sender].lastMove;
+    accountInstance.movesMade = accountStates[msg.sender].movesMade;
 
-    return account;
+    return accountInstance;
+  }
+
+  // Return the state of the `msg.sender`'s account
+  function myAccountState() public view returns (AccountState memory) {
+    // AccountState memory account;
+    AccountState memory accountInstance = accountStates[msg.sender];
+
+    accountInstance.accountAddress = accountStates[msg.sender].accountAddress;
+    accountInstance.accountExists = accountStates[msg.sender].accountExists;
+    accountInstance.blockHeightOfLastMove = accountStates[msg.sender]
+      .blockHeightOfLastMove;
+    accountInstance.lastMove = accountStates[msg.sender].lastMove;
+    accountInstance.movesMade = accountStates[msg.sender].movesMade;
+
+    return accountInstance;
+  }
+
+  // Return the state of a voters account
+  function getAllAddresses() public view returns (address[] memory) {
+    return allAddresses;
   }
 
   // Ensure voter has not already voted for this block

@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { usePrivy } from '@privy-io/react-auth'
   import { hooks } from 'svelte-preprocess-react'
 
-  import { sessionStore } from '$src/stores'
+  import { fetchAllAccounts, fetchAccount } from '$lib/contract'
   // import { addNotification } from '$lib/notifications'
+  import { contractStore, networkStore, sessionStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
+  import InContextLoader from '$components/common/InContextLoader.svelte'
 
   const store = hooks(() => {
     const { logout, user } = usePrivy()
@@ -23,6 +26,10 @@
     // )
     window.location.href = window.location.origin
   }
+
+  onMount(async () => {
+    await fetchAccount()
+  })
 </script>
 
 <Divider align="right" size="small" />
@@ -33,15 +40,19 @@
 
 <Divider size="medium" />
 
-<div class="mt-11 mb-8">
-  <p class="mb-6 font-bold text-lg">Credits:<br /><span class="text-green-500 uppercase">UNLIMITED</span></p>
-  <p class="mb-6 font-bold text-lg">Connected account:<br /><span class="font-normal">{$sessionStore.address.slice(0, 6)}...{$sessionStore.address.slice(38, $sessionStore.address.length)}</span></p>
-  <p class="mb-6 font-bold text-lg">Moves made:<br /><span class="font-normal">4</span></p>
-  <p class="mb-6 font-bold text-lg">Blocks since last move:<br /><span class="font-normal">0</span></p>
-  <p class="mb-6 font-bold text-lg">Last vote cast:<br /><span class="font-normal">Paper</span></p>
-  <p class="mb-6 font-bold text-lg">Perfect plans:<br /><span class="font-normal">1/4</span></p>
-  <p class="mb-6 font-bold text-lg">Power score:<br /><span class="font-normal">8.5</span></p>
-</div>
+{#if $contractStore.myAccount}
+  <div class="mt-11 mb-8">
+    <p class="mb-6 font-bold text-lg">Credits:<br /><span class="text-green-500 uppercase">UNLIMITED</span></p>
+    <p class="mb-6 font-bold text-lg">Connected account:<br /><span class="font-normal">{$sessionStore.address.slice(0, 6)}...{$sessionStore.address.slice(38, $sessionStore.address.length)}</span></p>
+    <p class="mb-6 font-bold text-lg">Moves made:<br /><span class="font-normal">{$contractStore.myAccount.movesMade}</span></p>
+    <p class="mb-6 font-bold text-lg">Blocks since last move:<br /><span class="font-normal">{$networkStore.blockHeight - $contractStore.myAccount.blockHeightOfLastMove}</span></p>
+    <p class="mb-6 font-bold text-lg">Last vote cast:<br /><span class="font-normal capitalize">{$contractStore.myAccount.lastMove}</span></p>
+    <p class="mb-6 font-bold text-lg">Perfect plans:<br /><span class="font-normal">1/4</span></p>
+    <p class="mb-6 font-bold text-lg">Power score:<br /><span class="font-normal">8.5</span></p>
+  </div>
+{:else}
+  <InContextLoader />
+{/if}
 
 <button on:click={handleLogout} class="btn btn-primary btn-lg w-full mb-2 text-lg !text-yellow-500 uppercase rounded-none">
   Disconnect

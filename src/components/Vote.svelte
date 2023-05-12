@@ -11,13 +11,11 @@
   import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import BlockIcon from '$components/icons/Block.svelte'
-  import BlockMediumIcon from '$components/icons/BlockMedium.svelte'
   import Countdown from '$components/common/Countdown.svelte'
   import Divider from '$components/common/Divider.svelte'
+  import InContextLoader from '$components/common/InContextLoader.svelte'
   import PaperIcon from '$components/icons/Paper.svelte'
-  import PaperMediumIcon from '$components/icons/PaperMedium.svelte'
   import ScissorsIcon from '$components/icons/Scissors.svelte'
-  import ScissorsMediumIcon from '$components/icons/ScissorsMedium.svelte'
 
   let loading = false
   let selection: string = 'block'
@@ -62,16 +60,16 @@
       //   method: 'wallet_switchEthereumChain',
       //   params: [{ chainId: $networkStore.activeChainId }],
       // })
-      // await switchChain()
+      await switchChain()
 
 			const paramInterface = new ethers.Interface(abi)
 
-			const txHash = await window.ethereum.request({
+			const txHash = await $contractStore.provider.request({
 				method: 'eth_sendTransaction',
 				params: [
 					{
 						to: CONTRACT_ADDRESS,
-						from: $sessionStore.address,
+						from: $sessionStore.address.toLowerCase(),
 						data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
             // chainId: 1,
 					},
@@ -133,13 +131,7 @@
 
   <div class="flex flex-col gap-11 pt-[53px] {loading ? 'pb-4' : 'pb-[55px]'}">
     {#if loading}
-      <div class="flex flex-col items-center justify-center h-[370px]">
-        <div class="relative my-auto">
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-fadeinout"><BlockMediumIcon /></div>
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-fadeinout animation-delay-[150ms] opacity-0"><PaperMediumIcon /></div>
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-fadeinout animation-delay-[300ms] opacity-0"><ScissorsMediumIcon /></div>
-        </div>
-      </div>
+      <InContextLoader heightClass="h-[370px]" />
     {:else}
       <button in:fly={{ x: -10, duration: 250 }} on:click={() => handleSelectionClick('block')} class="flex items-center space-x-[18px] text-xl uppercase">
         <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {selection === 'block' ? 'bg-base-content' : ''}"></span>

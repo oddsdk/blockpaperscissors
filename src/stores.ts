@@ -16,11 +16,14 @@ export const filesystemStore: Writable<FileSystem | null> = writable(null)
 export const deviceStore: Writable<Device> = writable({ isMobile: true })
 
 export const contractStore: Writable<Contract> = writable({
+  allAccounts: null,
   bps: null,
   bpsReader: null,
+  myAccount: null,
   networkStreak: null,
   paramInterface: null,
   previousWinner: null,
+  ethersProvider: null,
   provider: null,
   results: null,
   uniqueVoters: null,

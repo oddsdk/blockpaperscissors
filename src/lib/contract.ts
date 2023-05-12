@@ -16,8 +16,10 @@ import {
 } from '$lib/network'
 
 export type Contract = {
+  allAccounts: AccountState[]
   bps: ContractType
   bpsReader: ContractType
+  myAccount: AccountState
   networkStreak: string
   paramInterface: Interface
   previousWinner: BlockResult
@@ -44,8 +46,18 @@ export type BlockResult = {
   scissors: Vote
 }
 
-// export const CONTRACT_ADDRESS = '0x76a62787d3ba8A1bb132FAC2905e8E8f9cF912c5'
-export const CONTRACT_ADDRESS = '0x7333FCa97768AA4EfF3047c81d91e2fFb9A465e8'
+type RawAccountState = {
+  address: string
+  blockHeightOfLastMove: number
+  lastMove: string
+  movesMade: number
+}
+
+export type AccountState = RawAccountState & {
+  power: number
+}
+
+export const CONTRACT_ADDRESS = '0xCdDFF3e50e6294671607cEa613b7B46E07bA23d9'
 
 export const COLOR_MAP = {
   block: {
@@ -119,8 +131,8 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
 /**
  * Attach the BPS contract instance to the contractStore
  */
-export const attachContractToStore = async provider => {
-  const signer = await provider.getSigner()
+export const attachContractToStore = async (provider, ethersProvider) => {
+  const signer = await ethersProvider.getSigner()
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
     JSON.stringify(abi),
@@ -344,6 +356,31 @@ export const getUserCombo = (results): string => {
 }
 
 /**
+ * Parse accountState from response data
+ */
+const parseAccountState = (res): RawAccountState => {
+  const resObj = Object.assign({}, res)
+  const resArr = Object.values(resObj)
+  const accountExists = resArr[0]
+
+  if (accountExists) {
+    return {
+      address: String(resArr[1]),
+      blockHeightOfLastMove: Number(resArr[2]),
+      lastMove: String(resArr[3]),
+      movesMade: Number(resArr[4])
+    }
+  }
+
+  return {
+    address: null,
+    blockHeightOfLastMove: null,
+    lastMove: null,
+    movesMade: 0,
+  }
+}
+
+/**
  * Fetch the game state and update the contractStore
  */
 export const fetchGameState = async () => {
@@ -373,6 +410,103 @@ export const fetchGameState = async () => {
       results: results as BlockResult[],
       uniqueVoters,
       userCombo
+    }))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const calculatePower = (allAccounts: RawAccountState[]): AccountState[] => {
+  // 10 x MOVES_QUOTIENT x FRESHNESS_QUOTIENT
+  // MOVES_QUOTIENT = moves made by this account / most moves made by any account
+  // FRESHNESS_QUOTIENT = 2.71828^(-.01 x MOVES_QUOTIENT x Blocks since last move)
+  const network = getStore(networkStore)
+
+  // Find the most `movesMade` of any account
+  let mostMovesMade = allAccounts[0].movesMade
+  for (let i = 0; i < allAccounts.length; i++) {
+    if (mostMovesMade < allAccounts[i].movesMade) {
+      mostMovesMade = allAccounts[i].movesMade
+    }
+  }
+
+  let allAccountsWithPower = []
+  for (let i = 0; i < allAccounts.length; i++) {
+    const account = allAccounts[i]
+    const movesQuotient = account.movesMade / mostMovesMade
+    const freshnessQuotient =
+      2.71828 ^
+      (-0.01 *
+        movesQuotient *
+        (network.blockHeight - account.blockHeightOfLastMove))
+
+    allAccountsWithPower.push({
+      ...account,
+      power: 10 * movesQuotient * freshnessQuotient
+    })
+  }
+
+  return allAccountsWithPower
+}
+
+/**
+ * Fetch all account states and update the contractStore
+ */
+export const fetchAllAccounts = async () => {
+  try {
+    const contracts = getStore(contractStore)
+    const res = await contracts?.bps?.allAccountStates()
+    const resObj = Object.assign({}, res)
+    const resArr = Object.values(resObj)
+
+    const allAccountStates = resArr.map(val => {
+      const valObj = Object.assign({}, val)
+      return parseAccountState(valObj)
+    })
+
+    contractStore.update(state => ({
+      ...state,
+      allAccounts: calculatePower(allAccountStates),
+    }))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+/**
+ * Fetch the current user's account state and update the contractStore
+ */
+export const fetchAccount = async () => {
+  try {
+    const contracts = getStore(contractStore)
+    const session = getStore(sessionStore)
+    const userAddress = session?.address?.toLowerCase()
+    const res = await contracts?.bps?.singleAccountState(userAddress)
+    const accountState = parseAccountState(res)
+
+    contractStore.update(state => ({
+      ...state,
+      myAccount: accountState
+    }))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+/**
+ * Fetch the current user's account state and update the contractStore
+ */
+export const fetchMyAccount = async () => {
+  try {
+    const contracts = getStore(contractStore)
+    const res = await contracts?.bps?.myAccountState()
+    const accountState = parseAccountState(res)
+
+    console.log('accountState', accountState)
+
+    contractStore.update(state => ({
+      ...state,
+      myAccount: accountState,
     }))
   } catch (error) {
     console.error(error)

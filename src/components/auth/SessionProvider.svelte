@@ -18,8 +18,8 @@
   // })
 
   const store = hooks(() => {
-    const { authenticated, getEthersProvider, login, logout, ready, user } = usePrivy()
-    const provider = getEthersProvider()
+    const { authenticated, getEthersProvider, getEthereumProvider, login, logout, ready, user } = usePrivy()
+    const provider = getEthereumProvider()
     // console.log('authenticated', authenticated)
     // console.log('provider', provider)
     // console.log('chainId', provider?.provider?.walletProvider?.walletProvider?.chainId)
@@ -33,6 +33,7 @@
       provider,
       ready,
       user,
+      ethersProvider: getEthersProvider(),
     }
   })
 
@@ -53,7 +54,7 @@
       }))
 
       // Attach BPS contract to networkStore
-      attachContractToStore($store.provider).then(() => {
+      attachContractToStore($store.provider, $store.ethersProvider).then(() => {
         // addNotification(
         //   'Wallet connected!',
         //   'success'

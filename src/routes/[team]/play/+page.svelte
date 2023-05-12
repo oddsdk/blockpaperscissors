@@ -5,6 +5,7 @@
   import { contractStore } from '$src/stores'
   import { COLOR_MAP, WINNING_MOVES_MAP } from '$lib/contract'
   import Countdown from '$components/common/Countdown.svelte'
+  import InContextLoader from '$components/common/InContextLoader.svelte'
   import MoveHistory from '$components/play/MoveHistory.svelte'
 
   if (!$contractStore?.results?.length) {
@@ -54,6 +55,8 @@
         content
       </div>
     </div>
+  {:else}
+   <InContextLoader />
   {/if}
 
   <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full mb-6 justify-between !text-yellow-500 text-lg uppercase rounded-none">
