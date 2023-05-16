@@ -13,7 +13,14 @@
   }
   console.log('contractStore', $contractStore)
 
+  let moveHistoryLoading = true
+  const moveHistoryLoadingComplete = () => moveHistoryLoading = false
+
   $: previousMove = $contractStore?.previousWinner?.result
+
+  $: {
+    console.log('moveHistoryLoading', moveHistoryLoading)
+  }
 </script>
 
 <div class="py-7">
@@ -32,7 +39,7 @@
     <div class="faded-overlay fixed z-10 top-[67px] left-0 right-0" />
 
     <!-- Move history -->
-    <MoveHistory />
+    <MoveHistory loadingComplete={moveHistoryLoadingComplete} />
 
     <!-- Your move vs the current move -->
     <div class="relative left-0 right-0 mt-8 flex items-center justify-center border-black-500 border-t-[7px] border-dashed"><span class="p-4 -translate-y-[26px] inline-block rounded-full bg-black-500 text-yellow-500 text-xs font-bold">CURRENT MOVE</span></div>

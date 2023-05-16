@@ -1,5 +1,6 @@
 <script lang="ts">
   import { dev } from '$app/environment'
+  import { sendTransaction, prepareSendTransaction } from '@wagmi/core'
   import { goto } from '$app/navigation'
   import { page } from '$app/stores'
   import { ethers } from 'ethers'
@@ -62,19 +63,27 @@
       // })
       await switchChain()
 
-			const paramInterface = new ethers.Interface(abi)
+			const paramInterface = new ethers.utils.Interface(abi)
+      console.log('$contractStore', $contractStore)
+      const txConfig = await prepareSendTransaction({
+        to: CONTRACT_ADDRESS,
+        from: $sessionStore.address.toLowerCase(),
+        data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
+      })
 
-			const txHash = await $contractStore.provider.request({
-				method: 'eth_sendTransaction',
-				params: [
-					{
-						to: CONTRACT_ADDRESS,
-						from: $sessionStore.address.toLowerCase(),
-						data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
-            // chainId: 1,
-					},
-				],
-			})
+      const { hash } = await sendTransaction(txConfig)
+
+			// const txHash = await $contractStore.provider.send({
+			// 	method: 'eth_sendTransaction',
+			// 	params: [
+			// 		{
+			// 			to: CONTRACT_ADDRESS,
+			// 			from: $sessionStore.address.toLowerCase(),
+			// 			data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
+      //       // chainId: 1,
+			// 		},
+			// 	],
+			// })
 
       // Poll for the tx receipt
       // if (dev) {

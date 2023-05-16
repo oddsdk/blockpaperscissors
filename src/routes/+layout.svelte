@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { PrivyProvider } from '@privy-io/react-auth'
   import { goto } from '$app/navigation'
   import { page } from '$app/stores'
   import { onMount } from 'svelte'
@@ -17,8 +16,6 @@
 
   onMount(async () => {
     setDevice()
-    await initialiseSession()
-    await initialiseNetworkStore()
   })
 
   const setDevice = () => {
@@ -75,7 +72,7 @@
 <div data-theme={$themeStore.selectedTheme} class="min-h-screen">
   <Notifications />
 
-  <react:PrivyProvider
+  <!-- <react:PrivyProvider
     appId="clfjzbafx000hmp08r3l8mj7c"
     createPrivyWalletOnLogin={true}
     config={{
@@ -85,7 +82,7 @@
       }
     }}
     onSuccess={handleLogin}
-  >
+  > -->
     <div class="pt-[70px] px-10 pb-10 max-w-lg mx-auto">
       <SessionProvider>
         {#if loading}
@@ -95,5 +92,5 @@
         {/if}
       </SessionProvider>
     </div>
-  </react:PrivyProvider>
+  <!-- </react:PrivyProvider> -->
 </div>

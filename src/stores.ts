@@ -42,4 +42,6 @@ export const sessionStore: Writable<Session> = writable({
   authed: false,
   loading: false,
   error: false,
+  ethereumClient: null,
+  web3modal: null,
 })

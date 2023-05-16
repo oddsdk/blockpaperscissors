@@ -2,16 +2,18 @@
   import { contractStore } from '$src/stores'
   import { moveHistoryMap } from '$lib/contract'
 
+  export let loadingComplete
+
   // Scroll to bottom of the list(this is a little sketchy)
   let scrollTarget
   $: {
     if (scrollTarget) {
-      console.log('scrolling 2', document.body.scrollHeight)
       setTimeout(() => {
         const scroll = () => window.scrollTo({
           top: document.body.scrollHeight,
         })
         scroll()
+        loadingComplete()
       }, 10)
     }
   }

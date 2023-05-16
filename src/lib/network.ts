@@ -1,10 +1,11 @@
+import { switchNetwork } from '@wagmi/core'
+import { ethers } from 'ethers'
 import { dev } from '$app/environment'
 import { goto } from '$app/navigation'
-import { ethers } from 'ethers'
 import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
-import { contractStore, networkStore } from '$src/stores'
+import { contractStore, networkStore, sessionStore } from '$src/stores'
 import { CONTRACT_ADDRESS } from '$lib/contract'
 // import { addNotification } from '$lib/notifications'
 
@@ -39,7 +40,9 @@ const PROVIDER_MAP = {
 }
 
 const WS_PROVIDER_URL = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
-export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER_URL)
+export const wsProvider = new ethers.providers.WebSocketProvider(
+  WS_PROVIDER_URL
+)
 
 /**
  * Initialise the networkStore and have it listen for blockHeight change
@@ -47,7 +50,7 @@ export const wsProvider = new ethers.WebSocketProvider(WS_PROVIDER_URL)
 export const initialise = async (): Promise<void> => {
   const contract = getStore(contractStore)
   // const network = getStore(networkStore)
-  const paramInterface = new ethers.Interface(abi)
+  const paramInterface = new ethers.utils.Interface(abi)
 
   // Attach the paramIntface to the contractStore if it doesn't exist yet
   if (!contract.paramInterface) {
@@ -125,14 +128,16 @@ export const isConnected = async (): Promise<boolean> => {
  */
 export const switchChain = async () => {
   try {
-    const contract = getStore(contractStore)
-
-    await contract.provider?.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: APPROVED_CHAIN_IDS.hyperspace }]
-    })
+    const session = getStore(sessionStore)
+    // const contract = getStore(contractStore)
+    await switchNetwork({ chainId: session.ethereumClient.chains[1].id })
+    // await contract.provider?.request({
+    //   method: 'wallet_switchEthereumChain',
+    //   params: [{ chainId: APPROVED_CHAIN_IDS.hyperspace }]
+    // })
   } catch (error) {
-    goto('/')
+    console.error(error)
+    // goto('/')
     // addNotification('Please switch to the Hyperspace testnet', 'error')
   }
 }

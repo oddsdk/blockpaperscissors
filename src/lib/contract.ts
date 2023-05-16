@@ -1,8 +1,9 @@
+import { getContract, readContract } from '@wagmi/core'
 import {
   Contract as ContractType,
-  ethers,
-  type Provider,
-  type Interface
+  ethers
+  // type Provider,
+  // type Interface
 } from 'ethers'
 import { get as getStore } from 'svelte/store'
 
@@ -21,16 +22,16 @@ export type Contract = {
   bpsReader: ContractType
   myAccount: AccountState
   networkStreak: string
-  paramInterface: Interface
+  paramInterface: any
   previousWinner: BlockResult
-  provider: Provider
+  provider: any
   results: BlockResult[]
   uniqueVoters: number
   userCombo: string
 }
 
 type Voter = {
-  address: string;
+  address: string
 }
 
 type Vote = {
@@ -57,7 +58,7 @@ export type AccountState = RawAccountState & {
   power: number
 }
 
-export const CONTRACT_ADDRESS = '0xCdDFF3e50e6294671607cEa613b7B46E07bA23d9'
+export const CONTRACT_ADDRESS = '0x33EdE8BE3d5b86593dbC20aAc158516Eb3ca1CB8'
 
 export const COLOR_MAP = {
   block: {
@@ -94,10 +95,25 @@ export const WINNING_MOVES_MAP = {
   scissors: 'block'
 }
 
-export const votingInstructionsMap = (previousWinner) => ({
-  block: previousWinner === 'block' ? 'For a draw' : previousWinner === 'scissors' ? 'For a win' : 'For a loss',
-  paper: previousWinner === 'paper' ? 'For a draw' : previousWinner === 'scissors' ? 'For a loss' : 'For a win',
-  scissors: previousWinner === 'scissors' ? 'For a draw' : previousWinner === 'paper' ? 'For a win' : 'For a loss',
+export const votingInstructionsMap = previousWinner => ({
+  block:
+    previousWinner === 'block'
+      ? 'For a draw'
+      : previousWinner === 'scissors'
+      ? 'For a win'
+      : 'For a loss',
+  paper:
+    previousWinner === 'paper'
+      ? 'For a draw'
+      : previousWinner === 'scissors'
+      ? 'For a loss'
+      : 'For a win',
+  scissors:
+    previousWinner === 'scissors'
+      ? 'For a draw'
+      : previousWinner === 'paper'
+      ? 'For a win'
+      : 'For a loss'
 })
 
 export const moveHistoryMap = (currentMove, previousMoves) => {
@@ -131,18 +147,23 @@ const VOTE_OPTIONS = ['block', 'paper', 'scissors']
 /**
  * Attach the BPS contract instance to the contractStore
  */
-export const attachContractToStore = async (provider, ethersProvider) => {
-  const signer = await ethersProvider.getSigner()
-  const contract = new ethers.Contract(
-    CONTRACT_ADDRESS,
-    JSON.stringify(abi),
-    signer
-  )
+export const attachContractToStore = async provider => {
+  const signer = await provider.getSigner()
+  // const contract = new ethers.Contract(
+  //   CONTRACT_ADDRESS,
+  //   JSON.stringify(abi),
+  //   signer
+  // )
+
+  const contract = getContract({
+    address: CONTRACT_ADDRESS,
+    abi,
+  })
 
   const contractReader = new ethers.Contract(
     CONTRACT_ADDRESS,
     JSON.stringify(abi),
-    wsProvider
+    provider
   )
 
   contractStore.update(state => ({
@@ -153,7 +174,7 @@ export const attachContractToStore = async (provider, ethersProvider) => {
   }))
 
   // Switch to hyperspace if the user isn't already on it
-  const chainId = provider?.provider?.walletProvider?.walletProvider?.chainId
+  const { chainId } = await provider?.getNetwork()
   if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
     await switchChain()
   }
@@ -173,7 +194,7 @@ export const parseTotalVotesForBlock = res => {
       (a, k) => [
         ...a,
         {
-          address: votersObj[k],
+          address: votersObj[k]
         }
       ],
       []
@@ -376,7 +397,7 @@ const parseAccountState = (res): RawAccountState => {
     address: null,
     blockHeightOfLastMove: null,
     lastMove: null,
-    movesMade: 0,
+    movesMade: 0
   }
 }
 
@@ -455,7 +476,7 @@ const calculatePower = (allAccounts: RawAccountState[]): AccountState[] => {
 export const fetchAllAccounts = async () => {
   try {
     const contracts = getStore(contractStore)
-    const res = await contracts?.bps?.allAccountStates()
+    const res = await contracts?.bpsReader?.allAccountStates()
     const resObj = Object.assign({}, res)
     const resArr = Object.values(resObj)
 
@@ -466,7 +487,7 @@ export const fetchAllAccounts = async () => {
 
     contractStore.update(state => ({
       ...state,
-      allAccounts: calculatePower(allAccountStates),
+      allAccounts: calculatePower(allAccountStates)
     }))
   } catch (error) {
     console.error(error)
@@ -476,18 +497,17 @@ export const fetchAllAccounts = async () => {
 /**
  * Fetch the current user's account state and update the contractStore
  */
-export const fetchAccount = async () => {
+export const fetchAccount = async (address: string) => {
   try {
     const contracts = getStore(contractStore)
-    const session = getStore(sessionStore)
-    const userAddress = session?.address?.toLowerCase()
-    const res = await contracts?.bps?.singleAccountState(userAddress)
+    const res = await contracts?.bps?.singleAccountState(address)
     const accountState = parseAccountState(res)
 
-    contractStore.update(state => ({
-      ...state,
-      myAccount: accountState
-    }))
+    return accountState
+    // contractStore.update(state => ({
+    //   ...state,
+    //   myAccount: accountState
+    // }))
   } catch (error) {
     console.error(error)
   }
@@ -499,14 +519,24 @@ export const fetchAccount = async () => {
 export const fetchMyAccount = async () => {
   try {
     const contracts = getStore(contractStore)
-    const res = await contracts?.bps?.myAccountState()
+    const session = getStore(sessionStore)
+    console.log('contracts', contracts)
+    // const res = await readContract({
+    //   address: CONTRACT_ADDRESS,
+    //   abi: abi,
+    //   functionName: 'singleAccountState',
+    //   args: [session.address]
+    // })
+    const res = await contracts?.bpsReader?.singleAccountState(session.address)
+    // const res = await contracts?.bpsReader?.myAccountState()
+    // console.log('res', res)
     const accountState = parseAccountState(res)
 
     console.log('accountState', accountState)
 
     contractStore.update(state => ({
       ...state,
-      myAccount: accountState,
+      myAccount: accountState
     }))
   } catch (error) {
     console.error(error)

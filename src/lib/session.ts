@@ -1,3 +1,5 @@
+import type { EthereumClient } from '@web3modal/ethereum'
+import type { Web3Modal } from '@web3modal/html'
 import { get as getStore } from 'svelte/store'
 import { goto } from '$app/navigation'
 
@@ -9,6 +11,8 @@ export type Session = {
   authed: boolean
   loading: boolean
   error: boolean
+  ethereumClient: EthereumClient
+  web3modal: Web3Modal
 }
 
 export const PUBLIC_ROUTES = ['', '/', '/connect/']

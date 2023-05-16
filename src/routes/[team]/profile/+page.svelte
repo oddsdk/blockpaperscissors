@@ -1,25 +1,15 @@
 <script lang="ts">
+  import { disconnect } from '@wagmi/core'
   import { onMount } from 'svelte'
-  import { usePrivy } from '@privy-io/react-auth'
-  import { hooks } from 'svelte-preprocess-react'
 
-  import { fetchAllAccounts, fetchAccount } from '$lib/contract'
+  import { fetchAllAccounts, fetchMyAccount } from '$lib/contract'
   // import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
 
-  const store = hooks(() => {
-    const { logout, user } = usePrivy()
-
-    return {
-      logout,
-      user,
-    }
-  })
-
   const handleLogout = async () => {
-    await $store.logout()
+    await disconnect()
     // addNotification(
     //   'Logout successful!',
     //   'success'
@@ -28,7 +18,7 @@
   }
 
   onMount(async () => {
-    await fetchAccount()
+    await fetchMyAccount()
   })
 </script>
 

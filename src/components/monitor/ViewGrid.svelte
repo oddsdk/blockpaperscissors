@@ -57,7 +57,7 @@
         <div class="inline-block w-full pb-[100%] border-transparent hover:border-base-content bg-transparent"></div>
       {/each}
     {:else}
-      {#each $contractStore.results as { blockHeight, result }, i}
+      {#each $contractStore.results?.slice(0, 256) as { blockHeight, result }, i}
         <div in:fly={{ x: -10, delay: 0+(i*1), duration: 40 }} class="inline-block w-full pb-[100%] cursor-pointer transition-colors ease-in-out border border-transparent hover:border-base-content {!!blocksToUpdate[i] ? COLOR_MAP[result].bg : 'bg-transparent'} {blockHeightToTrack === blockHeight ? '!bg-base-content' : ''}"></div>
       {/each}
     {/if}

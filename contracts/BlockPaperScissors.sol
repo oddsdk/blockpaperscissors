@@ -194,12 +194,12 @@ contract BlockPaperScissors {
     // AccountState memory account;
     AccountState memory accountInstance = accountStates[account];
 
-    accountInstance.accountAddress = accountStates[msg.sender].accountAddress;
-    accountInstance.accountExists = accountStates[msg.sender].accountExists;
-    accountInstance.blockHeightOfLastMove = accountStates[msg.sender]
+    accountInstance.accountAddress = accountStates[account].accountAddress;
+    accountInstance.accountExists = accountStates[account].accountExists;
+    accountInstance.blockHeightOfLastMove = accountStates[account]
       .blockHeightOfLastMove;
-    accountInstance.lastMove = accountStates[msg.sender].lastMove;
-    accountInstance.movesMade = accountStates[msg.sender].movesMade;
+    accountInstance.lastMove = accountStates[account].lastMove;
+    accountInstance.movesMade = accountStates[account].movesMade;
 
     return accountInstance;
   }
