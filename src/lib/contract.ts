@@ -10,10 +10,8 @@ import { get as getStore } from 'svelte/store'
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore, sessionStore } from '$src/stores'
 import {
-  APPROVED_CHAIN_IDS,
   APPROVED_NETWORKS,
   switchChain,
-  wsProvider
 } from '$lib/network'
 
 export type Contract = {

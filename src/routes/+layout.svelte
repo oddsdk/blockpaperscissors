@@ -26,21 +26,6 @@
     }
   }
 
-  // // Detect account changes and clear the sessionStore when disconnected
-  // window.ethereum.on('accountsChanged', (accounts) => {
-  //   if (!(accounts as string[])?.length) {
-  //     disconnect()
-  //   }
-  // })
-
-  // // If the user switches off hyperspace, prompt them to switch back and take them home
-  // window.ethereum.on('chainChanged', async (chainId) => {
-  //   if (APPROVED_CHAIN_IDS.hyperspace !== chainId) {
-  //     goto('/')
-  //     await switchChain()
-  //   }
-  // })
-
   $: loading = !$networkStore.blockHeight || $sessionStore.loading
 
   $: {
