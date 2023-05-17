@@ -63,7 +63,7 @@
       // await switchChain()
 
       const { chainId } = await $contractStore?.provider?.getNetwork()
-      if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
+      if (!!chainId && chainId !== Number(APPROVED_NETWORKS[1])) {
         addNotification('Please switch to the Filecoin Hyperspace testnet', 'error')
         loading = false
         return
