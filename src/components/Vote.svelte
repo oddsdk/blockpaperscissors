@@ -7,7 +7,7 @@
 
 	import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
   import { CONTRACT_ADDRESS, votingInstructionsMap, fetchGameState } from '$lib/contract'
-  import { switchChain } from '$lib/network'
+  import { APPROVED_NETWORKS, switchChain } from '$lib/network'
   import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import BlockIcon from '$components/icons/Block.svelte'
@@ -62,8 +62,15 @@
       // })
       // await switchChain()
 
+      const { chainId } = await $contractStore?.provider?.getNetwork()
+      if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
+        addNotification('Please switch to the Filecoin Hyperspace testnet', 'error')
+        loading = false
+        return
+      }
+
 			const paramInterface = new ethers.utils.Interface(abi)
-      console.log('$contractStore', $contractStore)
+
       const blockHeight = $networkStore.blockHeight
       const txConfig = await prepareSendTransaction({
         to: CONTRACT_ADDRESS,

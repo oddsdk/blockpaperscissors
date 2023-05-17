@@ -70,6 +70,7 @@
           address,
         }))
         goto('/intro')
+        switchChain()
       }
     })
     const unsubscribeEvents = web3modal.subscribeEvents(newState => console.log('events state', newState))
@@ -106,8 +107,6 @@
     //   'Wallet connected!',
     //   'success'
     // )
-
-    // switchChain()
   })
 </script>
 

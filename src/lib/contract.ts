@@ -171,11 +171,11 @@ export const attachContractToStore = async provider => {
     provider
   }))
 
-  // Switch to hyperspace if the user isn't already on it
-  const { chainId } = await provider?.getNetwork()
-  if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
-    await switchChain()
-  }
+  // // Switch to hyperspace if the user isn't already on it
+  // const { chainId } = await provider?.getNetwork()
+  // if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
+  //   await switchChain()
+  // }
 }
 
 /**
