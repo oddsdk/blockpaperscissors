@@ -24,7 +24,7 @@
 <Divider size="medium" />
 
 <p class="w-full flex justify-between items-center text-lg font-bold mt-10">
-  Past 256 moves <a class="text-blue-500" href="/{$page.params.team}/help">Wut? 🤔</a>
+  Past 256 moves <a class="text-blue-500 underline" href="/{$page.params.team}/help">Wut? 🤔</a>
 </p>
 
 <ViewGrid />

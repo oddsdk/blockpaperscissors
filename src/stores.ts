@@ -34,6 +34,7 @@ export const networkStore: Writable<Network> = writable({
   activeChainId: '0xc45',
   blockHeight: null,
   pendingTransaction: null,
+  pendingTransactions: [],
 })
 
 export const notificationStore: Writable<Notification[]> = writable([])

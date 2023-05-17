@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { contractStore } from '$src/stores'
+  import { onMount } from 'svelte'
+
+  import { contractStore, networkStore } from '$src/stores'
   import { moveHistoryMap } from '$lib/contract'
 
   export let loadingComplete
@@ -17,9 +19,70 @@
       }, 10)
     }
   }
+
+  // Find the last winner(non-draw and non-stalemate)
+  const getPreviousWinner = (results, currentBlockHeight) => {
+    const previousWinner = results.find(
+      result => result?.blockHeight !== currentBlockHeight
+    )
+
+    return previousWinner
+  }
+
+  // Parse pending transactions to display in the history list
+  let pendingResults = {}
+  const unsubscribeNetworkStore = networkStore.subscribe((state) => {
+    console.log('subscription state', state)
+    if (state.pendingTransactions.length) {
+      pendingResults = state.pendingTransactions.reduce((acc, tx) => {
+        let totalsForBlockHeight = {
+          ...acc[tx.blockHeight],
+          [tx.choice]: {
+            votes: acc[tx.blockHeight] && acc[tx.blockHeight][tx.choice]?.votes ? (Number(acc[tx.blockHeight][tx.choice].votes) + 1) : 1,
+          },
+        }
+
+        let result = Object.keys(totalsForBlockHeight).reduce((max, current) => totalsForBlockHeight[max]?.votes > totalsForBlockHeight[current]?.votes ? totalsForBlockHeight[max] : totalsForBlockHeight[current]);
+        totalsForBlockHeight.result = result
+
+        let previousResult = getPreviousWinner(state.pendingTransactions?.toReversed(), tx.blockHeight)
+        if (!previousResult || Number(previousResult?.blockHeight) !== Number(tx.blockHeight)) {
+          previousResult = $contractStore?.previousWinner?.result
+        }
+
+        totalsForBlockHeight.previousResult = previousResult
+
+        return {
+          ...acc,
+          [tx.blockHeight]: totalsForBlockHeight
+        }
+      }, {})
+    }
+  })
+
+  onMount(() => {
+    unsubscribeNetworkStore()
+  })
+
+  $: {
+    // Clear out the pendingTransactions as the networkStore is updated
+    // NOTE: I had to put this in a reactive block because subscriptions aren't being triggered when items are removed from the `networkStore.pendingTransations` array
+    if (Object.keys(pendingResults).length > 0) {
+      if ($networkStore.pendingTransactions?.length < 1) {
+        pendingResults = {}
+      } else {
+        $networkStore.pendingTransactions?.forEach((result) => {
+          const stringifiedBlockHeight = String(result.blockHeight)
+          if (!Object.keys(pendingResults).includes(stringifiedBlockHeight)) {
+            delete pendingResults[stringifiedBlockHeight]
+          }
+        })
+      }
+    }
+  }
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col px-10">
   {#each $contractStore?.results?.toReversed() as result, i}
     {#if result?.result === 'stalemate'}
       <div class="flex items-center justify-center py-[18px]">
@@ -47,6 +110,17 @@
         {/if}
 
         <img src="{window.location.origin}/{!moveHistory.move ? result.result : moveHistory.move}.svg" alt="{!moveHistory.move ? result.result : moveHistory.move}" class="w-[56px] h-auto" />
+      </div>
+    {/if}
+  {/each}
+  {#each Object.keys(pendingResults) as key, i}
+    {#if pendingResults[key]?.result}
+      <div class="relative z-0 flex items-center justify-center gap-9 py-[18px]">
+        <img src="{window.location.origin}/{pendingResults[key].result}.svg" alt="{pendingResults[key].result}" class="w-[56px] h-auto" />
+
+        <p class="flex justify-center py-3 text-base text-center text-xs">finalizing<br />...</p>
+
+        <img src="{window.location.origin}/{pendingResults[key].previousResult}.svg" alt="{pendingResults[key].previousResult}" class="w-[56px] h-auto" />
       </div>
     {/if}
   {/each}

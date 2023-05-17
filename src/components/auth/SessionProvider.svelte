@@ -3,7 +3,7 @@
   import { Web3Modal } from '@web3modal/html'
   import { configureChains, createConfig, getWalletClient } from '@wagmi/core'
   import { publicProvider } from '@wagmi/core/providers/public'
-  import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
+  // import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
   import { arbitrum, filecoin, filecoinHyperspace, mainnet, optimism, polygon, polygonZkEvm } from '@wagmi/core/chains'
   import { ethers } from 'ethers'
   import { goto } from '$app/navigation'
@@ -12,9 +12,9 @@
 
   import { attachContractToStore } from '$lib/contract'
   import { addNotification } from '$lib/notifications'
-  import { wsProvider, switchChain, initialise as initialiseNetworkStore } from '$lib/network'
+  import { switchChain, initialise as initialiseNetworkStore } from '$lib/network'
   import { PUBLIC_ROUTES, initialise as initialiseSession } from '$lib/session'
-  import { sessionStore } from '$src/stores'
+  import { networkStore, sessionStore } from '$src/stores'
   import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
 
   const chains = [
@@ -81,15 +81,15 @@
     }
   })
 
-  // $: loading = !account.isConnected
-  $: loading = false
+  $: loading = !$networkStore.blockHeight || $sessionStore.loading
+  $: {
+    if (!account.address && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
+      goto('/')
+      addNotification('Please connect your wallet first.')
+    }
+  }
 
   $: {
-    // if (!account.address && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
-    //   goto('/')
-    //   addNotification('Please connect your wallet first.')
-    // }
-
     if (!$sessionStore.authed && !!account?.address) {
       sessionStore.update(state => ({
         ...state,

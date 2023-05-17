@@ -1,11 +1,12 @@
 import { switchNetwork } from '@wagmi/core'
 import { ethers } from 'ethers'
-import { goto } from '$app/navigation'
+import { dev } from '$app/environment'
+// import { goto } from '$app/navigation'
 import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore, sessionStore } from '$src/stores'
-import { CONTRACT_ADDRESS } from '$lib/contract'
+import { CONTRACT_ADDRESS, fetchGameState } from '$lib/contract'
 // import { addNotification } from '$lib/notifications'
 
 type PendingTX = {
@@ -19,6 +20,7 @@ export type Network = {
   blockHeight: number
   activeChainId: string
   pendingTransaction: PendingTX
+  pendingTransactions: PendingTX[]
 }
 
 export const APPROVED_NETWORKS = [
@@ -66,30 +68,41 @@ export const initialise = async (): Promise<void> => {
     })
   })
 
-  wsProvider.on('pending', async tx => {
-    const transaction = await wsProvider.getTransaction(tx)
+  wsProvider.on('pending', async txHash => {
+    const transaction = await wsProvider.getTransaction(txHash)
 
-    console.log('tx', tx)
-    console.log('transaction', transaction)
+    // console.log('txHash', txHash)
+    // console.log('transaction', transaction)
 
     if (
       !!transaction?.to &&
       transaction.to.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
     ) {
-      console.log('MATCH')
+      // console.log('MATCH')
       const decodedData = paramInterface.parseTransaction({
         data: transaction.data,
         value: transaction.value
       })
+      const blockHeight = decodedData.args[1].toNumber()
       const choice = decodedData.args[0]
-      console.log('decodedData', decodedData)
-      console.log('choice', choice)
 
-      // This is a TX from the current user
-      const session = getStore(sessionStore)
-      if (session?.address?.toLowerCase() === transaction.from?.toLowerCase()) {
+      // console.log('decodedData', decodedData)
+      // console.log('choice', choice)
+      // console.log('blockHeight', blockHeight)
 
-      }
+      networkStore.update(state => ({
+        ...state,
+        pendingTransactions: [
+          ...state.pendingTransactions,
+          {
+            blockHeight: Number(blockHeight),
+            choice,
+            txHash
+          }
+        ]
+      }))
+
+      await checkStatusOfPendingTX(txHash)
     }
   })
 
@@ -122,5 +135,47 @@ export const switchChain = async () => {
     console.error(error)
     // goto('/')
     // addNotification('Please switch to the Hyperspace testnet', 'error')
+  }
+}
+
+
+/**
+ * Poll for the tx receipt to show or hide the user's pending vote
+ */
+export const checkStatusOfPendingTX = async (txHash: string, isUsersTx: boolean = false): Promise<void> => {
+  let receipt = null
+  while (receipt === null) {
+    try {
+      const contract = getStore(contractStore)
+      receipt = await contract.provider.getTransactionReceipt(txHash)
+
+      if (receipt === null) {
+        if (dev) {
+          console.log('Checking for tx receipt...')
+        }
+        continue
+      }
+
+      await fetchGameState()
+
+      if (isUsersTx) {
+        networkStore.update((state) => ({
+          ...state,
+          pendingTransaction: null
+        }))
+      } else {
+        networkStore.update(state => ({
+          ...state,
+          pendingTransactions: state.pendingTransactions.filter((tx) => String(tx.txHash) !== String(txHash)),
+        }))
+      }
+
+      if (dev) {
+        console.log('Receipt fetched:', receipt)
+      }
+    } catch (e) {
+      console.error(e)
+      break
+    }
   }
 }

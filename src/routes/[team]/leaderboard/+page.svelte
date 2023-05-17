@@ -59,7 +59,7 @@
 
   {#if activeTabIndex == 2}
     <p class="w-full mb-6 flex justify-between items-center text-lg font-bold">
-      A-Team Members <a class="text-blue-500" href="/{$page.params.team}/help">Wut? 🤔</a>
+      A-Team Members <a class="text-blue-500 underline" href="/{$page.params.team}/help">Wut? 🤔</a>
     </p>
   {/if}
 {/await}

@@ -26,13 +26,6 @@
   }
 
   $: loading = !$networkStore.blockHeight || $sessionStore.loading
-
-  $: {
-    if (!$sessionStore.authed && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
-      goto('/')
-      // addNotification('Please connect your wallet first.')
-    }
-  }
 </script>
 
 <svelte:head>
@@ -52,7 +45,7 @@
 <div data-theme={$themeStore.selectedTheme} class="min-h-screen">
   <Notifications />
 
-  <div class="pt-[70px] px-10 pb-10 max-w-lg mx-auto">
+  <div class="pt-[70px] {$page?.route?.id === '/[team]/play' ? '' : 'px-10'} pb-10 max-w-lg mx-auto">
     <SessionProvider>
       {#if loading}
         <FullScreenLoadingSpinner />

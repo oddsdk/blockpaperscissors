@@ -34,7 +34,7 @@
   // })
 </script>
 
-<div class="py-7">
+<div class="pt-7 pb-2">
   {#if $contractStore?.results?.length && previousMove}
     <!-- Header scoreboard -->
     <div class="fixed z-10 top-0 left-0 right-0 px-10 py-6 flex items-center justify-between bg-black-500 text-base-100 font-bold text-base">
@@ -56,18 +56,24 @@
     <YourMoveVsPreviousMove />
 
     <!-- Carousel -->
-    <InfoCarousel />
+    <div class="px-10">
+      <InfoCarousel />
+    </div>
   {:else}
-   <InContextLoader />
+    <div class="px-10">
+      <InContextLoader />
+    </div>
   {/if}
 
-  {#if !!$networkStore.pendingTransaction}
-    <button disabled={true} class="btn btn-primary btn-lg w-full mb-4 !text-yellow-500 justify-between text-lg uppercase rounded-none">
-      <span>Counting Votes...</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="counting votes" />
-    </button>
-  {:else}
-    <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full mb-6 justify-between !text-yellow-500 text-lg uppercase rounded-none">
-      Cast your vote <Countdown />
-    </a>
-  {/if}
+  <div class="px-10">
+    {#if !!$networkStore.pendingTransaction}
+      <button disabled={true} class="btn btn-primary btn-lg w-full !text-yellow-500 justify-between text-lg uppercase rounded-none">
+        <span>Counting Votes...</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="counting votes" />
+      </button>
+    {:else}
+      <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full justify-between !text-yellow-500 text-lg uppercase rounded-none">
+        Cast your vote <Countdown />
+      </a>
+    {/if}
+  </div>
 </div>
