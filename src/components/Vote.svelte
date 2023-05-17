@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { dev } from '$app/environment'
   import { sendTransaction, prepareSendTransaction } from '@wagmi/core'
   import { goto } from '$app/navigation'
   import { page } from '$app/stores'
@@ -61,17 +60,27 @@
       //   method: 'wallet_switchEthereumChain',
       //   params: [{ chainId: $networkStore.activeChainId }],
       // })
-      await switchChain()
+      // await switchChain()
 
 			const paramInterface = new ethers.utils.Interface(abi)
       console.log('$contractStore', $contractStore)
+      const blockHeight = $networkStore.blockHeight
       const txConfig = await prepareSendTransaction({
         to: CONTRACT_ADDRESS,
         from: $sessionStore.address.toLowerCase(),
-        data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
+        data: paramInterface.encodeFunctionData('castVote', [selection, blockHeight]),
       })
 
       const { hash } = await sendTransaction(txConfig)
+
+      networkStore.update((state) => ({
+        ...state,
+        pendingTransaction: {
+          blockHeight,
+          choice: selection,
+          txHash: hash,
+        }
+      }))
 
 			// const txHash = await $contractStore.provider.send({
 			// 	method: 'eth_sendTransaction',
@@ -84,31 +93,6 @@
 			// 		},
 			// 	],
 			// })
-
-      // Poll for the tx receipt
-      // if (dev) {
-      //   console.log(`Fetching txn receipt....`)
-      // }
-      // let receipt = null
-      // while (receipt === null) {
-      //   try {
-      //     receipt = await $contractStore.provider.getTransactionReceipt(txHash as string)
-
-      //     if (receipt === null) {
-      //       if (dev) {
-      //         console.log('Checking for tx receipt...')
-      //       }
-      //       continue
-      //     }
-
-      //     if (dev) {
-      //       console.log('Receipt fetched:', receipt)
-      //     }
-      //   } catch (e) {
-      //     console.error(e)
-      //     break
-      //   }
-      // }
 
       // Force a refetch of the game state
       await fetchGameState()

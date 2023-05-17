@@ -1,12 +1,15 @@
 <script lang="ts">
+  // import { watchPendingTransactions } from '@wagmi/core'
   import { page } from '$app/stores'
+  // import { onMount } from 'svelte'
 
   import { fetchGameState } from '$lib/contract'
   import { contractStore } from '$src/stores'
-  import { COLOR_MAP, WINNING_MOVES_MAP } from '$lib/contract'
   import Countdown from '$components/common/Countdown.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
+  import InfoCarousel from '$components/play/InfoCarousel.svelte'
   import MoveHistory from '$components/play/MoveHistory.svelte'
+  import YourMoveVsPreviousMove from '$components/play/YourMoveVsPreviousMove.svelte'
 
   if (!$contractStore?.results?.length) {
     fetchGameState()
@@ -21,6 +24,14 @@
   $: {
     console.log('moveHistoryLoading', moveHistoryLoading)
   }
+
+  // onMount(() => {
+  //   const unwatch = watchPendingTransactions({}, (transactions) => {
+  //     console.log('transactions', transactions)
+  //   })
+
+  //   return () => unwatch()
+  // })
 </script>
 
 <div class="py-7">
@@ -41,27 +52,11 @@
     <!-- Move history -->
     <MoveHistory loadingComplete={moveHistoryLoadingComplete} />
 
-    <!-- Your move vs the current move -->
-    <div class="relative left-0 right-0 mt-8 flex items-center justify-center border-black-500 border-t-[7px] border-dashed"><span class="p-4 -translate-y-[26px] inline-block rounded-full bg-black-500 text-yellow-500 text-xs font-bold">CURRENT MOVE</span></div>
-    <div class="flex items-center justify-center gap-6 mt-2 mb-10">
-      <span class="flex items-center justify-center w-[98px] h-[98px] rounded-full bg-beige-400 text-center"><img src={`${window.location.origin}/questionmark.svg`} alt="question mark" /></span>
-      <span class="font-bold text-xs">vs</span>
-      <img class="w-[91px] h-auto" src={`${window.location.origin}/${previousMove}.svg`} alt={previousMove} />
-    </div>
+    <!-- Your move vs the previous move -->
+    <YourMoveVsPreviousMove />
 
     <!-- Carousel -->
-    <div class="carousel w-full bg-beige-400 mb-6">
-      <div id="item1" class="carousel-item w-full h-full flex-col gap-4 pt-5 pb-9 items-center justify-center">
-        <p class="uppercase font-bold text-[12px]">To keep the streak</p>
-        <p class="text-lg text-center"><span class="uppercase font-bold {COLOR_MAP[WINNING_MOVES_MAP[previousMove]]?.text}">{WINNING_MOVES_MAP[previousMove]}</span> beats <span class="uppercase font-bold {COLOR_MAP[previousMove]?.text}">{previousMove}</span></p>
-      </div>
-      <div id="item2" class="carousel-item w-full">
-        content
-      </div>
-      <div id="item3" class="carousel-item w-full">
-        content
-      </div>
-    </div>
+    <InfoCarousel />
   {:else}
    <InContextLoader />
   {/if}

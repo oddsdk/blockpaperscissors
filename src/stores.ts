@@ -33,6 +33,7 @@ export const contractStore: Writable<Contract> = writable({
 export const networkStore: Writable<Network> = writable({
   activeChainId: '0xc45',
   blockHeight: null,
+  pendingTransaction: null,
 })
 
 export const notificationStore: Writable<Notification[]> = writable([])

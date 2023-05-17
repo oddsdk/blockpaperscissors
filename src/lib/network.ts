@@ -1,6 +1,5 @@
 import { switchNetwork } from '@wagmi/core'
 import { ethers } from 'ethers'
-import { dev } from '$app/environment'
 import { goto } from '$app/navigation'
 import { get as getStore } from 'svelte/store'
 
@@ -9,9 +8,17 @@ import { contractStore, networkStore, sessionStore } from '$src/stores'
 import { CONTRACT_ADDRESS } from '$lib/contract'
 // import { addNotification } from '$lib/notifications'
 
+type PendingTX = {
+  blockHeight: number
+  choice: string
+  // previousResult: string
+  txHash: string
+}
+
 export type Network = {
   blockHeight: number
   activeChainId: string
+  pendingTransaction: PendingTX
 }
 
 export const APPROVED_NETWORKS = [
@@ -21,22 +28,6 @@ export const APPROVED_NETWORKS = [
 
 export const APPROVED_CHAIN_IDS = {
   hyperspace: '0xc45'
-}
-
-// Filecoin
-// Optimism
-// Arbitrum
-// Polygon
-// Polygon zkEVM
-// Ethereum (Goerli)
-
-const PROVIDER_MAP = {
-  ethereum: {
-    goerli: 'wss://goerli.infura.io/ws/v3/da7c854b0ff6422da9f8e130b68391fc'
-  },
-  filecoin: {
-    hyperspace: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
-  }
 }
 
 const WS_PROVIDER_URL = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
@@ -49,7 +40,6 @@ export const wsProvider = new ethers.providers.WebSocketProvider(
  */
 export const initialise = async (): Promise<void> => {
   const contract = getStore(contractStore)
-  // const network = getStore(networkStore)
   const paramInterface = new ethers.utils.Interface(abi)
 
   // Attach the paramIntface to the contractStore if it doesn't exist yet
@@ -79,23 +69,26 @@ export const initialise = async (): Promise<void> => {
   wsProvider.on('pending', async tx => {
     const transaction = await wsProvider.getTransaction(tx)
 
-    // // ADD A CHECK HERE TO SEE IF TX IS TO CONTRACT ADDRESS !!!!!
-    // console.log('tx', tx)
-    // console.log('transaction', transaction)
+    console.log('tx', tx)
+    console.log('transaction', transaction)
 
     if (
       !!transaction?.to &&
-      transaction.to.toLowerCase() === CONTRACT_ADDRESS
+      transaction.to.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
     ) {
-      if (dev) {
-        console.log('MATCH')
-        const decodedData = paramInterface.parseTransaction({
-          data: transaction.data,
-          value: transaction.value
-        })
-        const choice = decodedData.args[0]
-        console.log('decodedData', decodedData)
-        console.log('choice', choice)
+      console.log('MATCH')
+      const decodedData = paramInterface.parseTransaction({
+        data: transaction.data,
+        value: transaction.value
+      })
+      const choice = decodedData.args[0]
+      console.log('decodedData', decodedData)
+      console.log('choice', choice)
+
+      // This is a TX from the current user
+      const session = getStore(sessionStore)
+      if (session?.address?.toLowerCase() === transaction.from?.toLowerCase()) {
+
       }
     }
   })
@@ -111,16 +104,6 @@ export const initialise = async (): Promise<void> => {
   //   wsProvider.websocket.close()
   //   setTimeout(initialise, 3000)
   // })
-}
-
-/**
- * Check if MetaMask is connected
- *
- * @returns boolean
- */
-export const isConnected = async (): Promise<boolean> => {
-  const accounts = await window?.ethereum?.request({ method: 'eth_accounts' })
-  return !!(accounts as string[])?.length
 }
 
 /**
