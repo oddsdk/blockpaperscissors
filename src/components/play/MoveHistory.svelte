@@ -58,20 +58,13 @@
         }
       }, {})
     }
-  })
 
-  onMount(() => {
-    unsubscribeNetworkStore()
-  })
-
-  $: {
     // Clear out the pendingTransactions as the networkStore is updated
-    // NOTE: I had to put this in a reactive block because subscriptions aren't being triggered when items are removed from the `networkStore.pendingTransations` array
     if (Object.keys(pendingResults).length > 0) {
-      if ($networkStore.pendingTransactions?.length < 1) {
+      if (state.pendingTransactions?.length < 1) {
         pendingResults = {}
       } else {
-        $networkStore.pendingTransactions?.forEach((result) => {
+        state.pendingTransactions?.forEach((result) => {
           const stringifiedBlockHeight = String(result.blockHeight)
           if (!Object.keys(pendingResults).includes(stringifiedBlockHeight)) {
             delete pendingResults[stringifiedBlockHeight]
@@ -79,7 +72,11 @@
         })
       }
     }
-  }
+  })
+
+  onMount(() => {
+    return () => unsubscribeNetworkStore()
+  })
 </script>
 
 <div class="flex flex-col px-10">
