@@ -36,7 +36,7 @@
     <p class="mb-6 font-bold text-lg">Blocks since last move:<br /><span class="font-normal">{$networkStore.blockHeight - $contractStore.myAccount.blockHeightOfLastMove}</span></p>
     <p class="mb-6 font-bold text-lg">Last vote cast:<br /><span class="font-normal capitalize">{$contractStore.myAccount.lastMove}</span></p>
     <!-- <p class="mb-6 font-bold text-lg">Perfect plans:<br /><span class="font-normal">1/4</span></p> -->
-    <p class="mb-6 font-bold text-lg">Power score:<br /><span class="font-normal">{#if power}{power}{:else}Loading...{/if}</span></p>
+    <p class="mb-6 font-bold text-lg">Power score:<br /><span class="font-normal">{#if power}{power.toFixed(1)}{:else}Loading...{/if}</span></p>
   </div>
 {:else}
   <InContextLoader />
