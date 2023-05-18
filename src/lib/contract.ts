@@ -454,10 +454,10 @@ const calculatePower = (allAccounts: RawAccountState[]): AccountState[] => {
     const account = allAccounts[i]
     const movesQuotient = account.movesMade / mostMovesMade
     const freshnessQuotient =
-      2.71828 ^
+      Math.pow(2.71828,
       (-0.01 *
         movesQuotient *
-        (network.blockHeight - account.blockHeightOfLastMove))
+        (network.blockHeight - account.blockHeightOfLastMove)))
 
     allAccountsWithPower.push({
       ...account,

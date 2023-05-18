@@ -21,3 +21,21 @@ export const getTop10Streaks = (): AccountState[] => {
     .filter(account => values.includes(account?.movesMade))
     .reverse()
 }
+/**
+ * Check the `power` of `allAccounts` and return the top 10
+ *
+ * @returns top 10 accounts based on power
+ */
+export const getTop10Voters = (): AccountState[] => {
+  const contracts = getStore(contractStore)
+  const allAccounts = contracts.allAccounts
+
+  const values = allAccounts
+    .map(account => account?.power)
+    .sort((a, b) => b - a)
+    .slice(0, 10)
+
+  return allAccounts
+    .filter(account => values.includes(account?.power))
+    .reverse()
+}
