@@ -1,9 +1,8 @@
 <script lang="ts">
-  // import { watchPendingTransactions } from '@wagmi/core'
   import { page } from '$app/stores'
-  // import { onMount } from 'svelte'
 
-  import { fetchGameState } from '$lib/contract'
+  import { fetchAllAccounts, fetchGameState } from '$lib/contract'
+  import { getTop10Streaks } from '$lib/leaderboard'
   import { contractStore, networkStore } from '$src/stores'
   import Countdown from '$components/common/Countdown.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
@@ -14,24 +13,30 @@
   if (!$contractStore?.results?.length) {
     fetchGameState()
   }
+
+  let topStreak = 0
+  if (!$contractStore?.allAccounts?.length) {
+    fetchAllAccounts().then(() => {
+      topStreak = getTop10Streaks()[0]?.movesMade
+    })
+  } else {
+    topStreak = getTop10Streaks()[0]?.movesMade
+  }
   console.log('contractStore', $contractStore)
 
   let moveHistoryLoading = true
   const moveHistoryLoadingComplete = () => moveHistoryLoading = false
 
   $: previousMove = $contractStore?.previousWinner?.result
-
   $: {
-    console.log('moveHistoryLoading', moveHistoryLoading)
+    if (!$contractStore?.allAccounts?.length) {
+      fetchAllAccounts().then(() => {
+        topStreak = getTop10Streaks()[0]?.movesMade
+      })
+    } else {
+      topStreak = getTop10Streaks()[0]?.movesMade
+    }
   }
-
-  // onMount(() => {
-  //   const unwatch = watchPendingTransactions({}, (transactions) => {
-  //     console.log('transactions', transactions)
-  //   })
-
-  //   return () => unwatch()
-  // })
 </script>
 
 <div class="pt-7 pb-2">
@@ -44,7 +49,7 @@
       </div>
       <div class="flex items-center gap-2">
         <img src="{window.location.origin}/leaderboard.svg" class="h-[15px] w-auto" alt="trophy" />
-        <p>24</p>
+        <p>{topStreak}</p>
       </div>
     </div>
     <div class="faded-overlay fixed z-10 top-[67px] left-0 right-0" />
