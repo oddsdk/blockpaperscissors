@@ -176,7 +176,7 @@
 
   <button disabled={!voteSelected || loading} on:click={handleVoteClick} class="btn btn-primary btn-lg w-full mb-4 !text-yellow-500 justify-between text-lg uppercase rounded-none">
     {#if loading}
-      <span>SUBMITTING...</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="submitting" />
+      <span class="btn-loading">SUBMITTING</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="submitting" />
     {:else}
       <span>{copyMap.buttonLabel}</span> <Countdown />
     {/if}

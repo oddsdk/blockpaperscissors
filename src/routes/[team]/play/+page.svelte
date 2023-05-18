@@ -73,7 +73,7 @@
   <div class="px-10">
     {#if !!$networkStore.pendingTransaction}
       <button disabled={true} class="btn btn-primary btn-lg w-full !text-yellow-500 justify-between text-lg uppercase rounded-none">
-        <span>Counting Votes...</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="counting votes" />
+        <span class="btn-loading">Counting Votes</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="counting votes" />
       </button>
     {:else}
       <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full justify-between !text-yellow-500 text-lg uppercase rounded-none">

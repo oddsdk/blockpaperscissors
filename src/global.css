@@ -76,6 +76,34 @@ body, input {
   @apply text-blue-500;
 }
 
+.btn-loading {
+  @apply text-left;
+}
+.btn-loading:after {
+  content: "...";
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis-dot 1.25s infinite .3s;
+  animation-fill-mode: forwards;
+  width: 1.25em;
+}
+
+@keyframes ellipsis-dot {
+  25% {
+    content: " ";
+  }
+  50% {
+    content: " .";
+  }
+  75% {
+    content: " ..";
+  }
+  100% {
+    content: " ...";
+  }
+}
+
 /* Input default styles */
 .input-bordered {
   @apply text-base-content;
