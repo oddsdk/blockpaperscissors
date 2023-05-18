@@ -32,17 +32,17 @@
   // Parse pending transactions to display in the history list
   let pendingResults = {}
   const unsubscribeNetworkStore = networkStore.subscribe((state) => {
-    console.log('subscription state', state)
     if (state.pendingTransactions.length) {
       pendingResults = state.pendingTransactions.reduce((acc, tx) => {
         let totalsForBlockHeight = {
           ...acc[tx.blockHeight],
-          [tx.choice]: {
-            votes: acc[tx.blockHeight] && acc[tx.blockHeight][tx.choice]?.votes ? (Number(acc[tx.blockHeight][tx.choice].votes) + 1) : 1,
-          },
+          votes: {
+            ...acc[tx.blockHeight]?.votes,
+            [tx.choice]: acc[tx.blockHeight] && acc[tx.blockHeight]?.votes[tx.choice] ? (Number(acc[tx.blockHeight].votes[tx.choice]) + 1) : 1,
+          }
         }
 
-        let result = Object.keys(totalsForBlockHeight).reduce((max, current) => totalsForBlockHeight[max]?.votes > totalsForBlockHeight[current]?.votes ? totalsForBlockHeight[max] : totalsForBlockHeight[current]);
+        let result = Object.keys(totalsForBlockHeight.votes).reduce((max, current) => totalsForBlockHeight.votes[max] > totalsForBlockHeight.votes[current] ? max : current)
         totalsForBlockHeight.result = result
 
         let previousResult = getPreviousWinner(state.pendingTransactions?.toReversed(), tx.blockHeight)

@@ -82,12 +82,12 @@
   })
 
   $: loading = !$networkStore.blockHeight || $sessionStore.loading
-  $: {
-    if (!account.address && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
-      goto('/')
-      addNotification('Please connect your wallet first.')
-    }
-  }
+  // $: {
+  //   if (!account.address && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
+  //     goto('/')
+  //     addNotification('Please connect your wallet first.')
+  //   }
+  // }
 
   $: {
     if (!$sessionStore.authed && !!account?.address) {

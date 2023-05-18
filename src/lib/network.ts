@@ -71,14 +71,12 @@ export const initialise = async (): Promise<void> => {
   wsProvider.on('pending', async txHash => {
     const transaction = await wsProvider.getTransaction(txHash)
 
-    // console.log('txHash', txHash)
     // console.log('transaction', transaction)
 
     if (
       !!transaction?.to &&
       transaction.to.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
     ) {
-      // console.log('MATCH')
       const decodedData = paramInterface.parseTransaction({
         data: transaction.data,
         value: transaction.value
@@ -87,8 +85,6 @@ export const initialise = async (): Promise<void> => {
       const choice = decodedData.args[0]
 
       // console.log('decodedData', decodedData)
-      // console.log('choice', choice)
-      // console.log('blockHeight', blockHeight)
 
       networkStore.update(state => ({
         ...state,
@@ -98,7 +94,7 @@ export const initialise = async (): Promise<void> => {
             blockHeight: Number(blockHeight),
             choice,
             txHash
-          }
+          },
         ]
       }))
 
