@@ -92,9 +92,9 @@
     {:else}
       {@const moveHistory = moveHistoryMap(result?.result, $contractStore?.results?.slice($contractStore?.results?.toReversed().slice(i).length))}
       <div class="relative z-0 flex items-center justify-center gap-9 py-[18px]">
-        {#if moveHistory.result === 'win'}
+        <!-- {#if moveHistory.result === 'win'}
           <div class="absolute z-0 top-0 left-1/2 -translate-x-1/2 h-10 w-[7px] bg-black-500"></div>
-        {/if}
+        {/if} -->
 
         <img src="{window.location.origin}/{result?.result}.svg" alt="{result?.result}" class="w-[56px] h-auto" />
 

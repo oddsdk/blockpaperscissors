@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores'
 
+  import { networkStore } from '$src/stores'
   import { fetchAllAccounts } from '$lib/contract'
   import Divider from '$components/common/Divider.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
@@ -24,6 +25,9 @@
 
   let activeTabIndex = 0
   let allAccounts = fetchAllAccounts()
+  $: $networkStore.blockHeight, (async () => {
+    allAccounts = fetchAllAccounts()
+  })();
 </script>
 
 <Divider align="right" size="small" />

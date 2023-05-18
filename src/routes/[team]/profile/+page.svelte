@@ -18,6 +18,11 @@
     await fetchAllAccounts()
     power = $contractStore?.allAccounts?.find((account) => account?.address?.toLowerCase() === $sessionStore?.address?.toLowerCase())?.power ?? 0
   })
+
+  $: $networkStore.blockHeight, (async () => {
+    power = $contractStore?.allAccounts?.find((account) => account?.address?.toLowerCase() === $sessionStore?.address?.toLowerCase())?.power ?? 0
+    await fetchMyAccount()
+  })();
 </script>
 
 <Divider align="right" size="small" />
