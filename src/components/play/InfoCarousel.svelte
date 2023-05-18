@@ -119,21 +119,21 @@
       {#if blockVotes === 0 && paperVotes === 0 && scissorsVotes === 0}
         <p class="text-lg text-center">No votes cast for next block</p>
       {:else}
-        <div class="w-full pt-[22px] px-6 h-[52px] overflow-x-hidden">
-          <div class="relative w-full h-2 rounded-l-xl rounded-r-xl">
-            <div class="absolute z-10 top-0 left-0 bottom-0 transition-all w-[{blockPercentage}%] {COLOR_MAP.block.bg}">
+        <div class="w-full pt-[22px] px-6 h-[52px]">
+          <div class="relative w-full h-2">
+            <div class="absolute z-10 top-0 left-0 bottom-0 transition-all rounded-l-xl {blockPercentage === 100 ? 'rounded-r-xl' : ''} w-[{blockPercentage}%] {COLOR_MAP.block.bg}">
               <div class="absolute left-0 bottom-[calc(100%+4px)] flex items-center overflow-visible w-[110px]">
                 <img class="w-4 h-auto" src={`${window.location.origin}/block.svg`} alt="block" />
                 <p class="uppercase text-[10px] ml-1.5">{blockVotes}</p>
               </div>
             </div>
-            <div class="absolute z-10 top-0 {blockPercentage > 60 ? `right-[${scissorsPercentage}%]` : `left-[${blockPercentage}%]`} bottom-0 transition-all w-[{paperPercentage}%] {COLOR_MAP.paper.bg}">
+            <div class="absolute z-10 top-0 {blockPercentage === 0 ? 'rounded-l-xl' : ''} {scissorsPercentage === 0 ? 'rounded-r-xl' : ''} {blockPercentage > 60 ? `right-[${scissorsPercentage}%]` : `left-[${blockPercentage}%]`} bottom-0 transition-all w-[{paperPercentage}%] {COLOR_MAP.paper.bg}">
               <div class="absolute left-0 top-[calc(100%+4px)] flex items-center overflow-visible w-[110px]">
                 <img class="w-4 h-auto" src={`${window.location.origin}/paper.svg`} alt="paper" />
                 <p class="uppercase text-[10px] ml-1.5">{paperVotes}</p>
               </div>
             </div>
-            <div class="absolute z-10 top-0 right-0 bottom-0 transition-all w-[{scissorsPercentage}%] {COLOR_MAP.scissors.bg}">
+            <div class="absolute z-10 top-0 right-0 bottom-0 transition-all rounded-r-xl {scissorsPercentage === 100 ? 'rounded-l-xl' : ''} w-[{scissorsPercentage}%] {COLOR_MAP.scissors.bg}">
               <div class="absolute right-0 bottom-[calc(100%+4px)] flex items-center justify-end overflow-visible w-[110px]">
                 <p class="uppercase text-[10px] mr-1.5">{scissorsVotes}</p>
                 <img class="w-4 h-auto" src={`${window.location.origin}/scissors.svg`} alt="scissors" />
