@@ -3,22 +3,20 @@
   import { onMount } from 'svelte'
 
   import { fetchAllAccounts, fetchMyAccount } from '$lib/contract'
-  // import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
 
   const handleLogout = async () => {
     await disconnect()
-    // addNotification(
-    //   'Logout successful!',
-    //   'success'
-    // )
     window.location.href = window.location.origin
   }
 
+  let power = null
   onMount(async () => {
     await fetchMyAccount()
+    await fetchAllAccounts()
+    power = $contractStore?.allAccounts?.find((account) => account?.address?.toLowerCase() === $sessionStore?.address?.toLowerCase())?.power ?? 0
   })
 </script>
 
@@ -37,8 +35,8 @@
     <p class="mb-6 font-bold text-lg">Moves made:<br /><span class="font-normal">{$contractStore.myAccount.movesMade}</span></p>
     <p class="mb-6 font-bold text-lg">Blocks since last move:<br /><span class="font-normal">{$networkStore.blockHeight - $contractStore.myAccount.blockHeightOfLastMove}</span></p>
     <p class="mb-6 font-bold text-lg">Last vote cast:<br /><span class="font-normal capitalize">{$contractStore.myAccount.lastMove}</span></p>
-    <p class="mb-6 font-bold text-lg">Perfect plans:<br /><span class="font-normal">1/4</span></p>
-    <p class="mb-6 font-bold text-lg">Power score:<br /><span class="font-normal">8.5</span></p>
+    <!-- <p class="mb-6 font-bold text-lg">Perfect plans:<br /><span class="font-normal">1/4</span></p> -->
+    <p class="mb-6 font-bold text-lg">Power score:<br /><span class="font-normal">{#if power}{power}{:else}Loading...{/if}</span></p>
   </div>
 {:else}
   <InContextLoader />
