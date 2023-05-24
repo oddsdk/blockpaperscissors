@@ -264,7 +264,7 @@ contract BlockPaperScissors {
         Streak memory newStreak = Streak({
           startBlockHeight: lastWinningMoveBlockHeight,
           endBlockHeight: lastWinningMoveBlockHeight,
-          length: 1,
+          length: 0,
           lastWinningMove: move
         });
         winningStreaks.push(newStreak);

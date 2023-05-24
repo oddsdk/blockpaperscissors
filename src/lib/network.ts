@@ -39,7 +39,7 @@ export const TEAM_NETWORK_MAP = {
     },
     testnet: {
       chainId: '5',
-      contractAddress: '0x2367e429AD13fB0EaCE8d74F986296dA1501eaAC',
+      contractAddress: '0x1aEf9c4Faf6A58b7B744eA4338B9E633372ae33b',
       wsProvider:
         'wss://g.w.lavanet.xyz:443/gateway/gth1/rpc/654ffff52d55ada78b6e82ffda56ba65'
     }
@@ -51,7 +51,7 @@ export const TEAM_NETWORK_MAP = {
     },
     testnet: {
       chainId: '3141',
-      contractAddress: '0x46457083d57ac1F1dE4e7B4920f1dC75Dd321124',
+      contractAddress: '0xe156554C33F94e89f5DB51d36e57eAf70db6204D',
       wsProvider: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
     }
   },

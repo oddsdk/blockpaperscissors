@@ -99,6 +99,7 @@
   const unsubscribeContractStore = contractStore.subscribe((state) => {
     if (state.results) {
       moveHistory = state.results?.toReversed()
+      // console.log('moveHistory', moveHistory)
     }
   })
 
