@@ -3,7 +3,7 @@
   import { fly } from 'svelte/transition'
 
   import { fetchGameState } from '$lib/contract'
-  import { contractStore } from '$src/stores'
+  import { contractStore, sessionStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
 
   const teams = {
@@ -24,7 +24,9 @@
   }
 
   const handleButtonClick = (): void => {
-    goto(`/${team}/play`)
+    const path = $sessionStore.address ? `/${team}/intro` : `/${team}/connect`
+    localStorage.setItem('team', team)
+    goto(path)
   }
 
   if (!$contractStore?.results?.length) {

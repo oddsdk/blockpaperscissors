@@ -15,7 +15,15 @@ export type Session = {
   web3modal: Web3Modal
 }
 
-export const PUBLIC_ROUTES = ['', '/', '/connect/']
+export const PUBLIC_ROUTES = [
+  '',
+  '/',
+  '/choose-team/',
+  '/filecoin/connect/',
+  '/filecoin/intro/',
+  '/arbitrum/connect/',
+  '/arbitrum/intro/',
+]
 
 /**
  * Ask the user to connect their metamask so we can populate the sessionStore

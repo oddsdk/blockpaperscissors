@@ -63,13 +63,14 @@
     const unsubscribeModal = web3modal.subscribeModal(newState => {
       // console.log('modal state', newState)
       const address = ethereumClient.getAccount()?.address
-      if (address && !newState?.open && $page.url.pathname === '/connect/') {
+      if (address && !newState?.open && $page.url.pathname.includes('/connect/')) {
         sessionStore.update(state => ({
           ...state,
           authed: true,
           address,
         }))
-        goto('/intro')
+        const team = localStorage.getItem('team')
+        goto(`/${team}/intro`)
         switchChain()
       }
     })

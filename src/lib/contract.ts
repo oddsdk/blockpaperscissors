@@ -512,6 +512,8 @@ export const fetchTopStreaks = async () => {
       lastWinningMove: VOTES_KEY_MAP[streak.lastWinningMove],
     }))
 
+    parsedStreaks.sort((a, b) => b.length - a.length)
+
     contractStore.update(state => ({
       ...state,
       topStreaks: parsedStreaks,

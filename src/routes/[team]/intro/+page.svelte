@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { page } from '$app/stores'
+
   import Divider from '$components/common/Divider.svelte'
 </script>
 
@@ -30,6 +32,6 @@
   </p>
 </div>
 
-<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href="/choose-team">
+<a class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" href={`/${$page.params.team}/play`}>
   Let's go!
 </a>
