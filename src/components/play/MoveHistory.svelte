@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
 
   import { contractStore, networkStore } from '$src/stores'
   import { moveHistoryMap } from '$lib/contract'
@@ -95,20 +95,28 @@
     }
   })
 
-  onMount(() => {
-    return () => unsubscribeNetworkStore()
+  let moveHistory = $contractStore?.results.toReversed()
+  const unsubscribeContractStore = contractStore.subscribe((state) => {
+    if (state.results) {
+      moveHistory = state.results?.toReversed()
+    }
+  })
+
+  onDestroy(() => {
+    unsubscribeNetworkStore()
+    unsubscribeContractStore()
   })
 </script>
 
 <div class="flex flex-col px-10">
   {#if scrolledToBottom}
-    <InfiniteScroll
+    <!-- <InfiniteScroll
       hasMore={$contractStore?.results?.length !== moves.length}
       threshold={100}
       on:loadMore={() => getPreviousMoves()}
-    />
+    /> -->
   {/if}
-  {#each $contractStore?.results?.toReversed() as result, i}
+  {#each moveHistory as result, i}
     {#if result?.result === 'stalemate'}
       <div class="flex items-center justify-center py-[18px]">
         <p class="text-base py-3">STALEMATE</p>

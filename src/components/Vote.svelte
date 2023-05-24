@@ -6,8 +6,8 @@
   import { fly } from 'svelte/transition'
 
 	import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
-  import { CONTRACT_ADDRESS, votingInstructionsMap, fetchGameState } from '$lib/contract'
-  import { APPROVED_NETWORKS, switchChain } from '$lib/network'
+  import { votingInstructionsMap, fetchGameState } from '$lib/contract'
+  import { APPROVED_NETWORKS, TEAM_NETWORK_MAP, switchChain } from '$lib/network'
   import { addNotification } from '$lib/notifications'
   import { contractStore, networkStore, sessionStore } from '$src/stores'
   import BlockIcon from '$components/icons/Block.svelte'
@@ -59,13 +59,25 @@
       //   method: 'wallet_switchEthereumChain',
       //   params: [{ chainId: $networkStore.activeChainId }],
       // })
-      // await switchChain()
 
       const { chainId } = await $contractStore?.provider?.getNetwork()
-      if (!!chainId && chainId !== Number(APPROVED_NETWORKS[1])) {
-        addNotification('Please switch to the Filecoin Hyperspace testnet', 'error')
-        loading = false
-        return
+      if (!!chainId) {
+        // console.log('APPROVED_NETWORKS', APPROVED_NETWORKS)
+        // console.log('chainId', chainId)
+        // if ($page.params.team === 'filecoin') {
+        if ($page.params.team === 'filecoin' && chainId !== Number(APPROVED_NETWORKS[1])) {
+          addNotification('Please switch to the Filecoin Hyperspace testnet', 'error')
+          // await switchChain($page.params.team)
+          loading = false
+          return
+        }
+        // if ($page.params.team === 'ethereum') {
+        if ($page.params.team === 'ethereum' && chainId !== Number(APPROVED_NETWORKS[3])) {
+          addNotification('Please switch to the Ethereum Goerli testnet', 'error')
+          // await switchChain($page.params.team)
+          loading = false
+          return
+        }
       }
 
 			const paramInterface = new ethers.utils.Interface(abi)
@@ -77,7 +89,7 @@
         scissors: 2,
       }
       const txConfig = await prepareSendTransaction({
-        to: CONTRACT_ADDRESS,
+        to: TEAM_NETWORK_MAP[$page.params.team].testnet.contractAddress,
         from: $sessionStore.address.toLowerCase(),
         data: paramInterface.encodeFunctionData('castVote', [moveMap[selection], blockHeight]),
       })

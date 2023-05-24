@@ -17,7 +17,7 @@
   {#each $contractStore.topStreaks as streak}
     {@const activeStreak = streak?.endBlockHeight === $contractStore?.previousWinner?.blockHeight && streak?.lastWinningMove === $contractStore?.previousWinner?.result}
     <div class="flex items-center justify-between {activeStreak ? 'font-bold' : ''}">
-      <p class="flex items-center gap-1.5">Filecoin{#if activeStreak}<img src="{window.location.origin}/monitor.svg" alt="active streak" class="w-[22px] h-auto" />{/if}</p>
+      <p class="flex items-center gap-1.5">{$page.params.team === 'filecoin' ? 'Filecoin' : 'Ethereum'}{#if activeStreak}<img src="{window.location.origin}/monitor.svg" alt="active streak" class="w-[22px] h-auto" />{/if}</p>
       <p>{streak?.length}</p>
     </div>
   {/each}

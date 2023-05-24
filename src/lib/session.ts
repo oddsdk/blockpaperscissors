@@ -21,8 +21,8 @@ export const PUBLIC_ROUTES = [
   '/choose-team/',
   '/filecoin/connect/',
   '/filecoin/intro/',
-  '/arbitrum/connect/',
-  '/arbitrum/intro/',
+  '/ethereum/connect/',
+  '/ethereum/intro/',
 ]
 
 /**

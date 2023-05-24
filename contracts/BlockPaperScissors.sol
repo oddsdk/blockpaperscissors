@@ -321,7 +321,8 @@ contract BlockPaperScissors {
     );
     BlockResult[] memory results = new BlockResult[](count);
     for (uint256 i = 0; i < count; i++) {
-      results[i] = blockResults[lastWinningMoveBlockHeight - i];
+      results[i] = blockResults[block.number - i];
+      results[i].blockHeight = block.number - i;
     }
     return results;
   }

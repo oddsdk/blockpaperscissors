@@ -11,6 +11,7 @@ import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore, sessionStore } from '$src/stores'
 import {
   APPROVED_NETWORKS,
+  TEAM_NETWORK_MAP,
   switchChain,
 } from '$lib/network'
 
@@ -70,7 +71,8 @@ export type AccountState = RawAccountState & {
 
 // export const CONTRACT_ADDRESS = '0x33EdE8BE3d5b86593dbC20aAc158516Eb3ca1CB8'
 // export const CONTRACT_ADDRESS = '0x09E859Ee639B2B4A2Ba38F8fDbd17b0B471B0A20'
-export const CONTRACT_ADDRESS = '0x645B05764928DC4DA9A715922b788C0dcA5cB0c4'
+export const CONTRACT_ADDRESS = '0x46457083d57ac1F1dE4e7B4920f1dC75Dd321124'
+// export const CONTRACT_ADDRESS = '0x2367e429AD13fB0EaCE8d74F986296dA1501eaAC'
 
 export const COLOR_MAP = {
   block: {
@@ -159,7 +161,7 @@ export const VOTES_KEY_MAP = {
 /**
  * Attach the BPS contract instance to the contractStore
  */
-export const attachContractToStore = async provider => {
+export const attachContractToStore = async (provider, team) => {
   const signer = await provider.getSigner()
   // const contract = new ethers.Contract(
   //   CONTRACT_ADDRESS,
@@ -167,13 +169,16 @@ export const attachContractToStore = async provider => {
   //   signer
   // )
 
+  const contractAddress = TEAM_NETWORK_MAP[team].testnet.contractAddress
+  // console.log('contractAddress', contractAddress)
+
   const contract = getContract({
-    address: CONTRACT_ADDRESS,
-    abi,
+    address: contractAddress,
+    abi
   })
 
   const contractReader = new ethers.Contract(
-    CONTRACT_ADDRESS,
+    contractAddress,
     JSON.stringify(abi),
     provider
   )
@@ -294,50 +299,6 @@ export const tallyVoters = (results: BlockResult[]): number => {
 }
 
 /**
- * Find the last winner(non-draw and non-stalemate)
- *
- * @param results
- */
-const getPreviousWinner = (results): BlockResult => {
-  const previousWinner = results.find(
-    result => result.result !== 'draw' && result.result !== 'stalemate'
-  )
-
-  return previousWinner
-}
-
-/**
- * Determine the networks's streak based on the last 256 plays given these parameters:
- * - If the previous winning move wins: increment the streak.
- * - If draw or stalemate: hold the streak
- * - If the previous winning move loses: streak resets to 0.
- */
-export const getNetworkStreak = (previousWinner, results): string => {
-  if (!previousWinner) {
-    return String(0)
-  }
-
-  const previousWinnerIndex = results.findIndex(
-    ({ blockHeight }) => blockHeight === previousWinner.blockHeight
-  )
-  let streak = 0
-  let updatedPreviousMove = previousWinner
-
-  // We know the previous winner's index, so we can count back from there
-  for (let i = previousWinnerIndex + 1; i < results.length; i++) {
-    if (LOSING_MOVES_MAP[updatedPreviousMove.result] === results[i].result) {
-      streak += 1
-      updatedPreviousMove = results[i]
-    } else if (WINNING_MOVES_MAP[previousWinner.result] === results[i].result) {
-      break
-    }
-  }
-
-  return String(streak)
-}
-// return streak >= 256 ? '256+' : String(streak)
-
-/**
  * Parse accountState from response data
  */
 const parseAccountState = (res): RawAccountState => {
@@ -405,10 +366,16 @@ export const fetchGameState = async () => {
   }
 }
 
+/**
+ * Calculate the `power` rating of each account based on these parameters:
+ *
+ * MOVES_QUOTIENT = moves made by this account / most moves made by any account
+ * FRESHNESS_QUOTIENT = 2.71828^(-.01 x MOVES_QUOTIENT x Blocks since last move)
+ * POWER = 10 x MOVES_QUOTIENT x FRESHNESS_QUOTIENT
+ * @param allAccounts
+ * @returns
+ */
 const calculatePower = (allAccounts: RawAccountState[]): AccountState[] => {
-  // 10 x MOVES_QUOTIENT x FRESHNESS_QUOTIENT
-  // MOVES_QUOTIENT = moves made by this account / most moves made by any account
-  // FRESHNESS_QUOTIENT = 2.71828^(-.01 x MOVES_QUOTIENT x Blocks since last move)
   const network = getStore(networkStore)
 
   // Find the most `movesMade` of any account

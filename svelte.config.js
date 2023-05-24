@@ -15,12 +15,22 @@ const config = {
       // do not include group layout folders in the path such as /(group)/test/1
       entries: [
         '*',
+        '/filecoin/connect',
         '/filecoin/help',
+        '/filecoin/intro',
         '/filecoin/leaderboard',
         '/filecoin/monitor',
         '/filecoin/play',
         '/filecoin/profile',
-        '/filecoin/vote'
+        '/filecoin/vote',
+        '/optimism/connect',
+        '/optimism/help',
+        '/optimism/intro',
+        '/optimism/leaderboard',
+        '/optimism/monitor',
+        '/optimism/play',
+        '/optimism/profile',
+        '/optimism/vote',
       ]
     }
   }

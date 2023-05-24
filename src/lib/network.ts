@@ -23,24 +23,65 @@ export type Network = {
   pendingTransactions: PendingTX[]
 }
 
-export const APPROVED_NETWORKS = [
-  '314', // FIL mainnet
-  '3141' // Hyperspace testnet
-]
-
 export const APPROVED_CHAIN_IDS = {
   hyperspace: '0xc45'
 }
 
-const WS_PROVIDER_URL = 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
-export const wsProvider = new ethers.providers.WebSocketProvider(
-  WS_PROVIDER_URL
-)
+export const TEAM_NETWORK_MAP = {
+  // arbitrum: {
+  //   wsProvider: 'wss://g.w.lavanet.xyz:443/gateway/arbn/rpc/654ffff52d55ada78b6e82ffda56ba65'
+  // },
+  ethereum: {
+    mainnet: {
+      chainId: '1',
+      wsProvider:
+        'wss://g.w.lavanet.xyz:443/gateway/eth/rpc/654ffff52d55ada78b6e82ffda56ba65'
+    },
+    testnet: {
+      chainId: '5',
+      contractAddress: '0x2367e429AD13fB0EaCE8d74F986296dA1501eaAC',
+      wsProvider:
+        'wss://g.w.lavanet.xyz:443/gateway/gth1/rpc/654ffff52d55ada78b6e82ffda56ba65'
+    }
+  },
+  filecoin: {
+    mainnet: {
+      chainId: '314',
+      wsProvider: 'wss://wss.node.glif.io/apigw/lotus/rpc/v1'
+    },
+    testnet: {
+      chainId: '3141',
+      contractAddress: '0x46457083d57ac1F1dE4e7B4920f1dC75Dd321124',
+      wsProvider: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
+    }
+  },
+  optimism: {
+    mainnet: {
+      chainId: '10',
+      wsProvider:
+        'wss://g.w.lavanet.xyz:443/gateway/optm/rpc/654ffff52d55ada78b6e82ffda56ba65'
+    },
+    testnet: {
+      chainId: '420',
+      wsProvider:
+        'wss://g.w.lavanet.xyz:443/gateway/optmt/rpc/654ffff52d55ada78b6e82ffda56ba65'
+    }
+  }
+}
+
+export const APPROVED_NETWORKS = [
+  TEAM_NETWORK_MAP.filecoin.mainnet.chainId,
+  TEAM_NETWORK_MAP.filecoin.testnet.chainId,
+  TEAM_NETWORK_MAP.ethereum.mainnet.chainId,
+  TEAM_NETWORK_MAP.ethereum.testnet.chainId,
+]
 
 /**
  * Initialise the networkStore and have it listen for blockHeight change
  */
-export const initialise = async (): Promise<void> => {
+export const initialise = async (team): Promise<void> => {
+  // console.log('team', team)
+  const wsProvider = new ethers.providers.WebSocketProvider(TEAM_NETWORK_MAP[team].testnet.wsProvider)
   const contract = getStore(contractStore)
   const paramInterface = new ethers.utils.Interface(abi)
 
@@ -75,7 +116,8 @@ export const initialise = async (): Promise<void> => {
 
     if (
       !!transaction?.to &&
-      transaction.to.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
+      transaction.to.toLowerCase() ===
+        TEAM_NETWORK_MAP[team].testnet.contractAddress.toLowerCase()
     ) {
       const decodedData = paramInterface.parseTransaction({
         data: transaction.data,
@@ -93,7 +135,7 @@ export const initialise = async (): Promise<void> => {
             blockHeight: Number(blockHeight),
             choice,
             txHash
-          },
+          }
         ]
       }))
 
@@ -102,7 +144,7 @@ export const initialise = async (): Promise<void> => {
   })
 
   // wsProvider.on('error', async () => {
-  //   console.log(`Unable to connect to ${WS_PROVIDER_URL} retrying in 3s...`)
+  //   console.log(`Unable to connect to ${WS_PROVIDER_URL_FILECOIN} retrying in 3s...`)
   //   setTimeout(initialise, 3000)
   // })
   // wsProvider.on('close', async code => {
@@ -117,11 +159,12 @@ export const initialise = async (): Promise<void> => {
 /**
  * Prompt the user to switch to hyperspace
  */
-export const switchChain = async () => {
+export const switchChain = async (team) => {
   try {
     const session = getStore(sessionStore)
+    // console.log('session.ethereumClient.chains', session.ethereumClient.chains)
     // const contract = getStore(contractStore)
-    await switchNetwork({ chainId: session.ethereumClient.chains[1].id })
+    await switchNetwork({ chainId: session.ethereumClient.chains[team === 'ethereum' ? 3 : 1].id })
     // await contract.provider?.request({
     //   method: 'wallet_switchEthereumChain',
     //   params: [{ chainId: APPROVED_CHAIN_IDS.hyperspace }]

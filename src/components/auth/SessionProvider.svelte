@@ -4,7 +4,7 @@
   import { configureChains, createConfig, getWalletClient } from '@wagmi/core'
   import { publicProvider } from '@wagmi/core/providers/public'
   // import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
-  import { arbitrum, filecoin, filecoinHyperspace, mainnet, optimism, polygon, polygonZkEvm } from '@wagmi/core/chains'
+  import { arbitrum, arbitrumGoerli, filecoin, filecoinHyperspace, goerli, mainnet, optimism, optimismGoerli, polygon, polygonZkEvm } from '@wagmi/core/chains'
   import { ethers } from 'ethers'
   import { goto } from '$app/navigation'
   import { page } from '$app/stores'
@@ -20,13 +20,17 @@
   const chains = [
     filecoin,
     filecoinHyperspace,
-    // arbitrum,
-    // mainnet,
+    mainnet,
+    goerli,
     // optimism,
+    // optimismGoerli,
+    // arbitrum,
+    // arbitrumGoerli,
     // polygon,
     // polygonZkEvm,
   ]
   const projectId = 'e0a88efdcd4eba50434eaa623195c84c'
+  // let team = localStorage.getItem('team')
 
   const { publicClient } = configureChains(chains, [
     w3mProvider({ projectId }),
@@ -46,9 +50,10 @@
   const web3modal = new Web3Modal({ projectId }, ethereumClient)
   // console.log('ethereumClient', ethereumClient)
   let account = ethereumClient.getAccount()
-  web3modal.setDefaultChain(filecoinHyperspace)
+  web3modal.setDefaultChain($page.params.team === 'ethereum' ? goerli : filecoinHyperspace)
 
-  getWalletClient().then(client => console.log('client', client))
+  getWalletClient()
+  // .then(client => console.log('client', client))
 
   sessionStore.update(state => ({
     ...state,
@@ -58,9 +63,10 @@
 
   onMount(async () => {
     await initialiseSession()
-    await initialiseNetworkStore()
+    // team = localStorage.getItem('team')
+    await initialiseNetworkStore($page.params.team ?? 'filecoin')
 
-    const unsubscribeModal = web3modal.subscribeModal(newState => {
+    const unsubscribeModal = web3modal.subscribeModal(async newState => {
       // console.log('modal state', newState)
       const address = ethereumClient.getAccount()?.address
       if (address && !newState?.open && $page.url.pathname.includes('/connect/')) {
@@ -69,9 +75,10 @@
           authed: true,
           address,
         }))
-        const team = localStorage.getItem('team')
-        goto(`/${team}/intro`)
-        switchChain()
+        // team = localStorage.getItem('team')
+        await initialiseNetworkStore($page.params.team)
+        goto(`/${$page.params.team}/intro`)
+        await switchChain($page.params.team)
       }
     })
     const unsubscribeEvents = web3modal.subscribeEvents(newState => console.log('events state', newState))
@@ -99,17 +106,17 @@
         address: account.address,
       }))
     }
-  }
 
-  // const provider = new ethers.providers.JsonRpcProvider('https://api.hyperspace.node.glif.io/rpc/v1')
-  const provider = new ethers.providers.JsonRpcProvider(ethereumClient.chains[1]?.rpcUrls.default.http[0]);
-  // Attach BPS contract to networkStore
-  attachContractToStore(provider).then(() => {
-    // addNotification(
-    //   'Wallet connected!',
-    //   'success'
-    // )
-  })
+  }
+  // if ($sessionStore.authed) {
+    // const provider = new ethers.providers.JsonRpcProvider('https://api.hyperspace.node.glif.io/rpc/v1')
+    // console.log('ethereumClient.chains', ethereumClient.chains)
+    // team = localStorage.getItem('team')
+    // console.log('team', team)
+    const provider = new ethers.providers.JsonRpcProvider($page.params.team === 'ethereum' ? 'https://ethereum-goerli.publicnode.com' : ethereumClient.chains[1]?.rpcUrls.default.http[0]);
+    // Attach BPS contract to contractStore
+    attachContractToStore(provider, $page.params.team)
+  // }
 </script>
 
 {#if loading}
