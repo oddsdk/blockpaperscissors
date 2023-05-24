@@ -63,6 +63,6 @@
   {/each}
 </div>
 
-<button disabled={!teamSelected} on:click={handleButtonClick} class="btn btn-primary btn-lg w-full mb-4 text-lg !text-yellow-500 uppercase rounded-none">
+<button disabled={!teamSelected} on:click={handleButtonClick} class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none">
   Yes! Let&apos;s Play
 </button>

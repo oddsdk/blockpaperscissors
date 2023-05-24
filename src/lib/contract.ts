@@ -21,11 +21,18 @@ export type Contract = {
   myAccount: AccountState
   networkStreak: string
   paramInterface: any
-  previousWinner: BlockResult
+  previousWinner: PreviousWinner
   provider: any
   results: BlockResult[]
+  topStreaks: Streak[]
   uniqueVoters: number
   userCombo: string
+}
+
+type Streak = {
+  endBlockHeight: number
+  startBlockHeight: number
+  length: number
 }
 
 type Voter = {
@@ -35,6 +42,11 @@ type Voter = {
 type Vote = {
   votes: number
   voters: Voter[]
+}
+
+type PreviousWinner = {
+  blockHeight: number
+  result: string
 }
 
 export type BlockResult = {
@@ -56,7 +68,9 @@ export type AccountState = RawAccountState & {
   power: number
 }
 
-export const CONTRACT_ADDRESS = '0x33EdE8BE3d5b86593dbC20aAc158516Eb3ca1CB8'
+// export const CONTRACT_ADDRESS = '0x33EdE8BE3d5b86593dbC20aAc158516Eb3ca1CB8'
+// export const CONTRACT_ADDRESS = '0x09E859Ee639B2B4A2Ba38F8fDbd17b0B471B0A20'
+export const CONTRACT_ADDRESS = '0x645B05764928DC4DA9A715922b788C0dcA5cB0c4'
 
 export const COLOR_MAP = {
   block: {
@@ -137,10 +151,10 @@ export const moveHistoryMap = (currentMove, previousMoves) => {
 export const VOTES_KEY_MAP = {
   0: 'block',
   1: 'paper',
-  2: 'scissors'
+  2: 'scissors',
+  3: 'stalemate',
+  4: 'draw',
 }
-
-const VOTE_OPTIONS = ['block', 'paper', 'scissors']
 
 /**
  * Attach the BPS contract instance to the contractStore
@@ -221,13 +235,27 @@ export const parseHistoryForRange = res => {
 
   const parsed = resArr.map(val => {
     const valObj = Object.assign({}, val)
-    const result = valObj[0]
-    const blockHeight = Number(valObj[1])
+
+    let result = VOTES_KEY_MAP[valObj.winningMove]
+    const blockVotes = valObj.blockVotes.toNumber()
 
     return {
-      result,
-      blockHeight,
-      ...parseTotalVotesForBlock({ 0: valObj[2], 1: valObj[3], 2: valObj[4] })
+      result: result === 'block' && blockVotes === 0 ? 'stalemate' : result,
+      blockHeight: valObj.blockHeight.toNumber(),
+      isDraw: valObj.isDraw,
+      isStalemate: valObj.isStalemate,
+      block: {
+        votes: blockVotes,
+        voters: valObj.blockVoters
+      },
+      paper: {
+        votes: valObj.paperVotes.toNumber(),
+        voters: valObj.paperVoters
+      },
+      scissors: {
+        votes: valObj.scissorsVotes.toNumber(),
+        voters: valObj.scissorsVoters
+      }
     }
   })
 
@@ -292,7 +320,7 @@ export const getNetworkStreak = (previousWinner, results): string => {
   const previousWinnerIndex = results.findIndex(
     ({ blockHeight }) => blockHeight === previousWinner.blockHeight
   )
-  let streak = 1
+  let streak = 0
   let updatedPreviousMove = previousWinner
 
   // We know the previous winner's index, so we can count back from there
@@ -305,89 +333,20 @@ export const getNetworkStreak = (previousWinner, results): string => {
     }
   }
 
-  return streak >= 256 ? '256+' : String(streak)
+  return String(streak)
 }
-
-/**
- * Determine the user's combo based on the last 256 plays given these parameters:
- * - If you voted with the clear majority, your combo is incremented.
- * - If your vote participated in a draw or stalemate: your combo is held.
- * - If you voted with the clear minority: your combo resets to zero. (Note: this will
- *   also be the case if there was a draw, but you voted for the 3rd option that didn't
- *   participate in the draw eg. Block & Paper drew, but you voted for Scissors).
- */
-export const getUserCombo = (results): string => {
-  const session = getStore(sessionStore)
-  const userAddress = session?.address?.toLowerCase()
-  let combo = 0
-
-  outerloop: for (let i = 0; i < results.length; i++) {
-    const votes = {
-      block: results[i].block.voters,
-      paper: results[i].paper.voters,
-      scissors: results[i].scissors.voters
-    }
-    const userChoices = {
-      block: votes.block.find(
-        voter => voter?.address?.toLowerCase() === userAddress
-      ),
-      paper: votes.paper.find(
-        voter => voter?.address?.toLowerCase() === userAddress
-      ),
-      scissors: votes.scissors.find(
-        voter => voter?.address?.toLowerCase() === userAddress
-      )
-    }
-
-    // Only votes the user participated in will affect their combo
-    if (userChoices.block || userChoices.paper || userChoices.scissors) {
-      if (results[i].result === 'draw') {
-        // If the user was in the minorty of a draw, it breaks the combo
-        if (
-          (votes.block === votes.paper && userChoices.scissors) ||
-          (votes.block === votes.scissors && userChoices.paper) ||
-          (votes.scissors === votes.paper && userChoices.scissors)
-        ) {
-          break
-        }
-
-        // If the user wasn't in the minority, continue
-        continue
-      } else if (VOTE_OPTIONS.includes(results[i].result)) {
-        for (let j = 0; j < VOTE_OPTIONS.length; j++) {
-          if (
-            results[i].result === VOTE_OPTIONS[j] &&
-            userChoices[VOTE_OPTIONS[j]]
-          ) {
-            combo += 1
-          } else if (
-            results[i].result === VOTE_OPTIONS[j] &&
-            !userChoices[VOTE_OPTIONS[j]]
-          ) {
-            break outerloop
-          }
-        }
-      }
-    }
-  }
-
-  return combo >= 256 ? '256+' : String(combo)
-}
+// return streak >= 256 ? '256+' : String(streak)
 
 /**
  * Parse accountState from response data
  */
 const parseAccountState = (res): RawAccountState => {
-  const resObj = Object.assign({}, res)
-  const resArr = Object.values(resObj)
-  const accountExists = resArr[0]
-
-  if (accountExists) {
+  if (!!res?.accountAddress) {
     return {
-      address: String(resArr[1]),
-      blockHeightOfLastMove: Number(resArr[2]),
-      lastMove: String(resArr[3]),
-      movesMade: Number(resArr[4])
+      address: String(res.accountAddress),
+      blockHeightOfLastMove: res.lastMoveBlockHeight.toNumber(),
+      lastMove: VOTES_KEY_MAP[res.lastMove],
+      movesMade: res.totalMoves.toNumber()
     }
   }
 
@@ -406,29 +365,40 @@ export const fetchGameState = async () => {
   try {
     // await switchChain()
     const contracts = getStore(contractStore)
-    const network = getStore(networkStore)
-
-    const res = await contracts?.bpsReader?.historyForRange(
-      400,
-      network?.blockHeight
-    )
+    // const network = getStore(networkStore)
+    // console.log('network?.blockHeight - 355783', network?.blockHeight - 355783)
+    // const res = await contracts?.bpsReader?.historyForRange(
+    //   network?.blockHeight - 355783,
+    //   // 257,
+    //   network?.blockHeight
+    // )
+    const res = await contracts?.bpsReader?.getResultsOfPreviousBlocks(257)
     const parsed = parseHistoryForRange(res)
-
     const results = parsed.slice(0, -1)
-    const uniqueVoters = tallyVoters(results as BlockResult[])
 
-    const previousWinner = getPreviousWinner(results)
+    const streaksRes = await contracts?.bpsReader?.getAllStreaks()
+    const lastWinningMove = await contracts?.bpsReader?.lastWinningMove()
+    const lastWinningMoveBlockHeight = (await contracts?.bpsReader?.lastWinningMoveBlockHeight())?.toNumber()
+    const networkStreak =
+      streaksRes?.length === 1
+        ? streaksRes[0]?._length?.toNumber()
+        : streaksRes
+            .find(
+              streak =>
+                streak.endBlockHeight.toNumber() === lastWinningMoveBlockHeight
+            )
+            ?._length?.toNumber()
 
-    const networkStreak = getNetworkStreak(previousWinner, results)
-    const userCombo = getUserCombo(results)
+    const previousWinner = {
+      blockHeight: lastWinningMoveBlockHeight,
+      result: VOTES_KEY_MAP[lastWinningMove],
+    }
 
     contractStore.update(state => ({
       ...state,
       networkStreak,
       previousWinner,
       results: results as BlockResult[],
-      uniqueVoters,
-      userCombo
     }))
   } catch (error) {
     console.error(error)
@@ -474,7 +444,7 @@ const calculatePower = (allAccounts: RawAccountState[]): AccountState[] => {
 export const fetchAllAccounts = async () => {
   try {
     const contracts = getStore(contractStore)
-    const res = await contracts?.bpsReader?.allAccountStates()
+    const res = await contracts?.bpsReader?.getAllUsers()
     const resObj = Object.assign({}, res)
     const resArr = Object.values(resObj)
 
@@ -498,14 +468,10 @@ export const fetchAllAccounts = async () => {
 export const fetchAccount = async (address: string) => {
   try {
     const contracts = getStore(contractStore)
-    const res = await contracts?.bps?.singleAccountState(address)
+    const res = await contracts?.bps?.getUserByAddress(address)
     const accountState = parseAccountState(res)
 
     return accountState
-    // contractStore.update(state => ({
-    //   ...state,
-    //   myAccount: accountState
-    // }))
   } catch (error) {
     console.error(error)
   }
@@ -518,23 +484,37 @@ export const fetchMyAccount = async () => {
   try {
     const contracts = getStore(contractStore)
     const session = getStore(sessionStore)
-    console.log('contracts', contracts)
-    // const res = await readContract({
-    //   address: CONTRACT_ADDRESS,
-    //   abi: abi,
-    //   functionName: 'singleAccountState',
-    //   args: [session.address]
-    // })
-    const res = await contracts?.bpsReader?.singleAccountState(session.address)
-    // const res = await contracts?.bpsReader?.myAccountState()
-    // console.log('res', res)
-    const accountState = parseAccountState(res)
 
-    console.log('accountState', accountState)
+    const res = await contracts?.bpsReader?.getUserByAddress(session.address)
+    const accountState = parseAccountState(res)
 
     contractStore.update(state => ({
       ...state,
       myAccount: accountState
+    }))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+/**
+ * Fetch the top streaks from the contract
+ */
+export const fetchTopStreaks = async () => {
+  try {
+    const contracts = getStore(contractStore)
+    const res = await contracts?.bpsReader?.getTopStreaks(10)
+
+    const parsedStreaks = res.map(streak => ({
+      endBlockHeight: streak.endBlockHeight.toNumber(),
+      startBlockHeight: streak.startBlockHeight.toNumber(),
+      length: streak._length.toNumber(),
+      lastWinningMove: VOTES_KEY_MAP[streak.lastWinningMove],
+    }))
+
+    contractStore.update(state => ({
+      ...state,
+      topStreaks: parsedStreaks,
     }))
   } catch (error) {
     console.error(error)

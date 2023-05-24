@@ -1,8 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores'
 
-  import { fetchAllAccounts, fetchGameState } from '$lib/contract'
-  import { getTop10Streaks } from '$lib/leaderboard'
+  import { fetchAllAccounts, fetchGameState, fetchTopStreaks } from '$lib/contract'
   import { contractStore, networkStore } from '$src/stores'
   import Countdown from '$components/common/Countdown.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
@@ -15,14 +14,13 @@
   }
 
   let topStreak = 0
-  if (!$contractStore?.allAccounts?.length) {
-    fetchAllAccounts().then(() => {
-      topStreak = getTop10Streaks()[0]?.movesMade
+  if (!$contractStore?.topStreaks?.length) {
+    fetchTopStreaks().then(() => {
+      topStreak = $contractStore.topStreaks[0]?.length
     })
   } else {
-    topStreak = getTop10Streaks()[0]?.movesMade
+    topStreak = $contractStore.topStreaks[0]?.length
   }
-  console.log('contractStore', $contractStore)
 
   let moveHistoryLoading = true
   const moveHistoryLoadingComplete = () => moveHistoryLoading = false
@@ -30,11 +28,11 @@
   $: previousMove = $contractStore?.previousWinner?.result
   $: {
     if (!$contractStore?.allAccounts?.length) {
-      fetchAllAccounts().then(() => {
-        topStreak = getTop10Streaks()[0]?.movesMade
+      fetchTopStreaks().then(() => {
+        topStreak = $contractStore.topStreaks[0]?.length
       })
     } else {
-      topStreak = getTop10Streaks()[0]?.movesMade
+      topStreak = $contractStore.topStreaks[0]?.length
     }
   }
 </script>
@@ -42,7 +40,7 @@
 <div class="pt-7 pb-2">
   {#if $contractStore?.results?.length && previousMove}
     <!-- Header scoreboard -->
-    <div class="fixed z-10 top-0 left-0 right-0 px-10 py-6 flex items-center justify-between bg-black-500 text-base-100 font-bold text-base">
+    <div class="fixed z-10 top-0 left-0 right-0 px-10 py-6 flex items-center justify-between bg-base-content text-base-100 font-bold text-base">
       <div class="flex items-center gap-2">
         <img src="{window.location.origin}/chain.svg" class="h-[15px] w-auto" alt="streak" />
         <p>STREAK: {$contractStore?.networkStreak}</p>
@@ -66,17 +64,18 @@
     </div>
   {:else}
     <div class="px-10">
-      <InContextLoader />
+      <InContextLoader heightClass="h-[calc(100vh-250px)]" />
     </div>
   {/if}
 
   <div class="px-10">
     {#if !!$networkStore.pendingTransaction}
-      <button disabled={true} class="btn btn-primary btn-lg w-full !text-yellow-500 justify-between text-lg uppercase rounded-none">
+      <button disabled={true} class="btn btn-primary btn-lg w-full justify-between text-lg uppercase rounded-none">
         <span class="btn-loading">Counting Votes</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="counting votes" />
       </button>
+      <div class="hidden"><Countdown /></div>
     {:else}
-      <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full justify-between !text-yellow-500 text-lg uppercase rounded-none">
+      <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full justify-between text-lg uppercase rounded-none">
         Cast your vote <Countdown />
       </a>
     {/if}

@@ -26,6 +26,7 @@ export const contractStore: Writable<Contract> = writable({
   ethersProvider: null,
   provider: null,
   results: null,
+  topStreaks: null,
   uniqueVoters: null,
   userCombo: null
 })

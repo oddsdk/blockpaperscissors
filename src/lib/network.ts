@@ -6,7 +6,7 @@ import { get as getStore } from 'svelte/store'
 
 import { abi } from '$contracts/BlockPaperScissors.sol/BlockPaperScissors.json'
 import { contractStore, networkStore, sessionStore } from '$src/stores'
-import { CONTRACT_ADDRESS, fetchGameState } from '$lib/contract'
+import { CONTRACT_ADDRESS, VOTES_KEY_MAP, fetchGameState } from '$lib/contract'
 // import { addNotification } from '$lib/notifications'
 
 type PendingTX = {
@@ -81,10 +81,9 @@ export const initialise = async (): Promise<void> => {
         data: transaction.data,
         value: transaction.value
       })
-      const blockHeight = decodedData.args[1].toNumber()
-      const choice = decodedData.args[0]
-
       // console.log('decodedData', decodedData)
+      const blockHeight = decodedData.args[1].toNumber()
+      const choice = VOTES_KEY_MAP[decodedData.args[0]]
 
       networkStore.update(state => ({
         ...state,

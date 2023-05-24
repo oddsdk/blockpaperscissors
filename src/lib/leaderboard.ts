@@ -21,6 +21,7 @@ export const getTop10Streaks = (): AccountState[] => {
     .filter(account => values.includes(account?.movesMade))
     .reverse()
 }
+
 /**
  * Check the `power` of `allAccounts` and return the top 10
  *

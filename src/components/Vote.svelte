@@ -21,7 +21,6 @@
   let selection: string = 'block'
   let voteSelected = true
 
-  console.log('$previousMove', $contractStore?.previousWinner?.result)
   let votingInstructions = votingInstructionsMap($contractStore?.previousWinner?.result)
 
   const copyMap = {
@@ -72,10 +71,15 @@
 			const paramInterface = new ethers.utils.Interface(abi)
 
       const blockHeight = $networkStore.blockHeight
+      const moveMap = {
+        block: 0,
+        paper: 1,
+        scissors: 2,
+      }
       const txConfig = await prepareSendTransaction({
         to: CONTRACT_ADDRESS,
         from: $sessionStore.address.toLowerCase(),
-        data: paramInterface.encodeFunctionData('castVote', [selection, blockHeight]),
+        data: paramInterface.encodeFunctionData('castVote', [moveMap[selection], blockHeight]),
       })
 
       const { hash } = await sendTransaction(txConfig)
@@ -118,7 +122,7 @@
   {#if loading}
     <button disabled class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</button>
   {:else}
-    <a href="/{$page.params.team}/play" class="absolute right-0 -top-2 btn btn-primary !text-yellow-500 btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</a>
+    <a href="/{$page.params.team}/play" class="absolute right-0 -top-2 btn btn-primary btn-lg w-[82px] h-16 text-lg uppercase rounded-none text-[39px]">X</a>
   {/if}
 
   <h1 class="text-3xl pt-8 pb-10 uppercase">
@@ -174,7 +178,7 @@
     {/if}
   </div>
 
-  <button disabled={!voteSelected || loading} on:click={handleVoteClick} class="btn btn-primary btn-lg w-full mb-4 !text-yellow-500 justify-between text-lg uppercase rounded-none">
+  <button disabled={!voteSelected || loading} on:click={handleVoteClick} class="btn btn-primary btn-lg w-full mb-4 justify-between text-lg uppercase rounded-none">
     {#if loading}
       <span class="btn-loading">SUBMITTING</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="submitting" />
     {:else}

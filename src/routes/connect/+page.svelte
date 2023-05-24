@@ -37,6 +37,6 @@
   </p>
 </div>
 
-<button class="btn btn-primary btn-lg w-full mb-4 text-lg !text-yellow-500 uppercase rounded-none" on:click={init}>
+<button class="btn btn-primary btn-lg w-full mb-4 text-lg uppercase rounded-none" on:click={init}>
   Connect Wallet
 </button>

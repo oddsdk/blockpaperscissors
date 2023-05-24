@@ -2,7 +2,7 @@
   import { page } from '$app/stores'
 
   import { networkStore } from '$src/stores'
-  import { fetchAllAccounts } from '$lib/contract'
+  import { fetchAllAccounts, fetchTopStreaks } from '$lib/contract'
   import Divider from '$components/common/Divider.svelte'
   import InContextLoader from '$components/common/InContextLoader.svelte'
   import Top10Streaks from '$components/leaderboard/Top10Streaks.svelte'
@@ -25,8 +25,10 @@
 
   let activeTabIndex = 0
   let allAccounts = fetchAllAccounts()
+  let topStreaks = fetchTopStreaks()
   $: $networkStore.blockHeight, (async () => {
     allAccounts = fetchAllAccounts()
+    topStreaks = fetchTopStreaks()
   })();
 </script>
 

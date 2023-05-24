@@ -49,7 +49,7 @@ module.exports = {
           success: '#18B451',
           warning: '#6767F4',
           error: '#E02E64',
-          'base-content': '#F5F8E6', // Base text content color
+          'base-content': '#F1EDDA', // Base text content color
           'base-100': '#302F2C', // Base background color
           '--rounded-box': '16px',
           '--rounded-btn': '4px',

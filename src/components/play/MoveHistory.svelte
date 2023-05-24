@@ -3,10 +3,29 @@
 
   import { contractStore, networkStore } from '$src/stores'
   import { moveHistoryMap } from '$lib/contract'
+  import InfiniteScroll from '$components/common/InfiniteScroll.svelte'
 
   export let loadingComplete
 
+  let offset = 30
+  let cursor = 1
+  let moves = $contractStore?.results?.slice(0, offset * cursor)?.toReversed()
+  let nextBatchOfMoves = []
+
+  // Paginate the move history to show them via infinite scroll
+  const getPreviousMoves = () => {
+    nextBatchOfMoves = $contractStore?.results?.slice(offset * cursor, offset * (cursor + 1))?.toReversed()
+    cursor++
+    // console.log('nextBatchOfMoves', nextBatchOfMoves)
+  }
+
+  $: moves = [
+    ...nextBatchOfMoves,
+		...moves,
+  ];
+
   // Scroll to bottom of the list(this is a little sketchy)
+  let scrolledToBottom = false
   let scrollTarget
   $: {
     if (scrollTarget) {
@@ -16,6 +35,8 @@
         })
         scroll()
         loadingComplete()
+        scrolledToBottom = true
+        // console.log('scrolledToBottom')
       }, 10)
     }
   }
@@ -80,6 +101,13 @@
 </script>
 
 <div class="flex flex-col px-10">
+  {#if scrolledToBottom}
+    <InfiniteScroll
+      hasMore={$contractStore?.results?.length !== moves.length}
+      threshold={100}
+      on:loadMore={() => getPreviousMoves()}
+    />
+  {/if}
   {#each $contractStore?.results?.toReversed() as result, i}
     {#if result?.result === 'stalemate'}
       <div class="flex items-center justify-center py-[18px]">

@@ -44,8 +44,8 @@
   })
   const ethereumClient = new EthereumClient(wagmiConfig, chains)
   const web3modal = new Web3Modal({ projectId }, ethereumClient)
-  console.log('ethereumClient', ethereumClient)
-  const account = ethereumClient.getAccount()
+  // console.log('ethereumClient', ethereumClient)
+  let account = ethereumClient.getAccount()
   web3modal.setDefaultChain(filecoinHyperspace)
 
   getWalletClient().then(client => console.log('client', client))
@@ -82,12 +82,13 @@
   })
 
   $: loading = !$networkStore.blockHeight || $sessionStore.loading
-  // $: {
-  //   if (!account.address && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
-  //     goto('/')
-  //     addNotification('Please connect your wallet first.')
-  //   }
-  // }
+  $: {
+    account = ethereumClient.getAccount()
+    if (!account.address && !loading && !PUBLIC_ROUTES.includes($page.url.pathname)) {
+      goto('/')
+      addNotification('Please connect your wallet first.')
+    }
+  }
 
   $: {
     if (!$sessionStore.authed && !!account?.address) {

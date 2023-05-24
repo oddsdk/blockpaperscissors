@@ -47,6 +47,6 @@
   <InContextLoader />
 {/if}
 
-<button on:click={handleLogout} class="btn btn-primary btn-lg w-full mb-2 text-lg !text-yellow-500 uppercase rounded-none">
+<button on:click={handleLogout} class="btn btn-primary btn-lg w-full mb-2 text-lg uppercase rounded-none">
   Disconnect
 </button>
