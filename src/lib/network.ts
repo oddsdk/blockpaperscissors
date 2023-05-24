@@ -66,6 +66,19 @@ export const TEAM_NETWORK_MAP = {
       wsProvider:
         'wss://g.w.lavanet.xyz:443/gateway/optmt/rpc/654ffff52d55ada78b6e82ffda56ba65'
     }
+  },
+  polygon: {
+    mainnet: {
+      chainId: '137',
+      wsProvider:
+        'wss://rpc-mainnet.maticvigil.com/ws/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42'
+    },
+    testnet: {
+      chainId: '80001',
+      contractAddress: '0x51C8932Eb7C81f299387E7beAC8129211b35df58',
+      wsProvider:
+        'wss://rpc-mumbai.maticvigil.com/ws/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42'
+    }
   }
 }
 

@@ -23,6 +23,8 @@ export const PUBLIC_ROUTES = [
   '/filecoin/intro/',
   '/ethereum/connect/',
   '/ethereum/intro/',
+  '/polygon/connect/',
+  '/polygon/intro/',
 ]
 
 /**
