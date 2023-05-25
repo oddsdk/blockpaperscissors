@@ -128,8 +128,12 @@
   }
 
   // Set provider
-  // 'https://ethereum-goerli.publicnode.com'
-  const provider = new ethers.providers.JsonRpcProvider($page.params.team === 'polygon' ? 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78' : ethereumClient.chains[1]?.rpcUrls.default.http[0]);
+  const RPC_URL_MAP = {
+    ethereum: 'https://ethereum-goerli.publicnode.com',
+    filecoin: ethereumClient.chains[1]?.rpcUrls.default.http[0],
+    polygon: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78',
+  }
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL_MAP[$page.params.team]);
 
   // Attach BPS contract to contractStore
   attachContractToStore(provider, $page.params.team)
