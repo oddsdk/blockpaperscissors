@@ -78,16 +78,25 @@
           loading = false
           return
         }
+
+        if ($page.params.team === 'polygon' && chainId !== Number(APPROVED_NETWORKS[5])) {
+          addNotification('Please switch to the Polygon Mumbai testnet', 'error')
+          // await switchChain($page.params.team)
+          loading = false
+          return
+        }
       }
 
 			const paramInterface = new ethers.utils.Interface(abi)
 
       const blockHeight = $networkStore.blockHeight
       const moveMap = {
-        block: 0,
-        paper: 1,
-        scissors: 2,
+        block: 1,
+        paper: 2,
+        scissors: 3,
       }
+      console.log('moveMap[selection]', moveMap[selection])
+      console.log('blockHeight', blockHeight)
       const txConfig = await prepareSendTransaction({
         to: TEAM_NETWORK_MAP[$page.params.team].testnet.contractAddress,
         from: $sessionStore.address.toLowerCase(),

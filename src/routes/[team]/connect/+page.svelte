@@ -1,7 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
+  import { page } from '$app/stores'
 
   import { sessionStore } from '$src/stores'
+  import { switchChain } from '$lib/network'
   import { initialise } from '$lib/session'
   import Divider from '$components/common/Divider.svelte'
 
@@ -13,6 +15,17 @@
       })
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  $: {
+    if ($sessionStore.ethereumClient) {
+      const account = $sessionStore.ethereumClient.getAccount()
+      if (account.isConnected) {
+        switchChain($page.params.team).then(() => {
+          goto(`/${$page.params.team}/intro`)
+        })
+      }
     }
   }
 </script>

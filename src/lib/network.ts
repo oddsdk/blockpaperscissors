@@ -51,7 +51,7 @@ export const TEAM_NETWORK_MAP = {
     },
     testnet: {
       chainId: '3141',
-      contractAddress: '0xe156554C33F94e89f5DB51d36e57eAf70db6204D',
+      contractAddress: '0xe124F194ED4D3380d5398ea24fC4466abA010219',
       wsProvider: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
     }
   },
@@ -75,9 +75,10 @@ export const TEAM_NETWORK_MAP = {
     },
     testnet: {
       chainId: '80001',
-      contractAddress: '0x51C8932Eb7C81f299387E7beAC8129211b35df58',
+      contractAddress: '0xE39e7F936A751fA236761CE8d2993fCb9A1364c6',
       wsProvider:
-        'wss://rpc-mumbai.maticvigil.com/ws/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42'
+        'wss://matic.getblock.io/62041869-664d-428b-8ba5-5ad871dfe5d4/testnet/'
+        // 'wss://rpc-mumbai.maticvigil.com/ws/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42'
     }
   }
 }
@@ -87,13 +88,15 @@ export const APPROVED_NETWORKS = [
   TEAM_NETWORK_MAP.filecoin.testnet.chainId,
   TEAM_NETWORK_MAP.ethereum.mainnet.chainId,
   TEAM_NETWORK_MAP.ethereum.testnet.chainId,
+  TEAM_NETWORK_MAP.polygon.mainnet.chainId,
+  TEAM_NETWORK_MAP.polygon.testnet.chainId,
 ]
 
 /**
  * Initialise the networkStore and have it listen for blockHeight change
  */
 export const initialise = async (team): Promise<void> => {
-  // console.log('team', team)
+  console.log('team', team)
   const wsProvider = new ethers.providers.WebSocketProvider(TEAM_NETWORK_MAP[team].testnet.wsProvider)
   const contract = getStore(contractStore)
   const paramInterface = new ethers.utils.Interface(abi)
@@ -107,7 +110,9 @@ export const initialise = async (team): Promise<void> => {
   }
 
   // `block` events take a little while to start coming through, so we'll fetch the startingBlock first
+  console.log('wsProvider', wsProvider)
   const startingBlock = await wsProvider.getBlockNumber()
+  console.log('startingBlock', startingBlock)
   networkStore.update(state => ({
     ...state,
     blockHeight: startingBlock
@@ -175,9 +180,9 @@ export const initialise = async (team): Promise<void> => {
 export const switchChain = async (team) => {
   try {
     const session = getStore(sessionStore)
-    // console.log('session.ethereumClient.chains', session.ethereumClient.chains)
+    console.log('session.ethereumClient.chains', session.ethereumClient.chains)
     // const contract = getStore(contractStore)
-    await switchNetwork({ chainId: session.ethereumClient.chains[team === 'ethereum' ? 3 : 1].id })
+    await switchNetwork({ chainId: session.ethereumClient.chains[team === 'polygon' ? 5 : 1].id })
     // await contract.provider?.request({
     //   method: 'wallet_switchEthereumChain',
     //   params: [{ chainId: APPROVED_CHAIN_IDS.hyperspace }]

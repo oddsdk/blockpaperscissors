@@ -7,10 +7,10 @@
 
   const teams = {
     filecoin: 'Filecoin',
-    ethereum: 'Ethereum',
-    optimism: 'Optimism',
     polygon: 'Polygon',
     'polygon-zkevm': 'Polygon zkEVM',
+    ethereum: 'Ethereum',
+    optimism: 'Optimism',
     arbitrum: 'Arbitrum',
   }
 

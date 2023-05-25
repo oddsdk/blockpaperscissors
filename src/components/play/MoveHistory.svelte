@@ -127,7 +127,7 @@
         <p class="text-base py-3">DRAW</p>
       </div>
     {:else}
-      {@const moveHistory = moveHistoryMap(result?.result, $contractStore?.results?.slice($contractStore?.results?.toReversed().slice(i).length))}
+      {@const moveHistory = moveHistoryMap(result)}
       <div class="relative z-0 flex items-center justify-center gap-9 py-[18px]">
         <!-- {#if moveHistory.result === 'win'}
           <div class="absolute z-0 top-0 left-1/2 -translate-x-1/2 h-10 w-[7px] bg-black-500"></div>
@@ -143,7 +143,7 @@
           <p class="text-base py-3">DRAW</p>
         {/if}
 
-        <img src="{window.location.origin}/{!moveHistory.move ? result.result : moveHistory.move}.svg" alt="{!moveHistory.move ? result.result : moveHistory.move}" class="w-[56px] h-auto" />
+        <img src="{window.location.origin}/{!moveHistory.previousMove ? result.result : moveHistory.previousMove}.svg" alt="{!moveHistory.previousMove ? result.result : moveHistory.previousMove}" class="w-[56px] h-auto" />
       </div>
     {/if}
   {/each}
@@ -152,7 +152,7 @@
       <div class="relative z-0 flex items-center justify-center gap-9 py-[18px]">
         <img src="{window.location.origin}/{pendingResults[key].result}.svg" alt="{pendingResults[key].result}" class="w-[56px] h-auto" />
 
-        <p class="flex justify-center py-3 text-base text-center text-xs">finalizing<br />...</p>
+        <p class="flex flex-col items-center justify-center py-3 text-base text-center text-xs">finalizing<br /><span><span class="block btn-loading"></span></span></p>
 
         <img src="{window.location.origin}/{pendingResults[key].previousResult}.svg" alt="{pendingResults[key].previousResult}" class="w-[56px] h-auto" />
       </div>
