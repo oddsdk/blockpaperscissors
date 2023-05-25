@@ -95,8 +95,7 @@
         paper: 2,
         scissors: 3,
       }
-      console.log('moveMap[selection]', moveMap[selection])
-      console.log('blockHeight', blockHeight)
+
       const txConfig = await prepareSendTransaction({
         to: TEAM_NETWORK_MAP[$page.params.team].testnet.contractAddress,
         from: $sessionStore.address.toLowerCase(),

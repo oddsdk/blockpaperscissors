@@ -96,7 +96,6 @@ export const APPROVED_NETWORKS = [
  * Initialise the networkStore and have it listen for blockHeight change
  */
 export const initialise = async (team): Promise<void> => {
-  console.log('team', team)
   const wsProvider = new ethers.providers.WebSocketProvider(TEAM_NETWORK_MAP[team].testnet.wsProvider)
   const contract = getStore(contractStore)
   const paramInterface = new ethers.utils.Interface(abi)
@@ -110,9 +109,7 @@ export const initialise = async (team): Promise<void> => {
   }
 
   // `block` events take a little while to start coming through, so we'll fetch the startingBlock first
-  console.log('wsProvider', wsProvider)
   const startingBlock = await wsProvider.getBlockNumber()
-  console.log('startingBlock', startingBlock)
   networkStore.update(state => ({
     ...state,
     blockHeight: startingBlock

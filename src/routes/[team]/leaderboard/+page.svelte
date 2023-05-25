@@ -51,20 +51,18 @@
   {/each}
 </div>
 
-{#await allAccounts}
-  <InContextLoader />
-{:then}
-  {#if activeTabIndex == 0}
-    <Top10Streaks />
-  {/if}
+{#if activeTabIndex == 0}
+  <Top10Streaks />
+{/if}
 
-  {#if activeTabIndex == 1}
-    <Top10Voters />
-  {/if}
+{#if activeTabIndex == 1}
+  <Top10Voters />
+{/if}
 
-  {#if activeTabIndex == 2}
-    <p class="w-full mb-6 flex justify-between items-center text-lg font-bold">
-      A-Team Members <a class="text-blue-500 underline" href="/{$page.params.team}/help">Wut? 🤔</a>
-    </p>
-  {/if}
-{/await}
+{#if activeTabIndex == 2}
+  <p class="w-full mb-6 flex justify-between items-center text-lg font-bold">
+    A-Team Members <a class="text-blue-500 underline" href="/{$page.params.team}/help">Wut? 🤔</a>
+  </p>
+
+  <p class="text-lg">Coming soon...</p>
+{/if}
