@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import { page } from '$app/stores'
 
   import { contractStore, networkStore } from '$src/stores'
@@ -94,17 +93,13 @@
   }
   parseVotesForNextBlock()
 
-  onMount(() => {
-    const unsubscribe = networkStore.subscribe(() => {
-      parseVotesForNextBlock()
-    })
-
-    return () => unsubscribe()
-  })
-
-  $: {
+  $: $networkStore.blockHeight, (() => {
     getHighLowVotes()
-  }
+  })();
+
+  $: $networkStore.pendingTransactions, (() => {
+    parseVotesForNextBlock()
+  })();
 </script>
 
 <div class="relative bg-beige-400 mb-6">

@@ -3,7 +3,6 @@
   import { Web3Modal } from '@web3modal/html'
   import { configureChains, createConfig, getWalletClient } from '@wagmi/core'
   import { publicProvider } from '@wagmi/core/providers/public'
-  // import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
   import { arbitrum, arbitrumGoerli, filecoin, filecoinHyperspace, goerli, mainnet, optimism, optimismGoerli, polygon, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet } from '@wagmi/core/chains'
   import { ethers } from 'ethers'
   import { dev } from '$app/environment'
@@ -32,6 +31,20 @@
     // polygonZkEvm,
   ]
   const projectId = 'e0a88efdcd4eba50434eaa623195c84c'
+  const chainMap = {
+    ethereum: {
+      mainnet: mainnet,
+      testnet: goerli,
+    },
+    filecoin: {
+      mainnet: filecoin,
+      testnet: filecoinHyperspace,
+    },
+    polygon: {
+      mainnet: polygon,
+      testnet: polygonMumbai
+    },
+  }
 
   const { publicClient } = configureChains(chains, [
     w3mProvider({ projectId }),
@@ -46,7 +59,7 @@
   const web3modal = new Web3Modal({ projectId }, ethereumClient)
 
   let account = ethereumClient.getAccount()
-  web3modal.setDefaultChain($page.params.team === 'polygon' ? polygonMumbai : filecoinHyperspace)
+  web3modal.setDefaultChain(chainMap[$page.params.team].testnet)
 
   getWalletClient()
   // .then(client => console.log('client', client))
@@ -63,6 +76,8 @@
 
     const unsubscribeModal = web3modal.subscribeModal(async newState => {
       const address = ethereumClient.getAccount()?.address
+      console.log('newState', newState)
+      console.log('newState address', address)
       if (address && !newState?.open && $page.url.pathname.includes('/connect/')) {
         sessionStore.update(state => ({
           ...state,
@@ -97,19 +112,28 @@
   }
 
   $: {
+    account = ethereumClient.getAccount()
     if (!$sessionStore.authed && !!account?.address) {
       sessionStore.update(state => ({
         ...state,
         authed: true,
         address: account.address,
       }))
+
+      if (!$networkStore.blockHeight) {
+        initialiseNetworkStore($page.params.team)
+      }
     }
 
   }
 
   // Set provider
-  // 'https://ethereum-goerli.publicnode.com'
-  const provider = new ethers.providers.JsonRpcProvider($page.params.team === 'polygon' ? 'https://rpc-mumbai.maticvigil.com/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42' : ethereumClient.chains[1]?.rpcUrls.default.http[0]);
+  const RPC_URL_MAP = {
+    ethereum: 'https://ethereum-goerli.publicnode.com',
+    filecoin: ethereumClient.chains[1]?.rpcUrls.default.http[0],
+    polygon: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78',
+  }
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL_MAP[$page.params.team]);
 
   // Attach BPS contract to contractStore
   attachContractToStore(provider, $page.params.team)

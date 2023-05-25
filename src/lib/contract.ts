@@ -130,32 +130,31 @@ export const votingInstructionsMap = previousWinner => ({
       : 'For a loss'
 })
 
-export const moveHistoryMap = (currentMove, previousMoves) => {
-  const previousMove = previousMoves.find(
-    move => move.result !== 'draw' && move.result !== 'stalemate'
-  )
-
+export const moveHistoryMap = (currentMove) => {
+  const previousMove = currentMove.previousResult
   let result
-  if (WINNING_MOVES_MAP[previousMove?.result] === currentMove) {
+
+  if (WINNING_MOVES_MAP[previousMove] === currentMove.result) {
     result = 'win'
-  } else if (LOSING_MOVES_MAP[previousMove?.result] === currentMove) {
+  } else if (LOSING_MOVES_MAP[previousMove] === currentMove.result) {
     result = 'loss'
-  } else if (previousMove?.result === currentMove) {
+  } else if (previousMove === currentMove.result) {
     result = 'draw'
   }
 
   return {
     result,
-    move: previousMove?.result
+    previousMove
   }
 }
 
 export const VOTES_KEY_MAP = {
-  0: 'block',
-  1: 'paper',
-  2: 'scissors',
-  3: 'stalemate',
-  4: 'draw',
+  0: 'null',
+  1: 'block',
+  2: 'paper',
+  3: 'scissors',
+  4: 'stalemate',
+  5: 'draw',
 }
 
 /**
@@ -240,17 +239,16 @@ export const parseHistoryForRange = res => {
 
   const parsed = resArr.map(val => {
     const valObj = Object.assign({}, val)
-
     let result = VOTES_KEY_MAP[valObj.winningMove]
-    const blockVotes = valObj.blockVotes.toNumber()
 
     return {
-      result: result === 'block' && blockVotes === 0 ? 'stalemate' : result,
+      result: result === 'null' ? 'stalemate' : result,
+      previousResult: VOTES_KEY_MAP[valObj.previousWinningMove],
       blockHeight: valObj.blockHeight.toNumber(),
       isDraw: valObj.isDraw,
       isStalemate: valObj.isStalemate,
       block: {
-        votes: blockVotes,
+        votes: valObj.blockVotes.toNumber(),
         voters: valObj.blockVoters
       },
       paper: {
@@ -334,6 +332,7 @@ export const fetchGameState = async () => {
     //   network?.blockHeight
     // )
     const res = await contracts?.bpsReader?.getResultsOfPreviousBlocks(257)
+    // console.log('res', res)
     const parsed = parseHistoryForRange(res)
     const results = parsed.slice(0, -1)
 

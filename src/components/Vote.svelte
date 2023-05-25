@@ -91,10 +91,11 @@
 
       const blockHeight = $networkStore.blockHeight
       const moveMap = {
-        block: 0,
-        paper: 1,
-        scissors: 2,
+        block: 1,
+        paper: 2,
+        scissors: 3,
       }
+
       const txConfig = await prepareSendTransaction({
         to: TEAM_NETWORK_MAP[$page.params.team].testnet.contractAddress,
         from: $sessionStore.address.toLowerCase(),

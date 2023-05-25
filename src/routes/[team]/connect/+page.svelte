@@ -1,18 +1,37 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
+  import { page } from '$app/stores'
 
   import { sessionStore } from '$src/stores'
+  import { switchChain } from '$lib/network'
   import { initialise } from '$lib/session'
   import Divider from '$components/common/Divider.svelte'
+
+  const redirectToIntroPage = () => {
+    switchChain($page.params.team).then(() => {
+      goto(`/${$page.params.team}/intro`)
+    })
+  }
 
   // Connect to WalletAuth then redirect to the intro page
   const init = async () => {
     try {
-      $sessionStore.web3modal.openModal({
-        route: 'ConnectWallet'
-      })
+      const account = $sessionStore.ethereumClient.getAccount()
+      if (account.isConnected) {
+        redirectToIntroPage()
+      } else {
+        $sessionStore.web3modal.openModal({
+          route: 'ConnectWallet'
+        })
+      }
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  $: {
+    if ($sessionStore.ethereumClient && $sessionStore.ethereumClient?.getAccount()?.isConnected) {
+      redirectToIntroPage()
     }
   }
 </script>

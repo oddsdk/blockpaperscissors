@@ -8,8 +8,8 @@
   const teams = {
     filecoin: 'Filecoin',
     polygon: 'Polygon',
-    'polygon-zkevm': 'Polygon zkEVM',
     ethereum: 'Ethereum',
+    'polygon-zkevm': 'Polygon zkEVM',
     optimism: 'Optimism',
     arbitrum: 'Arbitrum',
   }
@@ -45,11 +45,11 @@
 
 <div class="flex flex-col gap-2 mb-8">
   {#each Object.keys(teams) as key, i}
-    <button in:fly={{ x: -10, delay: 0+(i*20), duration: 250 }} on:click={() => handleTeamClick(key)} disabled={i > 1} class="flex flex-col gap-3 {i > 1 ? 'text-beige-500' : '' }">
+    <button in:fly={{ x: -10, delay: 0+(i*20), duration: 250 }} on:click={() => handleTeamClick(key)} disabled={i > 2} class="flex flex-col gap-3 {i > 2 ? 'text-beige-500' : '' }">
       <div class="relative w-full flex items-center gap-3 text-xl">
-        <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {team === key ? 'bg-base-content' : ''} {i > 1 ? 'border-beige-500' : '' }"></span>
+        <span class="w-6 h-6 rounded-full border-base-content border-[5px] transition-colors ease-in-out {team === key ? 'bg-base-content' : ''} {i > 2 ? 'border-beige-500' : '' }"></span>
         <span class="font-bold">{teams[key]}</span>
-        {#if i > 1}
+        {#if i > 2}
           <span class="absolute top-0 right-0 font-bold text-red-500 text-xs text-right">
             coming<br />
             soon!
