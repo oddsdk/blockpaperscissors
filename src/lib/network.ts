@@ -66,6 +66,20 @@ export const TEAM_NETWORK_MAP = {
       wsProvider:
         'wss://g.w.lavanet.xyz:443/gateway/optmt/rpc/654ffff52d55ada78b6e82ffda56ba65'
     }
+  },
+  polygon: {
+    mainnet: {
+      chainId: '137',
+      wsProvider:
+        'wss://rpc-mainnet.maticvigil.com/ws/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42'
+    },
+    testnet: {
+      chainId: '80001',
+      contractAddress: '0xE4995e1a4005A3bfa4cf803aEAA96BDEf5065208',
+      wsProvider:
+        'wss://rpc-mumbai.maticvigil.com/ws/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42'
+      // 'wss://matic.getblock.io/62041869-664d-428b-8ba5-5ad871dfe5d4/testnet/'
+    }
   }
 }
 
@@ -74,6 +88,8 @@ export const APPROVED_NETWORKS = [
   TEAM_NETWORK_MAP.filecoin.testnet.chainId,
   TEAM_NETWORK_MAP.ethereum.mainnet.chainId,
   TEAM_NETWORK_MAP.ethereum.testnet.chainId,
+  TEAM_NETWORK_MAP.polygon.mainnet.chainId,
+  TEAM_NETWORK_MAP.polygon.testnet.chainId,
 ]
 
 /**
@@ -164,7 +180,7 @@ export const switchChain = async (team) => {
     const session = getStore(sessionStore)
     // console.log('session.ethereumClient.chains', session.ethereumClient.chains)
     // const contract = getStore(contractStore)
-    await switchNetwork({ chainId: session.ethereumClient.chains[team === 'ethereum' ? 3 : 1].id })
+    await switchNetwork({ chainId: session.ethereumClient.chains[team === 'polygon' ? 5 : 1].id })
     // await contract.provider?.request({
     //   method: 'wallet_switchEthereumChain',
     //   params: [{ chainId: APPROVED_CHAIN_IDS.hyperspace }]

@@ -4,7 +4,7 @@
   import { configureChains, createConfig, getWalletClient } from '@wagmi/core'
   import { publicProvider } from '@wagmi/core/providers/public'
   // import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
-  import { arbitrum, arbitrumGoerli, filecoin, filecoinHyperspace, goerli, mainnet, optimism, optimismGoerli, polygon, polygonZkEvm } from '@wagmi/core/chains'
+  import { arbitrum, arbitrumGoerli, filecoin, filecoinHyperspace, goerli, mainnet, optimism, optimismGoerli, polygon, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet } from '@wagmi/core/chains'
   import { ethers } from 'ethers'
   import { dev } from '$app/environment'
   import { goto } from '$app/navigation'
@@ -23,11 +23,12 @@
     filecoinHyperspace,
     mainnet,
     goerli,
+    polygon,
+    polygonMumbai,
     // optimism,
     // optimismGoerli,
     // arbitrum,
     // arbitrumGoerli,
-    // polygon,
     // polygonZkEvm,
   ]
   const projectId = 'e0a88efdcd4eba50434eaa623195c84c'
@@ -45,7 +46,7 @@
   const web3modal = new Web3Modal({ projectId }, ethereumClient)
 
   let account = ethereumClient.getAccount()
-  web3modal.setDefaultChain($page.params.team === 'ethereum' ? goerli : filecoinHyperspace)
+  web3modal.setDefaultChain($page.params.team === 'polygon' ? polygonMumbai : filecoinHyperspace)
 
   getWalletClient()
   // .then(client => console.log('client', client))
@@ -107,7 +108,8 @@
   }
 
   // Set provider
-  const provider = new ethers.providers.JsonRpcProvider($page.params.team === 'ethereum' ? 'https://ethereum-goerli.publicnode.com' : ethereumClient.chains[1]?.rpcUrls.default.http[0]);
+  // 'https://ethereum-goerli.publicnode.com'
+  const provider = new ethers.providers.JsonRpcProvider($page.params.team === 'polygon' ? 'https://rpc-mumbai.maticvigil.com/v1/9b2edaa23e72253f89c1e02e54cc95f6c102bc42' : ethereumClient.chains[1]?.rpcUrls.default.http[0]);
 
   // Attach BPS contract to contractStore
   attachContractToStore(provider, $page.params.team)
