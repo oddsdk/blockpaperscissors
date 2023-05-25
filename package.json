@@ -11,6 +11,7 @@
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "devDependencies": {
+    "@capacitor/assets": "^2.0.4",
     "@capacitor/cli": "^5.0.4",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@sveltejs/adapter-static": "^1.0.0",

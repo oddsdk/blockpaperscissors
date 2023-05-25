@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 contract BlockPaperScissors {
   enum Move {
+    Null,
     Block,
     Paper,
     Scissors,
@@ -102,7 +103,7 @@ contract BlockPaperScissors {
         scissorsVoters,
         false,
         false,
-        Move.Block
+        lastWinningMove
       );
       lastWinningMoveBlockHeight = blockHeight;
       updateWinningStreak(Move.Block);
@@ -119,7 +120,7 @@ contract BlockPaperScissors {
         scissorsVoters,
         false,
         false,
-        Move.Paper
+        lastWinningMove
       );
       lastWinningMoveBlockHeight = blockHeight;
       updateWinningStreak(Move.Paper);
@@ -136,7 +137,7 @@ contract BlockPaperScissors {
         scissorsVoters,
         false,
         false,
-        Move.Scissors
+        lastWinningMove
       );
       lastWinningMoveBlockHeight = blockHeight;
       updateWinningStreak(Move.Scissors);
