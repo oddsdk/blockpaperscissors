@@ -52,7 +52,7 @@
   ])
   const wagmiConfig = createConfig({
     autoConnect: true,
-    connectors: w3mConnectors({ projectId, version: 2, chains }),
+    connectors: w3mConnectors({ projectId, version: 1, chains }),
     publicClient
   })
   const ethereumClient = new EthereumClient(wagmiConfig, chains)

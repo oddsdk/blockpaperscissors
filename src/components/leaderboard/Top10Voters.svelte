@@ -43,7 +43,7 @@
   <div class="flex flex-col text-lg gap-0.5">
     <div class="flex items-center justify-between">
       <p class="flex items-center gap-1.5">{$sessionStore?.address?.slice(0, 6)}...{$sessionStore.address.slice(38, $sessionStore.address.length)}</p>
-      <p>{$contractStore?.allAccounts?.find(account => account?.address === $sessionStore?.address)?.power?.toFixed(1)}</p>
+      <p>{$contractStore?.allAccounts?.find(account => account?.address === $sessionStore?.address)?.power?.toFixed(1) ?? 0}</p>
     </div>
   </div>
 {/await}

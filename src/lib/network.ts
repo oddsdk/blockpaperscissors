@@ -142,17 +142,25 @@ export const initialise = async (team): Promise<void> => {
       const blockHeight = decodedData.args[1].toNumber()
       const choice = VOTES_KEY_MAP[decodedData.args[0]]
 
-      networkStore.update(state => ({
-        ...state,
-        pendingTransactions: [
-          ...state.pendingTransactions,
-          {
-            blockHeight: Number(blockHeight),
-            choice,
-            txHash
+      networkStore.update(state => {
+        if (!state.pendingTransactions?.find(pendingTx => pendingTx?.txHash === txHash)) {
+          return {
+            ...state,
+            pendingTransactions: [
+              ...state.pendingTransactions,
+              {
+                blockHeight: Number(blockHeight),
+                choice,
+                txHash
+              }
+            ]
           }
-        ]
-      }))
+        } else {
+          return {
+            ...state,
+          }
+        }
+      })
 
       await checkStatusOfPendingTX(txHash)
     }
