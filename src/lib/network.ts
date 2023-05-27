@@ -109,7 +109,7 @@ export const APPROVED_NETWORKS = [
 /**
  * Initialise the networkStore and have it listen for blockHeight change
  */
-export const initialise = async (team): Promise<void> => {
+export const initialise = async (team: string): Promise<void> => {
   const wsProvider = new ethers.providers.WebSocketProvider(TEAM_NETWORK_MAP[team].testnet.wsProvider)
   const contract = getStore(contractStore)
   const paramInterface = new ethers.utils.Interface(abi)
@@ -129,56 +129,73 @@ export const initialise = async (team): Promise<void> => {
     blockHeight: startingBlock
   }))
 
-  wsProvider.on('block', blockHeight => {
-    networkStore.update(state => {
-      return {
-        ...state,
-        ...(state?.blockHeight !== blockHeight ? { blockHeight } : {})
-      }
-    })
-  })
-
-  wsProvider.on('pending', async txHash => {
-    const transaction = await wsProvider.getTransaction(txHash)
-
-    if (
-      !!transaction?.to &&
-      transaction.to.toLowerCase() ===
-        TEAM_NETWORK_MAP[team].testnet.contractAddress.toLowerCase()
-    ) {
-      const decodedData = paramInterface.parseTransaction({
-        data: transaction.data,
-        value: transaction.value
+  // document.addEventListener('visibilitychange', () => {
+  //   if (document.visibilityState === 'visible') {
+  //     // Restart connection
+      // console.log('starting ws connection')
+      wsProvider.on('block', blockHeight => {
+        networkStore.update(state => {
+          return {
+            ...state,
+            ...(state?.blockHeight !== blockHeight ? { blockHeight } : {})
+          }
+        })
       })
-      console.log('txHash', txHash)
-      console.log('decodedData', decodedData)
-      const blockHeight = decodedData.args[1].toNumber()
-      const choice = VOTES_KEY_MAP[decodedData.args[0]]
 
-      networkStore.update(state => {
-        // Ensure the same transaction isn't added multiple times
-        if (!state.pendingTransactions?.find(pendingTx => pendingTx?.txHash === txHash)) {
-          return {
-            ...state,
-            pendingTransactions: [
-              ...state.pendingTransactions,
-              {
-                blockHeight: Number(blockHeight),
-                choice,
-                txHash
+      wsProvider.on('pending', async txHash => {
+        const transaction = await wsProvider.getTransaction(txHash)
+
+        if (
+          !!transaction?.to &&
+          transaction.to.toLowerCase() ===
+            TEAM_NETWORK_MAP[team].testnet.contractAddress.toLowerCase()
+        ) {
+          const decodedData = paramInterface.parseTransaction({
+            data: transaction.data,
+            value: transaction.value
+          })
+          // console.log('txHash', txHash)
+          // console.log('decodedData', decodedData)
+          const blockHeight = decodedData.args[1].toNumber()
+          const choice = VOTES_KEY_MAP[decodedData.args[0]]
+
+          networkStore.update(state => {
+            // Ensure the same transaction isn't added multiple times
+            if (
+              !state.pendingTransactions?.find(
+                pendingTx => pendingTx?.txHash === txHash
+              )
+            ) {
+              return {
+                ...state,
+                pendingTransactions: [
+                  ...state.pendingTransactions,
+                  {
+                    blockHeight: Number(blockHeight),
+                    choice,
+                    txHash
+                  }
+                ]
               }
-            ]
-          }
-        } else {
-          return {
-            ...state,
-          }
+            } else {
+              return {
+                ...state
+              }
+            }
+          })
+
+          await checkStatusOfPendingTX(txHash)
         }
       })
-
-      await checkStatusOfPendingTX(txHash)
-    }
-  })
+  //   } else {
+  //     // Cancel connection
+  //     try {
+  //       wsProvider.destroy().then(() => console.log('ws connection closed'))
+  //     } catch (error) {
+  //       console.log('already closing')
+  //     }
+  //   }
+  // })
 
   // wsProvider.on('error', async () => {
   //   console.log(`Unable to connect to ${WS_PROVIDER_URL_FILECOIN} retrying in 3s...`)

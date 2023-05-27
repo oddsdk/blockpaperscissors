@@ -69,15 +69,15 @@
   {/if}
 
   <div class="px-10">
-    {#if !!$networkStore.pendingTransaction}
+    <!-- {#if !!$networkStore.pendingTransaction}
       <button disabled={true} class="btn btn-primary btn-lg w-full justify-between text-lg uppercase rounded-none">
         <span class="btn-loading">Counting Votes</span> <img src={`${window.location.origin}/clock.svg`} class="" alt="counting votes" />
       </button>
       <div class="hidden"><Countdown /></div>
-    {:else}
+    {:else} -->
       <a href="/{$page.params.team}/vote" class="btn btn-primary btn-lg w-full justify-between text-lg uppercase rounded-none">
         Cast your vote <Countdown />
       </a>
-    {/if}
+    <!-- {/if} -->
   </div>
 </div>
