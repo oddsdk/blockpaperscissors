@@ -10,8 +10,8 @@ export type Theme = {
 export const DEFAULT_THEME_KEY = 'useDefaultTheme'
 export const THEME_KEY = 'theme'
 
-export const getSystemDefaultTheme = (): ThemeOptions =>
-  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+// export const getSystemDefaultTheme = (): ThemeOptions =>
+//   window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
 export const loadTheme = (): Theme => {
   if (browser) {
@@ -19,17 +19,19 @@ export const loadTheme = (): Theme => {
       localStorage.getItem(DEFAULT_THEME_KEY) !== 'undefined' &&
       JSON.parse(localStorage.getItem(DEFAULT_THEME_KEY))
     const browserTheme = localStorage.getItem(THEME_KEY) as ThemeOptions
-    const osTheme = getSystemDefaultTheme()
+    // const osTheme = getSystemDefaultTheme()
 
     if (useDefault) {
       return {
-        selectedTheme: getSystemDefaultTheme(),
+        // selectedTheme: getSystemDefaultTheme(),
+        selectedTheme: 'light',
         useDefault
       }
     }
 
     return {
-      selectedTheme: browserTheme ?? (osTheme as ThemeOptions) ?? 'light',
+      // selectedTheme: browserTheme ?? (osTheme as ThemeOptions) ?? 'light',
+      selectedTheme: 'light',
       useDefault
     }
   }

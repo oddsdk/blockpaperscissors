@@ -11,8 +11,9 @@
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "devDependencies": {
+    "@capacitor/assets": "^2.0.4",
+    "@capacitor/cli": "^5.0.4",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "@metamask/providers": "^10.2.1",
     "@sveltejs/adapter-static": "^1.0.0",
     "@sveltejs/kit": "^1.0.1",
     "autoprefixer": "^10.4.4",
@@ -26,12 +27,23 @@
     "svelte-check": "^2.0.0",
     "svelte-preprocess": "^4.0.0",
     "tailwindcss": "^3.0.24",
-    "typescript": "^4.5.4",
+    "typescript": "^4.9.5",
     "undici": "*",
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@capacitor/android": "^5.0.4",
+    "@capacitor/core": "^5.0.4",
+    "@capacitor/ios": "^5.0.4",
     "@ensdomains/ensjs": "^3.0.0-alpha.50",
-    "ethers": "^6.1.0"
+    "@netlify/functions": "^1.4.0",
+    "@types/node": "^14.18.42",
+    "@wagmi/core": "^1.0.4",
+    "@walletconnect/ethereum-provider": "^2.7.4",
+    "@web3modal/ethereum": "^2.4.1",
+    "@web3modal/html": "^2.4.1",
+    "@web3modal/standalone": "^2.4.1",
+    "ethers": "^5.7.2",
+    "viem": "^0.3.24"
   }
 }

@@ -16,19 +16,26 @@ export const filesystemStore: Writable<FileSystem | null> = writable(null)
 export const deviceStore: Writable<Device> = writable({ isMobile: true })
 
 export const contractStore: Writable<Contract> = writable({
+  allAccounts: null,
   bps: null,
+  bpsReader: null,
+  myAccount: null,
   networkStreak: null,
   paramInterface: null,
   previousWinner: null,
+  ethersProvider: null,
   provider: null,
   results: null,
+  topStreaks: null,
   uniqueVoters: null,
-  userCombo: null,
+  userCombo: null
 })
 
 export const networkStore: Writable<Network> = writable({
   activeChainId: '0xc45',
   blockHeight: null,
+  pendingTransaction: null,
+  pendingTransactions: [],
 })
 
 export const notificationStore: Writable<Notification[]> = writable([])
@@ -38,4 +45,6 @@ export const sessionStore: Writable<Session> = writable({
   authed: false,
   loading: false,
   error: false,
+  ethereumClient: null,
+  web3modal: null,
 })

@@ -4,10 +4,19 @@ module.exports = {
   mode: 'jit',
   content: ['./src/**/*.{html,js,svelte,ts}'],
   safelist: [
-    'alert-success', 'alert-error', 'alert-info', 'alert-warning',
-    ...Array.from({ length: 100. }).fill('').map((_, i) => `w-[${i + 1}%]`),
-    ...Array.from({ length: 100. }).fill('').map((_, i) => `left-[${i + 1}%]`),
-    ...Array.from({ length: 100. }).fill('').map((_, i) => `right-[${i + 1}%]`),
+    'alert-success',
+    'alert-error',
+    'alert-info',
+    'alert-warning',
+    ...Array.from({ length: 100 })
+      .fill('')
+      .map((_, i) => `w-[${i + 1}%]`),
+    ...Array.from({ length: 100 })
+      .fill('')
+      .map((_, i) => `left-[${i + 1}%]`),
+    ...Array.from({ length: 100 })
+      .fill('')
+      .map((_, i) => `right-[${i + 1}%]`)
   ],
   plugins: [
     require('daisyui'),
@@ -35,13 +44,13 @@ module.exports = {
           primary: '#F5F8E6',
           secondary: '#30aadd',
           accent: '#00ffc6',
-          neutral: '#252621',
+          neutral: '#302F2C',
           info: '#6767F4',
           success: '#18B451',
           warning: '#6767F4',
           error: '#E02E64',
-          'base-content': '#F5F8E6', // Base text content color
-          'base-100': '#252621', // Base background color
+          'base-content': '#F1EDDA', // Base text content color
+          'base-100': '#302F2C', // Base background color
           '--rounded-box': '16px',
           '--rounded-btn': '4px',
           '--rounded-badge': '2px',
@@ -53,7 +62,7 @@ module.exports = {
           primary: '#F5F8E6',
           secondary: '#30aadd',
           accent: '#00ffc6',
-          neutral: '#252621',
+          neutral: '#302F2C',
           info: '#6767F4',
           success: '#18B451',
           warning: '#6767F4',
@@ -85,6 +94,13 @@ module.exports = {
         '22/23': '22 / 23'
       },
       colors: {
+        beige: {
+          400: '#E0DABD',
+          500: '#ABA692'
+        },
+        black: {
+          500: '#302F2C'
+        },
         blue: {
           500: '#6767F4'
         },
@@ -94,11 +110,11 @@ module.exports = {
         red: {
           500: '#DF3064'
         },
-        black: {
-          500: '#252621'
-        },
         white: {
           500: '#F5F8E6'
+        },
+        yellow: {
+          500: '#F2E18C'
         }
       },
       fontFamily: {

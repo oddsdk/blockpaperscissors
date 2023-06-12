@@ -14,3 +14,6 @@ _fission.yaml
 
 # foundry
 cache/
+
+# Local Netlify folder
+.netlify

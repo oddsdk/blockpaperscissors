@@ -1,15 +1,20 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { get as getStore } from 'svelte/store'
+  import { page } from '$app/stores'
 
   import { fetchGameState } from '$lib/contract'
   import { networkStore } from '$src/stores'
 
-  const TIME_BETWEEN_BLOCKS = 30
+  const BLOCK_TIME_MAP = {
+    ethereum: 15,
+    filecoin: 30,
+    polygon: 2,
+  }
 
   let previousBlockHeight = getStore(networkStore)?.blockHeight
   let now = Date.now()
-  let end = now + TIME_BETWEEN_BLOCKS * 1000
+  let end = now + BLOCK_TIME_MAP[$page.params.team] * 1000
 
   $: count = Math.round((end - now) / 1000)
 
@@ -26,7 +31,7 @@
       fetchGameState()
 
       now = Date.now()
-      end = now + TIME_BETWEEN_BLOCKS * 1000
+      end = now + BLOCK_TIME_MAP[$page.params.team] * 1000
       interval = setInterval(updateTimer, 1000)
     }
   })

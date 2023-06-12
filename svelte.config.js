@@ -10,6 +10,37 @@ const config = {
     adapter: adapter({
       fallback: 'index.html'
     }),
+    prerender: {
+      // use relative URLs similar to an anchor tag <a href="/test/1"></a>
+      // do not include group layout folders in the path such as /(group)/test/1
+      entries: [
+        '*',
+        '/filecoin/connect',
+        '/filecoin/help',
+        '/filecoin/intro',
+        '/filecoin/leaderboard',
+        '/filecoin/monitor',
+        '/filecoin/play',
+        '/filecoin/profile',
+        '/filecoin/vote',
+        '/ethereum/connect',
+        '/ethereum/help',
+        '/ethereum/intro',
+        '/ethereum/leaderboard',
+        '/ethereum/monitor',
+        '/ethereum/play',
+        '/ethereum/profile',
+        '/ethereum/vote',
+        '/polygon/connect',
+        '/polygon/help',
+        '/polygon/intro',
+        '/polygon/leaderboard',
+        '/polygon/monitor',
+        '/polygon/play',
+        '/polygon/profile',
+        '/polygon/vote',
+      ]
+    }
   }
 }
 

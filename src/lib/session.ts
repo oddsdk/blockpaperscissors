@@ -1,8 +1,9 @@
+import type { EthereumClient } from '@web3modal/ethereum'
+import type { Web3Modal } from '@web3modal/html'
 import { get as getStore } from 'svelte/store'
 import { goto } from '$app/navigation'
 
-import { filesystemStore, sessionStore } from '../stores'
-import { attachContractToStore } from '$lib/contract'
+import { sessionStore } from '../stores'
 import { addNotification } from '$lib/notifications'
 
 export type Session = {
@@ -10,33 +11,34 @@ export type Session = {
   authed: boolean
   loading: boolean
   error: boolean
+  ethereumClient: EthereumClient
+  web3modal: Web3Modal
 }
 
-export const PUBLIC_ROUTES = ['', '/', '/connect/']
+export const PUBLIC_ROUTES = [
+  '',
+  '/',
+  '/choose-team/',
+  '/filecoin/connect/',
+  '/filecoin/intro/',
+  '/ethereum/connect/',
+  '/ethereum/intro/',
+  '/polygon/connect/',
+  '/polygon/intro/',
+]
 
 /**
  * Ask the user to connect their metamask so we can populate the sessionStore
  */
 export const initialise: () => Promise<void> = async () => {
   try {
-    sessionStore.update(state => ({ ...state, loading: true }))
+    // sessionStore.update(state => ({ ...state, loading: true }))
 
-    const accounts = await window?.ethereum?.request({ method: 'eth_requestAccounts' })
-
-    // ✅ Authenticated
     sessionStore.update(state => ({
       ...state,
-      address: accounts[0],
-      authed: true,
+      authed: false,
       loading: false
     }))
-
-    addNotification(
-      'Wallet connected!',
-      'success'
-    )
-    // Attach BPS contract to networkStore
-    await attachContractToStore()
   } catch (error) {
     console.error(error)
     sessionStore.update(state => ({ ...state, error: true, loading: false }))
@@ -54,7 +56,7 @@ export const disconnect: () => Promise<void> = async () => {
     address: null,
     authed: false,
     loading: false,
-    error: false,
+    error: false
   }))
 
   goto('/')
