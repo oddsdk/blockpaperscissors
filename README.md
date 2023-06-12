@@ -12,7 +12,7 @@ The world's Slowest Arcade™.
 
 Description:
 
-A game of coordination or chaos based around the consensus mechanism of the [FVM](https://fvm.filecoin.io/). Currently, you will need to connect your wallet client to Filecoin's [Hyperspace Testnet](https://github.com/filecoin-project/testnet-hyperspace)(don't worry, Block, Paper, Scissors will prompt you to connect if you haven't already) then request some `tFIL` from the [faucet](https://hyperspace.yoga/#faucet).
+A game of coordination or chaos based around the consensus mechanism of the [FVM](https://fvm.filecoin.io/).
 
 Objective:
 
@@ -20,6 +20,32 @@ Objective:
   To keep the winning streak going, you are always voting on the next move the network makes and you want it to beat the previous move (eg. If the previous move was Paper, you want the network to play Scissors)
 - To keep your personal combo going, you always want to vote with the clear majority. (eg. if 100 accounts participate in a move, and the majority of them chose Paper, your combo continues if you also chose Paper, but ends if you chose Block or Scissors)
 - Why would anybody vote against the network streak continuing? I guess we’ll find out. Maybe you want to draw a specific picture on the grid, and that picture can’t be drawn without a bunch of streaks ending or stalemates occuring.
+
+### Currently supported teams(networks):
+
+1. Filecoin Calibration testnet
+2. Polygon Mumbai testnet
+3. Ethereum Goerli testnet
+
+To participate as a member of a team you will need to add that specific network to your wallet client and obtain some testnet tokens, which will enable you to place votes.
+
+In terms of wallet clients, the path of least resistance will be to install the MetaMask browser extension if you plan to play on desktop. You can install it [here](https://metamask.io/download/).
+
+### To add one or all of the different networks to your wallet client, you can use these links:
+
+- [Filecoin Calibration testnet](https://chainlist.org/chain/314159)
+- [Ethereum Goerli testnet](https://chainlist.org/chain/5)
+- [Polygon Mumbai](https://chainlist.org/chain/80001)
+
+### To obtain testnet tokens from a faucet for a given team, you can use these links:
+
+- [Filecoin Calibration testnet](https://faucet.calibration.fildev.network/funds.html)
+- [Ethereum Goerli testnet](https://faucet.goerli.starknet.io/). Backup faucet(requires 0.0001 mainnet ETH balance) https://goerlifaucet.com/
+- [Polygon Mumbai](https://faucet.polygon.technology/)
+
+### Live Demo
+
+You can find the deployed version of Block Paper Scissors [here](https://block-paper-scissors.fission.app)
 
 ## 📦 WHAT'S IN THE BOX?!
 
