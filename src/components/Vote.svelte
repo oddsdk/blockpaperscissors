@@ -47,31 +47,15 @@
 	const handleVoteClick = async (): Promise<void> => {
 		loading = true
 		try {
-      // const res = await fetch('https://api.zondax.ch/fil/data/v1/hyperspace/tipset/latest', {
-      //   method: 'GET',
-      //   headers: {
-      //     Authorization: 'Bearer eyJhbGciOiJFUzI1NiIsImtpZCI6ImtleS1iZXJ5eC0wMDEiLCJ0eXAiOiJKV1QifQ.eyJyb2xlcyI6W10sImlzcyI6IlpvbmRheCIsImF1ZCI6WyJiZXJ5eCJdLCJleHAiOjE2NzkyNTA3MzUsImp0aSI6IkFuZHJldyBWaXZhc2gsYXZAYW5kcmV3dml2YXNoLmNvbSJ9.j1PzTYbWeZekFs16QIOunAdKSygwtijwtyYoPlLXsalgshzpkn5KkOyhiUcYBshgLICYcFFHQwJRbDLAyjAM7g',
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      // const { height: blockHeight } = await res.json()
-      // await window.ethereum.request({
-      //   method: 'wallet_switchEthereumChain',
-      //   params: [{ chainId: $networkStore.activeChainId }],
-      // })
-
       const { chainId } = await $contractStore?.provider?.getNetwork()
       if (!!chainId) {
-        // console.log('APPROVED_NETWORKS', APPROVED_NETWORKS)
-        // console.log('chainId', chainId)
-        // if ($page.params.team === 'filecoin') {
         if ($page.params.team === 'filecoin' && chainId !== Number(APPROVED_NETWORKS[1])) {
           addNotification('Please switch to the Filecoin Hyperspace testnet', 'error')
           // await switchChain($page.params.team)
           loading = false
           return
         }
-        // if ($page.params.team === 'ethereum') {
+
         if ($page.params.team === 'ethereum' && chainId !== Number(APPROVED_NETWORKS[3])) {
           addNotification('Please switch to the Ethereum Goerli testnet', 'error')
           // await switchChain($page.params.team)
@@ -112,18 +96,6 @@
           txHash: hash,
         }
       }))
-
-			// const txHash = await $contractStore.provider.send({
-			// 	method: 'eth_sendTransaction',
-			// 	params: [
-			// 		{
-			// 			to: CONTRACT_ADDRESS,
-			// 			from: $sessionStore.address.toLowerCase(),
-			// 			data: paramInterface.encodeFunctionData('castVote', [selection, $networkStore.blockHeight]),
-      //       // chainId: 1,
-			// 		},
-			// 	],
-			// })
 
       // Force a refetch of the game state
       await fetchGameState()

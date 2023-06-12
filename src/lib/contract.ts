@@ -162,14 +162,8 @@ export const VOTES_KEY_MAP = {
  */
 export const attachContractToStore = async (provider, team) => {
   const signer = await provider.getSigner()
-  // const contract = new ethers.Contract(
-  //   CONTRACT_ADDRESS,
-  //   JSON.stringify(abi),
-  //   signer
-  // )
 
   const contractAddress = TEAM_NETWORK_MAP[team].testnet.contractAddress
-  // console.log('contractAddress', contractAddress)
 
   const contract = getContract({
     address: contractAddress,
@@ -188,12 +182,6 @@ export const attachContractToStore = async (provider, team) => {
     bpsReader: contractReader,
     provider
   }))
-
-  // // Switch to hyperspace if the user isn't already on it
-  // const { chainId } = await provider?.getNetwork()
-  // if (!!chainId && chainId !== APPROVED_NETWORKS[1]) {
-  //   await switchChain()
-  // }
 }
 
 /**
@@ -322,17 +310,9 @@ const parseAccountState = (res): RawAccountState => {
  */
 export const fetchGameState = async () => {
   try {
-    // await switchChain()
     const contracts = getStore(contractStore)
-    // const network = getStore(networkStore)
-    // console.log('network?.blockHeight - 355783', network?.blockHeight - 355783)
-    // const res = await contracts?.bpsReader?.historyForRange(
-    //   network?.blockHeight - 355783,
-    //   // 257,
-    //   network?.blockHeight
-    // )
     const res = await contracts?.bpsReader?.getResultsOfPreviousBlocks(257)
-    // console.log('res', res)
+
     const parsed = parseHistoryForRange(res)
     const results = parsed.slice(0, -1)
 

@@ -24,6 +24,7 @@ export type Network = {
 }
 
 export const APPROVED_CHAIN_IDS = {
+  calibration: '0x4cb2f',
   hyperspace: '0xc45'
 }
 
@@ -62,10 +63,15 @@ export const TEAM_NETWORK_MAP = {
       wsProvider: 'wss://wss.node.glif.io/apigw/lotus/rpc/v1'
     },
     testnet: {
-      chainId: '3141',
-      contractAddress: '0xe124F194ED4D3380d5398ea24fC4466abA010219',
-      wsProvider: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
+      chainId: '314159',
+      contractAddress: '0x51C8932Eb7C81f299387E7beAC8129211b35df58',
+      wsProvider: 'wss://wss.calibration.node.glif.io/apigw/lotus/rpc/v0'
     }
+    // testnet: {
+    //   chainId: '3141',
+    //   contractAddress: '0xe124F194ED4D3380d5398ea24fC4466abA010219',
+    //   wsProvider: 'wss://wss.hyperspace.node.glif.io/apigw/lotus/rpc/v1'
+    // }
   },
   optimism: {
     mainnet: {
@@ -129,6 +135,7 @@ export const initialise = async (team: string): Promise<void> => {
     blockHeight: startingBlock
   }))
 
+  // TODO: Toggle WS connection when tab visibility changes
   // document.addEventListener('visibilitychange', () => {
   //   if (document.visibilityState === 'visible') {
   //     // Restart connection
@@ -154,8 +161,7 @@ export const initialise = async (team: string): Promise<void> => {
             data: transaction.data,
             value: transaction.value
           })
-          // console.log('txHash', txHash)
-          // console.log('decodedData', decodedData)
+
           const blockHeight = decodedData.args[1].toNumber()
           const choice = VOTES_KEY_MAP[decodedData.args[0]]
 

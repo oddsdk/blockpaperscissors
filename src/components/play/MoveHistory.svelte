@@ -19,7 +19,6 @@
   const getPreviousMoves = () => {
     nextBatchOfMoves = $contractStore?.results?.slice(offset * cursor, offset * (cursor + 1))?.toReversed()
     cursor++
-    console.log('nextBatchOfMoves', nextBatchOfMoves)
   }
 
   $: moves = [
@@ -39,7 +38,6 @@
         scroll()
         loadingComplete()
         scrolledToBottom = true
-        // console.log('scrolledToBottom')
       }, 10)
     }
   }
@@ -89,92 +87,8 @@
           return move
         })
       }
-      // console.log('moveHistory', moveHistory)
     }
   })
-
-  // Parse pending transactions to display in the history list
-  // let pendingResults = {}
-  // const unsubscribeNetworkStore = networkStore.subscribe((state) => {
-  //   console.log('state.pendingTransactions', state.pendingTransactions)
-
-  //   if (state.pendingTransactions.length) {
-      // moveHistory = moveHistory.map(move => {
-      //   const pendingTXsForBlockHeight = state.pendingTransactions.filter(pendingTx => Number(pendingTx.blockHeight) === Number(move?.blockHeight))
-      //   console.log('pendingTXsForBlockHeight', pendingTXsForBlockHeight)
-
-      //   let leadingMajority = null
-      //   if (pendingTXsForBlockHeight.length) {
-
-      //     const blockVotes = pendingTXsForBlockHeight.filter(pendingTx => pendingTx.choice === 'block').length
-      //     const paperVotes = pendingTXsForBlockHeight.filter(pendingTx => pendingTx.choice === 'paper').length
-      //     const scissorsVotes = pendingTXsForBlockHeight.filter(pendingTx => pendingTx.choice === 'scissors').length
-
-      //     console.log('blockVotes', blockVotes)
-      //     console.log('paperVotes', paperVotes)
-      //     console.log('scissorsVotes', scissorsVotes)
-      //     if (blockVotes > paperVotes && blockVotes > scissorsVotes) {
-      //       leadingMajority = 'block'
-      //     } else if (paperVotes > blockVotes && paperVotes > scissorsVotes) {
-      //       leadingMajority = 'paper'
-      //     } else if (scissorsVotes > blockVotes && scissorsVotes > paperVotes) {
-      //       leadingMajority = 'scissors'
-      //     }
-
-      //     if (leadingMajority) {
-      //       console.log('leadingMajority', leadingMajority)
-      //       return {
-      //         ...move,
-      //         result: leadingMajority,
-      //         pending: true
-      //       }
-      //     }
-      //   }
-
-      //   return move
-      // })
-
-
-    //   pendingResults = state.pendingTransactions.reduce((acc, tx) => {
-    //     let totalsForBlockHeight = {
-    //       ...acc[tx.blockHeight],
-    //       votes: {
-    //         ...acc[tx.blockHeight]?.votes,
-    //         [tx.choice]: acc[tx.blockHeight] && acc[tx.blockHeight]?.votes[tx.choice] ? (Number(acc[tx.blockHeight].votes[tx.choice]) + 1) : 1,
-    //       }
-    //     }
-
-    //     let result = Object.keys(totalsForBlockHeight.votes).reduce((max, current) => totalsForBlockHeight.votes[max] > totalsForBlockHeight.votes[current] ? max : current)
-    //     totalsForBlockHeight.result = result
-
-    //     let previousResult = getPreviousWinner(state.pendingTransactions?.toReversed(), tx.blockHeight)
-    //     if (!previousResult || Number(previousResult?.blockHeight) !== Number(tx.blockHeight)) {
-    //       previousResult = $contractStore?.previousWinner?.result
-    //     }
-
-    //     totalsForBlockHeight.previousResult = previousResult
-
-    //     return {
-    //       ...acc,
-    //       [tx.blockHeight]: totalsForBlockHeight
-    //     }
-    //   }, {})
-    // }
-
-    // // Clear out the pendingTransactions as the networkStore is updated
-    // if (Object.keys(pendingResults).length > 0) {
-    //   if (state.pendingTransactions?.length < 1) {
-    //     pendingResults = {}
-    //   } else {
-    //     state.pendingTransactions?.forEach((result) => {
-    //       const stringifiedBlockHeight = String(result.blockHeight)
-    //       if (!Object.keys(pendingResults).includes(stringifiedBlockHeight)) {
-    //         delete pendingResults[stringifiedBlockHeight]
-    //       }
-    //     })
-    //   }
-  //   }
-  // })
 
   onDestroy(() => {
     // unsubscribeNetworkStore()
@@ -182,6 +96,7 @@
   })
 </script>
 
+<!-- TODO: Add infinite scroll functionality -->
 <!-- {#if scrolledToBottom}
   <InfiniteScroll
     hasMore={$contractStore?.results?.length !== moves.length}
@@ -200,14 +115,7 @@
       </div>
     {:else}
       {@const move = moveHistoryMap(result)}
-      <!-- {#if result.pending}
-        {console.log('result', result)}
-      {/if} -->
       <div class="relative z-0 flex items-center justify-center gap-9 py-[18px]">
-        <!-- {#if move.result === 'win'}
-          <div class="absolute z-0 top-0 left-1/2 -translate-x-1/2 h-10 w-[7px] bg-black-500"></div>
-        {/if} -->
-
         <div class="relative">
           <img src="{window.location.origin}/{result?.result}.svg" alt="{result?.result}" class="w-[56px] h-auto" />
           {#if result.pending}

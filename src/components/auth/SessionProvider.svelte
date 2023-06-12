@@ -3,7 +3,7 @@
   import { Web3Modal } from '@web3modal/html'
   import { configureChains, createConfig, getWalletClient } from '@wagmi/core'
   import { publicProvider } from '@wagmi/core/providers/public'
-  import { arbitrum, arbitrumGoerli, filecoin, filecoinHyperspace, goerli, mainnet, optimism, optimismGoerli, polygon, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet } from '@wagmi/core/chains'
+  import { arbitrum, arbitrumGoerli, filecoin, filecoinCalibration, goerli, mainnet, optimism, optimismGoerli, polygon, polygonMumbai, polygonZkEvm, polygonZkEvmTestnet } from '@wagmi/core/chains'
   import { ethers } from 'ethers'
   import { dev } from '$app/environment'
   import { goto } from '$app/navigation'
@@ -19,11 +19,12 @@
 
   const chains = [
     filecoin,
-    filecoinHyperspace,
+    filecoinCalibration,
     mainnet,
     goerli,
     polygon,
     polygonMumbai,
+    // NOTE: Commented chains have yet to be added. Will need to find reliable RPC/WS Providers for each chain.
     // optimism,
     // optimismGoerli,
     // arbitrum,
@@ -38,7 +39,7 @@
     },
     filecoin: {
       mainnet: filecoin,
-      testnet: filecoinHyperspace,
+      testnet: filecoinCalibration,
     },
     polygon: {
       mainnet: polygon,
@@ -62,7 +63,6 @@
   web3modal.setDefaultChain(chainMap[$page.params.team].testnet)
 
   getWalletClient()
-  // .then(client => console.log('client', client))
 
   sessionStore.update(state => ({
     ...state,
@@ -76,8 +76,7 @@
 
     const unsubscribeModal = web3modal.subscribeModal(async newState => {
       const address = ethereumClient.getAccount()?.address
-      console.log('newState', newState)
-      console.log('newState address', address)
+
       if (address && !newState?.open && $page.url.pathname.includes('/connect/')) {
         sessionStore.update(state => ({
           ...state,
