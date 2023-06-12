@@ -96,7 +96,6 @@
   })
 </script>
 
-<!-- TODO: Add infinite scroll functionality -->
 <!-- {#if scrolledToBottom}
   <InfiniteScroll
     hasMore={$contractStore?.results?.length !== moves.length}

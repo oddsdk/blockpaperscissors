@@ -24,7 +24,6 @@
 
   const handleButtonClick = (): void => {
     const path = $sessionStore.address ? `/${team}/intro` : `/${team}/connect`
-    localStorage.setItem('team', team)
     goto(path)
   }
 </script>

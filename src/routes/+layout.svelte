@@ -9,7 +9,6 @@
   import { addNotification } from '$lib/notifications'
   import { PUBLIC_ROUTES } from '$lib/session'
   import { deviceStore, networkStore, sessionStore, themeStore } from '$src/stores'
-  // import SessionProvider from '$components/auth/SessionProvider.svelte'
   import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
   import Notifications from '$components/notifications/Notifications.svelte'
 
@@ -46,12 +45,10 @@
   <Notifications />
 
   <div class="pt-[70px] {$page?.route?.id === '/[team]/play' ? '' : 'px-10'} pb-10 max-w-lg mx-auto">
-    <!-- <SessionProvider> -->
-      {#if loading}
-        <FullScreenLoadingSpinner />
-      {:else}
-        <slot />
-      {/if}
-    <!-- </SessionProvider> -->
+    {#if loading}
+      <FullScreenLoadingSpinner />
+    {:else}
+      <slot />
+    {/if}
   </div>
 </div>
