@@ -38,8 +38,21 @@ const config = {
         '/polygon/monitor',
         '/polygon/play',
         '/polygon/profile',
-        '/polygon/vote',
-      ]
+        '/polygon/vote'
+      ],
+      handleHttpError: ({ path, referrer, message }) => {
+        // ignore deliberate link to shiny 404 page
+        console.log('path', path)
+        console.log('referrer', referrer)
+        if (
+          path.includes('/TODO')
+        ) {
+          return
+        }
+
+        // otherwise fail the build
+        throw new Error(message)
+      }
     }
   }
 }
