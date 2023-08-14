@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { sessionStore } from '$src/stores'
   import Divider from '$components/common/Divider.svelte'
   import BlockIcon from '$components/icons/Block.svelte'
   import PaperIcon from '$components/icons/Paper.svelte'
